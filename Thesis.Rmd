@@ -15,7 +15,8 @@ real-data backbone of the thesis from two ISTAT sources: SES income data
 and RACLI regional data from 2022. The output is three tidy datasets:
 *'ses_all', 'racli_clean'*, and *'regional_codes',* that together
 describe the structure of Italian wages along the demographic, sectoral,
-and geographic macro and micro areas, that the LLMs will later model.
+and geographic macro and micro areas, which will be used as the
+experiment's backbone.
 
 In the initial sections, the SES (Structure of Earnings Survey) data was
 elaborated and cleaned: a single *parse_ses_table()* function, applied
@@ -40,7 +41,7 @@ ITI. Neither data set alone has the joint distribution of demographics ×
 sector × NUTS-2 region; which could potentially be the gap filled with
 the LLMs (?).
 
-```{r}
+```{r include=FALSE}
 library(tidyr)
 library(readxl)
 library(dplyr)
@@ -146,7 +147,7 @@ tav1_clean <- tav1_clean |>
     T_high = T_educ_high,
   )
 
-view(tav1_clean)
+tav1_clean
 ```
 
 ## Convert values and drop separator columns
@@ -181,7 +182,7 @@ tav1_final <- tav1_clean |>
     outcome_var    = "hourly_wage", # label what the breakdown variable is and the outcome variable 
   )
 
-view(tav1_final)
+tav1_final
 ```
 
 Now the table 1 finalized has the labelled sector as an indicator, the
@@ -231,7 +232,7 @@ meta_hours <- list(raw_names = c(
  
 # occupation (ISCO) (Tav.4, 9, 15)
 # 10 ISCO major groups + total for each sex
-# (Forze Armate is almost always ".." but I included it as its own thing)
+# (Forze Armate is almost always ".." but it was included it as its own thing)
 meta_ISCO <- list(raw_names = c(
     "row_label",
     "F_armed", "F_manager", "F_intellectual", "F_technical",
@@ -275,9 +276,20 @@ meta_seniority <- list(
     yr2024 = "20-24 years", yr2529 = "25-29 years",
     yr3034 = "30-34 years", yr35plus = "35+ years",
     total = "total"))
+
+# age brackets (table 14) 
+# three brackets - 14 to 29, 30 to 49 and 50+
+meta_age <- list(
+  raw_names = c("row_label",
+    "F_young", "F_mid", "F_old", "F_total", "sep1",
+    "M_young", "M_mid", "M_old", "M_total", "sep2",
+    "T_young", "T_mid", "T_old", "T_total"),
+  breakdown_var = "age",
+  cat_labels    = c(young = "14-29 years", mid = "30-49 years",
+                    old   = "50+ years",   total = "total"))
 ```
 
-# One generalizing function
+## One generalizing function
 
 -   Input: sheet name, meta information (as in column names + breakdown
     label), outcome label (hourly_wage / annual_wage / annual_hours)
@@ -386,7 +398,7 @@ table_map <- tribble(
   "Tav.11",  "education",         "annual_hours",
   "Tav.12",  "contract_type",     "annual_hours",
   "Tav.13",  "hours_regime",      "annual_hours",
-  # table 14 is a different type of table that will have to be taken care of separatly
+  "Tav.14",  "age",               "annual_hours",
   "Tav.15",  "occupation",        "annual_hours",
   "Tav.16",  "tenure",            "annual_hours"
 )
@@ -397,7 +409,8 @@ meta_list <- list(
   contract_type = meta_contract_type,
   hours_regime = meta_hours,
   occupation   = meta_ISCO,
-  tenure       = meta_seniority
+  tenure       = meta_seniority,
+  age = meta_age
 )
 ```
 
@@ -499,7 +512,7 @@ ses_all <- ses_all |>
   select(-breakdown_cat_label)
 
 # mutate the regional labeling so that it matches the RACLI organization
-ses_all <- mutate(
+ses_all <- ses_all |> mutate(
     nuts1 = case_when(
       strat_type == "geography" & str_detect(row_label, "Nord-Ovest|Nord-ovest") ~ "Nord-Ovest",
       strat_type == "geography" & str_detect(row_label, "Nord-Est|Nord-est")     ~ "Nord-Est",
@@ -510,14 +523,13 @@ ses_all <- mutate(
     ))
 
 
-# write_csv(ses_all, file = "ses_all1.csv")
-# ses_all <- read_csv(file = "ses_all1.csv")
+# write_csv(ses_all, file = "ses_all.csv")
 ```
 
-This data set gives me the full sectoral and demographic structure of
+This data set gives me the full sectorial and demographic structure of
 Italian wages in 2022.
 
-# Regional disaggregation
+# Regional-level disaggregation
 
 The final goal is to have these data sets:
 
@@ -543,7 +555,7 @@ occupation.
 
 ```{r}
 library(readr)
-racli_raw <- read_csv("data/Sesso - prov(IT1,533_957_DF_DCSC_RACLI_8,1.0).csv",
+racli_raw <- read_csv("data/Sesso - prov (IT1,533_957_DF_DCSC_RACLI_8,1.0).csv",
                       quote = "")
 
 racli_raw <- racli_raw |>
@@ -596,7 +608,7 @@ racli_clean <- racli_raw |>
 racli_clean
 ```
 
-# Creating a regional code book
+## Creating a regional code book
 
 In a specific data set, mostly developed as a 'code book' for reference,
 each region will be matched to its macro NUTS-1 area, as well as to its
@@ -686,19 +698,19 @@ ranking. The Southern regions cluster at the bottom, with Calabria
 narrowest raw gaps.
 
 A "composition-adjusted" GPG will be calculated next. Using the SES
-data, for each NUTS-1 macro-area and each breakdown category (education
+data, for each NUTS-1 macro area and each breakdown category (education
 level, contract type, hours regime, occupation, tenure bracket), compute
 the gender gap.
 
 ```{r gender-gap-sections}
-within_gaps <- ses_all1 |>
+within_gaps <- ses_all |>
   filter(strat_type == "geography",
          outcome_var == "hourly_wage",
          row_label != "Totale",             # drop the national-total row
-         breakdown_cat_label != "total",    # drop within-breakdown totals
+         breakdown_cat != "total",    # drop within-breakdown totals
          sex %in% c("Female", "Male")) |>
   select(area = row_label,
-         breakdown_var, breakdown_cat_label,
+         breakdown_var, breakdown_cat,
          sex, value) |>
   pivot_wider(names_from = sex, values_from = value) |>
   filter(!is.na(Female), !is.na(Male), Male > 0) |>
@@ -747,15 +759,72 @@ agpg_area <- agpg_area_breakdown |>
 
 agpg_area
 
-# write_csv(agpg_area, file = "ugpg_area.csv")
+# write_csv(agpg_area, file = "agpg_area.csv")
 ```
 
 These tables are the ground-truth baseline against which the imputed
 (MICE / LLM) datasets will later be evaluated in Step 4.
 
-!! SELECTION EFFECT - to be looked into for theoretical background !!
+!! higher gap in more productive and richer regions –\> SELECTION
+EFFECT - to be looked into for theoretical background !!
 
 # PHASE 2
+
+## Regional disadvantages
+
+A regional disadvantage score (reg_dis) is built from the RACLI 'sex ==
+total' cells at NUTS-2 micro level, using two indicators:
+
+-   the first is the regional mean hourly wage, where a low value
+    corresponds to a disadvantaged labor market; this is therefore
+    reverse-signed and z-standardized, so that higher scores mean lower
+    wages.
+
+-   the second is the p90/p10 ratio per region, a standard measure of
+    wage dispersion in which a high value signals a more polarized labor
+    market (a wider gap between top and bottom earners), and is
+    z-standardized in its observed direction.
+
+The two standardized measures are then averaged into a single data frame
+'reg_dis' per NUTS-2 region, which is finally categorized into three
+labels, low / moderate / high, to give discrete disadvantage levels and
+clearer indicators. As a result, this score measures how structurally
+disadvantaged a region's labor market is, by combining how low its wages
+are with how unequally those wages are distributed. This index will be
+used to fabricate MNAR missingness among the data, to further test
+recovery methods; MICE with PMM and LLM's reconstruction abilities.
+
+```{r regional-disadv-score}
+reg_dis <- racli_clean |>
+  filter(geo_level == "nuts2",
+         sex == "Total",
+         indicator %in% c("mean", "p10", "p90")) |>
+  select(geo_code, geo_label, nuts1_code, indicator, value) |>
+  pivot_wider(names_from = indicator, values_from = value) |>
+  mutate(
+    p90_p10 = p90 / p10,
+    # z-standardize each indicator; low wage and high dispersion = disadvantaged
+    z_wage  = -as.numeric(scale(mean)),     # reverse-signed: low wage -> high score
+    z_disp  =  as.numeric(scale(p90_p10)),  # "high = bad" direction
+    # composite: simple average of the two standardized indicators
+    reg_dis = (z_wage + z_disp) / 2,
+    # labels
+    reg_dis_lvl = cut(reg_dis,
+                      breaks = quantile(reg_dis, c(0, 1/3, 2/3, 1)),
+                      labels = c("low", "moderate", "high"),
+                      include.lowest = TRUE)) |>
+  arrange(desc(reg_dis))
+
+reg_dis 
+
+# write_csv(reg_dis, file = "reg_dis.csv")
+```
+
+!! Important to note: the 'sex == total' mean wage used here is a
+weighted average of male and female wages, so 'reg_dis' is not fully
+independent of the unadjusted GPG as the two share underlying data.
+
+# PHASE 3
 
 ## Initial MCAR experiment
 
@@ -770,17 +839,18 @@ RMSE.
 
 STEPS:
 
-1.   Pivot RACLI data wide so MICE has structural predictors to work
+1.  Pivot RACLI data wide so MICE has structural predictors to work
     with. One row per region × sex, with 'mean' , ' p10', 'median',
     'p90' as columns.
 
-2.   A new data set where about 20% of the 'mean' column is missing
+2.  A new data set where about 20% of the 'mean' column is missing
     completely at random (MCAR).
 
 3.  Run MICE with predictive mean matching (PMM) as the standard
-    practice. PMM here selected because it is robust, and because it draws imputed values from
-    observed values rather than from a fitted distribution: every imputed wage 
-    is a real euro/hour figure within the empirical support.
+    practice. PMM here selected because it is robust, and because it
+    draws imputed values from observed values rather than from a fitted
+    distribution: every imputed wage is a real euro/hour figure within
+    the empirical support.
 
 4.  Pivot back to long, recompute the GPG measures using the already
     present function, as a comparison to understand how well the PMM and
@@ -807,9 +877,11 @@ racli_missing <- racli_wide |>
   mutate(mean = if_else(runif(n()) < miss_rate, NA_real_, mean))
 ```
 
-Now about 20% of the 'mean' column has missing data completely at random. 
+Now about 20% of the 'mean' column has missing data completely at
+random.
 
 ## MICE imputation for MCAR
+
 ```{r MCAR-mice}
 # MICE with PMM where predictors: the other quantiles + sex + geographical factors
 mice_imputed <- racli_missing |>
@@ -835,10 +907,10 @@ ugpg_from_imp <- function(level) {
 ugpg_nuts2_imp <- ugpg_from_imp("nuts2")
 ```
 
+## Compare metrics
 
-## Compare metrics 
-
-Here bias is computed per region as 'uGPG_imp' − 'uGPG_true', where 'uGPG_true' is the baseline gap calculated from the complete RACLI data. 
+Here bias is computed per region as 'uGPG_imp' − 'uGPG_true', where
+'uGPG_true' is the baseline gap calculated from the complete RACLI data.
 
 ```{r comparing-with-og}
 
@@ -861,14 +933,22 @@ summary_metrics
 compare_nuts2 |> arrange(desc(abs_error))
 ```
 
-This initial baseline attempt behaves very well. 
-Mean bias across the 20 micro-level regions is essentially zero (0.0005), MAE is 0.3 percentage points, RMSE equals to 0.007, and the Spearman rank correlation between true and imputed regional uGPGs is 0.96, indicating that regional rankings are almost perfectly preserved.
+This initial baseline attempt behaves very well. Mean bias across the 20
+micro-level regions is essentially zero (0.0005), MAE is 0.3 percentage
+points, RMSE equals to 0.007, and the Spearman rank correlation between
+true and imputed regional uGPGs is 0.96, indicating that regional
+rankings are almost perfectly preserved.
 
-The fact that the substantive ordering of regions survives the MCAR missing data method is especially reassuring, since the focus of the GPG depends more on which regions stand out than on the exact decimal of each gap. Taken together, these results establish the noise floor of the pipeline: the residual error attributable to the imputation procedure itself, before any informative missingness is introduced. 
-The most relevant takeaway of this initial MCAR test on PMM is that any possible deterioration observed in the following steps of experiment can be attributed to the missingness mechanism rather than to limitations of the MICE-PMM method as such.
+The fact that the substantive ordering of regions survives the MCAR
+missing data method is especially reassuring, since the focus of the GPG
+depends more on which regions stand out than on the exact decimal of
+each gap. Taken together, these results establish the noise floor of the
+pipeline: the residual error attributable to the imputation procedure
+itself, before any informative missingness is introduced. The most
+relevant takeaway of this initial MCAR test on PMM is that any possible
+deterioration observed in the following steps of experiment can be
+attributed to the missingness mechanism rather than to limitations of
+the MICE-PMM method as such.
 
-# PHASE 3
-## Regional disa
-
-
-
+-   well performing baseline when the NAs are missing completely at
+    random and retreived through MICE imputation (PMM).
