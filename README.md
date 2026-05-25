@@ -5,7 +5,6 @@ Two methods of imputation methods, classical multiple imputation with the MICE p
 
 Here are the steps of the experimental design: 
 - **STEP 1**: establishing the real-data baseline and ground truth. First of all, the gender wage inequalities are measured from the real data: unadjusted gap is computed from RACLI at country, macro-area, and regional level, and the composition-adjusted gap is computed from SES per macro-area and breakdown variable (more granular).
-
 A preliminary MCAR test of MICE-PMM on RACLI and on SES will be executed to establish the pipeline noise, before introducing any missingness. In parallel, an uninformed LLM baseline is established on both datasets by direct prompting on a small sample of named cells and by zero-shot estimation from an empty scheme. 
 Together these serve as a basis for the comparison: MICE under MCAR sets the lower bound of error attributable to the procedure itself, the uninformed LLM  will indicate what can be recovered without data.
 
