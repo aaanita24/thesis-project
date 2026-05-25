@@ -13,7 +13,7 @@ editor_options:
 This initial phase 0 deals with the data cleaning and preparation of the
 real-data backbone of the thesis from two ISTAT sources: SES income data
 and RACLI regional data from 2022. The output is three tidy datasets:
-*'ses_all', 'racli_clean'*, and *'regional_codes',* that together
+*'ses_data', 'racli_clean'*, and *'regional_codes',* that together
 describe the structure of Italian wages along the demographic, sectoral,
 and geographic macro and micro areas, which will be used as the
 experiment's backbone.
@@ -419,7 +419,7 @@ meta_list <- list(
 Let's try to have the final dataset and see if it works:
 
 ```{r}
-ses_all <- pmap(
+ses_data <- pmap(
   table_map,
   function(sheet, meta, outcome) {
     parse_ses_table(
@@ -431,7 +431,7 @@ ses_all <- pmap(
 ) |>
   bind_rows()
 
-ses_all |> count(table_id, breakdown_var, outcome_var)
+ses_data |> count(table_id, breakdown_var, outcome_var)
 ```
 
 What these processes and function gave me:
@@ -507,12 +507,12 @@ What these processes and function gave me:
 manager → Managers etc.), and then kept as the 'breakdown_cat' variable.
 
 ```{r}
-ses_all <- ses_all |>
+ses_data <- ses_data |>
   mutate(breakdown_cat = breakdown_cat_label) |>  
   select(-breakdown_cat_label)
 
 # mutate the regional labeling so that it matches the RACLI organization
-ses_all <- ses_all |> mutate(
+ses_data <- ses_data |> mutate(
     nuts1 = case_when(
       strat_type == "geography" & str_detect(row_label, "Nord-Ovest|Nord-ovest") ~ "Nord-Ovest",
       strat_type == "geography" & str_detect(row_label, "Nord-Est|Nord-est")     ~ "Nord-Est",
@@ -523,13 +523,13 @@ ses_all <- ses_all |> mutate(
     ))
 
 
-# write_csv(ses_all, file = "ses_all.csv")
+# write_csv(ses_data, file = "ses_data.csv")
 ```
 
 This data set gives me the full sectorial and demographic structure of
 Italian wages in 2022.
 
-# Regional-level disaggregation
+# 0.1 Regional-level disaggregation
 
 The final goal is to have these data sets:
 
@@ -703,7 +703,7 @@ level, contract type, hours regime, occupation, tenure bracket), compute
 the gender gap.
 
 ```{r gender-gap-sections}
-within_gaps <- ses_all |>
+within_gaps <- ses_data |>
   filter(strat_type == "geography",
          outcome_var == "hourly_wage",
          row_label != "Totale",             # drop the national-total row
@@ -826,7 +826,7 @@ independent of the unadjusted GPG as the two share underlying data.
 
 # PHASE 3
 
-## Initial MCAR experiment
+## MCAR pilot on RACLI
 
 To test the ability and accuracy of LLM's imputation methods, I will
 first test the basic MCAR missingness scenario: missing completely at
@@ -835,7 +835,8 @@ random.
 Under the MCAR assumption, there is no relationship between missingness
 and either the wage or the region, as each cell has the same probability
 of being missing. This is therefore ideal as a baseline for MAE and
-RMSE.
+RMSE, it is the baseline 'noise'. It will be calculated both on the
+RACLI data and on the
 
 STEPS:
 
@@ -856,10 +857,7 @@ STEPS:
     present function, as a comparison to understand how well the PMM and
     MICE metrics were at reconstructing the missing data.
 
-*Will the measures be similar? Will it be a reliable and well
-functioning method to reconstruct missing data in this context?*
-
-```{r MICE-imputation}
+```{r MICE-imputation-RACLI}
 library(mice)
 set.seed(240603) # for reproducibility
 
@@ -880,9 +878,12 @@ racli_missing <- racli_wide |>
 Now about 20% of the 'mean' column has missing data completely at
 random.
 
-## MICE imputation for MCAR
+## MICE imputation on pilot MCAR
 
-```{r MCAR-mice}
+Imputation on the RACLI with the engineered missingness completely at
+random.
+
+```{r MCAR-mice-RACLI}
 # MICE with PMM where predictors: the other quantiles + sex + geographical factors
 mice_imputed <- racli_missing |>
   mutate(across(c(sex, geo_level, nuts1_code), as.factor)) |>
@@ -894,7 +895,87 @@ mice_fit <- mice(mice_imputed, m = 5, method = "pmm", printFlag = FALSE)
 imp_means <- sapply(1:5, function(i) complete(mice_fit, i)$mean)
 racli_imp <- racli_missing |>
   mutate(mean = rowMeans(imp_means))
+```
 
+The same process will be performed on the SES dataset.
+
+## MCAR pilot on SES
+
+The missingness completely at random will be engineered as pilot for the
+SES data, specifically on the data relevant for the composition-adjusted
+GPG. This pilot run will establish the baseline noise of the imputation
+pipeline on this dataset.
+
+The steps followed for this step will be similar to the ones executed
+when establishing the baseline noise for the RACLI data, but the
+missingness here will be around 5% of the data. !! ACCORDING TO THE
+LITERATURE !!
+
+```{r}
+library(mice)
+set.seed(250704) 
+
+# pivoted dataset
+ses_wide <- ses_data |>  
+  filter(strat_type == "geography",
+         outcome_var == "hourly_wage",
+         row_label != "Totale",
+         breakdown_cat != "total",
+         sex %in% c("Female", "Male")) |>
+  select(area = row_label,
+         breakdown_var, breakdown_cat,
+         sex, value) |>
+  pivot_wider(names_from = sex, values_from = value) |>
+  filter(!is.na(Female), !is.na(Male), Male > 0)
+
+# create the baseline corrupted MCAR dataset
+miss_rate_ses <- 0.05
+ses_missing <- ses_wide |> 
+  mutate(
+    Female = if_else(runif(n()) < miss_rate_ses, NA_real_, Female),
+    Male   = if_else(runif(n()) < miss_rate_ses, NA_real_, Male)
+  )
+
+# SAVE ses_wide as ground truth wih 5% MCAR
+# write_csv(ses_wide, file = "ses_baseline_mcar.csv")
+```
+
+## MICE imputation on pilot SES
+
+MICE imputation using PMM.
+
+```{r}
+# convert descriptors to factors so MICE can utilize them as predictors
+mice_ses_input <- ses_missing |>
+  mutate(across(c(area, breakdown_var, breakdown_cat), as.factor)) |>
+  select(area, breakdown_var, breakdown_cat, Female, Male)
+
+# run the imputation over 5 iterations
+mice_ses_fit <- mice(mice_ses_input, m = 5, method = "pmm", printFlag = FALSE)
+
+# pooling the 5 imputed datasets
+imp_female_matrix <- sapply(1:5, function(i) complete(mice_ses_fit, i)$Female)
+imp_male_matrix   <- sapply(1:5, function(i) complete(mice_ses_fit, i)$Male)
+
+ses_imputed <- ses_missing |>
+  mutate(
+    Female = rowMeans(imp_female_matrix),
+    Male   = rowMeans(imp_male_matrix)
+  )
+```
+
+Now I have the imputed pilot datasets to establish algorithmic noise for
+both the RACLI data (from which the unadjusted gpg was calculated) SES
+data (from which the "composition-adjusted" gpg was measured).
+
+## Recreating and comparing GPG metrics
+
+First, let's look at how the uadjusted GPG was recreated and let's
+evaluate it against the original metric. Here bias is computed per
+region as 'uGPG_imp' − 'uGPG_true', where 'uGPG_true' is the baseline
+gap calculated from the complete RACLI data.
+
+```{r comparing-RACLI-metrics}
 # recompute uGPG on imputed data
 ugpg_from_imp <- function(level) {
   racli_imp |>
@@ -905,14 +986,6 @@ ugpg_from_imp <- function(level) {
 }
 
 ugpg_nuts2_imp <- ugpg_from_imp("nuts2")
-```
-
-## Compare metrics
-
-Here bias is computed per region as 'uGPG_imp' − 'uGPG_true', where
-'uGPG_true' is the baseline gap calculated from the complete RACLI data.
-
-```{r comparing-with-og}
 
 compare_nuts2 <- ugpg_nuts2 |>
   select(geo_code, geo_label, uGPG_true = uGPG) |>
@@ -952,3 +1025,178 @@ the MICE-PMM method as such.
 
 -   well performing baseline when the NAs are missing completely at
     random and retreived through MICE imputation (PMM).
+
+Now, from the imputed data, the composition-adjusted GPG will be
+calculated and compared to the one obtained based on the real SES data.
+
+```{r}
+# compute the within-category gaps and weight them by the female-wage share
+agpg_breakdown_imp <- ses_imputed |>
+  group_by(area, breakdown_var) |>
+  mutate(
+    gap    = 1 - Female / Male,
+    weight = Female / sum(Female, na.rm = TRUE)
+  ) |>
+  summarise(
+    aGPG_imp     = sum(weight * gap, na.rm = TRUE),
+    n_categories = n(),
+    .groups      = "drop"
+  )
+
+# aggregate to a single aGPG value per NUTS-1 macro-area (mean across 5 variables)
+agpg_area_imp <- agpg_breakdown_imp |>
+  group_by(area) |>
+  summarise(aGPG_imp = mean(aGPG_imp), .groups = "drop")
+
+# evaluation at the Area × Breakdown level (25 data points for robust metrics)
+compare_ses_breakdown <- agpg_area_breakdown |>
+  select(area, breakdown_var, aGPG_true = aGPG) |>
+  inner_join(agpg_breakdown_imp |> select(area, breakdown_var, aGPG_imp),
+             by = c("area", "breakdown_var")) |>
+  mutate(
+    bias      = aGPG_imp - aGPG_true,
+    abs_error = abs(bias)
+  )
+
+summary_ses_breakdown_metrics <- compare_ses_breakdown |>
+  summarise(
+    mean_bias = mean(bias),
+    MAE       = mean(abs_error),
+    RMSE      = sqrt(mean(bias^2)),
+    spearman  = cor(aGPG_true, aGPG_imp, method = "spearman")
+  )
+
+# evaluation at the macro Area level (5 NUTS-1 regions)
+compare_ses_area <- agpg_area |>
+  select(area, aGPG_true = aGPG) |>
+  inner_join(agpg_area_imp |> select(area, aGPG_imp), by = "area") |>
+  mutate(
+    bias      = aGPG_imp - aGPG_true,
+    abs_error = abs(bias)
+  )
+```
+
+This initial baseline attempt also behaves really well. Mean bias across
+the 25 micro-level area-breakdown strata is essentially zero (-0.0002),
+MAE is under 0.1 percentage points (0.00096), RMSE equals 0.0014, and
+the Spearman rank correlation between true and imputed stratified aGPGs
+is 0.999, indicating that the composition-adjusted rankings are almost
+perfectly preserved. Looking at the macro-area aggregates, absolute
+errors remain low, peaking at just 0.14 percentage points in the *Isole*
+macro-area and dropping to near-zero for both the *Sud* and *Nord-est*
+zones.
+
+These results establish the noise floor of the SES pipeline, meaning the
+residual error attributable to the imputation procedure itself, before
+any widespread missingness is introduced. The most relevant takeaway of
+this initial MCAR test on PMM is that any future performance changes
+observed in the next steps of the experiment can be confidently
+attributed to the missingness mechanism, rather than to baseline
+limitations of the MICE-PMM performance on this data structure.
+
+-   well performing baseline when the NAs are missing completely at
+    random and retreived through MICE imputation (PMM), for SES data as
+    well.
+    
+The next step is to create the datasets (one for SES and one for RACLI) for MICE and the LLM to actually reproduce. In the case on RACLI, the dataset will be objected to MNAR (missing not at random), while for the Structure of Earnings data, the dataframe will be subjected to a higher amount of data missing completely at random, MCAR.
+
+# 3.1 Engineered MNAR dataset
+
+Using the regional disaggregation metric that was developed for each
+region, the information will be modified in order to fabricate the
+missing not at random scenario. This incomplete data will be imputed
+both using the standard MICE package, and using the LLMs.
+
+MNAR is the method selected to define missingness because we are
+assuming that the probability of the data cells being missing are
+directly related to the lack of information/difficulty of collecting
+data/increased inequalities in the regions with the lowest regions +
+lowest female participation. It is a structural issue rather than a
+random one, hence the construction of the regional disadvantage levels.
+Here, this will be fabricated by dropping data from the *'racli_clean'*
+data (wide format), where the 'mean' cells will be dropped with a
+probability scaled according to the regional disadvantage measured.
+
+-   low reg_dis level = \~0.10 probability of mean values being missing
+
+-   medium reg_dis level = \~0.25 probability of mean values being
+    missing
+
+-   high reg_dis level = \~0.45 probability of mean values being missing
+
+!! How do I justify/specify this selection of probability scores?
+
+```{r MNAR-reg_dis}
+set.seed(240603)
+
+# average drop rate across tiers ~25%, comparable to the MCAR 20% baseline
+p_miss_mnar <- c(low = 0.10, moderate = 0.25, high = 0.45)
+
+# tier lookup defined at NUTS-2; NUTS-3 provinces will inherit the
+# disadvantage tier of their NUTS-2 region, so missingness propagates 
+# down the geographic hierarchy
+tier_lookup <- reg_dis |>
+  select(geo_code, reg_dis_lvl)
+
+# geo code matching
+racli_wide_mnar <- racli_wide |>
+  mutate(
+    # each row's NUTS-2 region: itself if NUTS-2, truncated 
+    # geo_code if NUTS-3, NA otherwise (NUTS-1 / country stay untouched)
+    nuts2_parent = case_when(
+      geo_level == "nuts2" ~ geo_code,
+      geo_level == "nuts3" ~ substr(geo_code, 1, 4),
+      TRUE                 ~ NA_character_
+    )
+  ) |>
+  left_join(tier_lookup, by = c("nuts2_parent" = "geo_code"))
+
+# Bernoulli draw conditional on tier; aggregate / country rows never masked
+racli_missing_mnar <- racli_wide_mnar |>
+  mutate(
+    p_drop = p_miss_mnar[as.character(reg_dis_lvl)],
+    p_drop = if_else(is.na(p_drop), 0, p_drop),
+    drop   = runif(n()) < p_drop,
+    mean   = if_else(drop, NA_real_, mean)
+  ) |>
+  select(-nuts2_parent, -p_drop, -drop)  # tidy up
+
+# SAVE
+# write_csv(racli_missing_mnar, file = "racli_missing_mnar.csv")
+```
+
+Each cell in the `mean` column is dropped with a probability that
+depends on its region's disadvantage tier: roughly 10% in `low`, 25% in
+`moderate`, and 45% in `high`, so that the presence of NAs is
+concentrated in structurally weaker labor markets, but never
+deterministic. NUTS-3 provinces inherit the tier of their NUTS-2 region,
+while NUTS-1 and country rows are left intact. `racli_missing_mnar` is
+the dataset that MICE and the LLM will both later attempt to
+reconstruct.
+
+# 3.2 Engineered MCAR dataset
+
+For the SES data, the missingness selected is MCAR, as it is another very realistic scenario in real life. It will provide a different type of test for both the MICE and the LLM's retrieval, later on. 
+```{r MCAR-ses}
+set.seed(2026) # seed for reproducibility
+
+# experimental dataset (20% MCAR)
+p_miss_step <- 0.20
+
+ses_mcar_exp <- ses_wide |>
+  mutate(
+    p_drop = p_miss_step,
+    # independent random picks for cell-level missingness
+    drop_F = runif(n()) < p_drop,
+    drop_M = runif(n()) < p_drop,
+    # Inject missingness based on the picks
+    Female = if_else(drop_F, NA_real_, Female),
+    Male   = if_else(drop_M, NA_real_, Male)
+  ) |>
+  select(-p_drop, -drop_F, -drop_M) # tidy up 
+
+# SAVE EXPERIMENTAL DATASETS
+# write_csv(ses_mcar_exp, file = "ses_mcar_exp.csv")
+```
+
+Now the two experimental data sets, where missingness was engineered, are created and can be used to test the two retrieval methods: MICE and LLM.
