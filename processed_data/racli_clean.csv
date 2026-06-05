@@ -1,0 +1,1609 @@
+geo_code,geo_label,geo_level,nuts1_code,sex,year,indicator,value
+IT,Italia,country,NA,Male,2022,mean,15.4
+IT,Italia,country,NA,Female,2022,mean,13.88
+IT,Italia,country,NA,Total,2022,mean,14.78
+IT,Italia,country,NA,Male,2022,p10,8.56
+IT,Italia,country,NA,Female,2022,p10,8.26
+IT,Italia,country,NA,Total,2022,p10,8.42
+IT,Italia,country,NA,Male,2022,median,12.15
+IT,Italia,country,NA,Female,2022,median,11.25
+IT,Italia,country,NA,Total,2022,median,11.75
+IT,Italia,country,NA,Male,2022,p90,23.4
+IT,Italia,country,NA,Female,2022,p90,19.92
+IT,Italia,country,NA,Total,2022,p90,21.98
+ITC,Nord-ovest,nuts1,ITC,Male,2022,mean,17.12
+ITC,Nord-ovest,nuts1,ITC,Female,2022,mean,14.88
+ITC,Nord-ovest,nuts1,ITC,Total,2022,mean,16.18
+ITC,Nord-ovest,nuts1,ITC,Male,2022,p10,8.87
+ITC,Nord-ovest,nuts1,ITC,Female,2022,p10,8.43
+ITC,Nord-ovest,nuts1,ITC,Total,2022,p10,8.66
+ITC,Nord-ovest,nuts1,ITC,Male,2022,median,12.96
+ITC,Nord-ovest,nuts1,ITC,Female,2022,median,11.74
+ITC,Nord-ovest,nuts1,ITC,Total,2022,median,12.41
+ITC,Nord-ovest,nuts1,ITC,Male,2022,p90,26.9
+ITC,Nord-ovest,nuts1,ITC,Female,2022,p90,22.25
+ITC,Nord-ovest,nuts1,ITC,Total,2022,p90,24.96
+ITC1,Piemonte,nuts2,ITC,Male,2022,mean,15.84
+ITC1,Piemonte,nuts2,ITC,Female,2022,mean,13.9
+ITC1,Piemonte,nuts2,ITC,Total,2022,mean,15
+ITC1,Piemonte,nuts2,ITC,Male,2022,p10,9
+ITC1,Piemonte,nuts2,ITC,Female,2022,p10,8.45
+ITC1,Piemonte,nuts2,ITC,Total,2022,p10,8.73
+ITC1,Piemonte,nuts2,ITC,Male,2022,median,12.8
+ITC1,Piemonte,nuts2,ITC,Female,2022,median,11.55
+ITC1,Piemonte,nuts2,ITC,Total,2022,median,12.21
+ITC1,Piemonte,nuts2,ITC,Male,2022,p90,23.87
+ITC1,Piemonte,nuts2,ITC,Female,2022,p90,19.71
+ITC1,Piemonte,nuts2,ITC,Total,2022,p90,22.12
+ITC11,Torino,nuts3,ITC,Male,2022,mean,16.46
+ITC11,Torino,nuts3,ITC,Female,2022,mean,14.24
+ITC11,Torino,nuts3,ITC,Total,2022,mean,15.5
+ITC11,Torino,nuts3,ITC,Male,2022,p10,8.97
+ITC11,Torino,nuts3,ITC,Female,2022,p10,8.34
+ITC11,Torino,nuts3,ITC,Total,2022,p10,8.67
+ITC11,Torino,nuts3,ITC,Male,2022,median,13.03
+ITC11,Torino,nuts3,ITC,Female,2022,median,11.65
+ITC11,Torino,nuts3,ITC,Total,2022,median,12.37
+ITC11,Torino,nuts3,ITC,Male,2022,p90,25.5
+ITC11,Torino,nuts3,ITC,Female,2022,p90,20.77
+ITC11,Torino,nuts3,ITC,Total,2022,p90,23.56
+ITC12,Vercelli,nuts3,ITC,Male,2022,mean,15.53
+ITC12,Vercelli,nuts3,ITC,Female,2022,mean,13.96
+ITC12,Vercelli,nuts3,ITC,Total,2022,mean,14.82
+ITC12,Vercelli,nuts3,ITC,Male,2022,p10,9.13
+ITC12,Vercelli,nuts3,ITC,Female,2022,p10,8.63
+ITC12,Vercelli,nuts3,ITC,Total,2022,p10,8.88
+ITC12,Vercelli,nuts3,ITC,Male,2022,median,12.62
+ITC12,Vercelli,nuts3,ITC,Female,2022,median,11.76
+ITC12,Vercelli,nuts3,ITC,Total,2022,median,12.21
+ITC12,Vercelli,nuts3,ITC,Male,2022,p90,22.31
+ITC12,Vercelli,nuts3,ITC,Female,2022,p90,19.17
+ITC12,Vercelli,nuts3,ITC,Total,2022,p90,20.93
+ITC15,Novara,nuts3,ITC,Male,2022,mean,15.61
+ITC15,Novara,nuts3,ITC,Female,2022,mean,13.82
+ITC15,Novara,nuts3,ITC,Total,2022,mean,14.85
+ITC15,Novara,nuts3,ITC,Male,2022,p10,9.16
+ITC15,Novara,nuts3,ITC,Female,2022,p10,8.61
+ITC15,Novara,nuts3,ITC,Total,2022,p10,8.89
+ITC15,Novara,nuts3,ITC,Male,2022,median,12.72
+ITC15,Novara,nuts3,ITC,Female,2022,median,11.61
+ITC15,Novara,nuts3,ITC,Total,2022,median,12.21
+ITC15,Novara,nuts3,ITC,Male,2022,p90,22.92
+ITC15,Novara,nuts3,ITC,Female,2022,p90,19.14
+ITC15,Novara,nuts3,ITC,Total,2022,p90,21.3
+ITC16,Cuneo,nuts3,ITC,Male,2022,mean,14.99
+ITC16,Cuneo,nuts3,ITC,Female,2022,mean,13.31
+ITC16,Cuneo,nuts3,ITC,Total,2022,mean,14.26
+ITC16,Cuneo,nuts3,ITC,Male,2022,p10,8.98
+ITC16,Cuneo,nuts3,ITC,Female,2022,p10,8.38
+ITC16,Cuneo,nuts3,ITC,Total,2022,p10,8.65
+ITC16,Cuneo,nuts3,ITC,Male,2022,median,12.63
+ITC16,Cuneo,nuts3,ITC,Female,2022,median,11.33
+ITC16,Cuneo,nuts3,ITC,Total,2022,median,12.02
+ITC16,Cuneo,nuts3,ITC,Male,2022,p90,21.47
+ITC16,Cuneo,nuts3,ITC,Female,2022,p90,18.07
+ITC16,Cuneo,nuts3,ITC,Total,2022,p90,20.14
+ITC17,Asti,nuts3,ITC,Male,2022,mean,14.58
+ITC17,Asti,nuts3,ITC,Female,2022,mean,13.57
+ITC17,Asti,nuts3,ITC,Total,2022,mean,14.15
+ITC17,Asti,nuts3,ITC,Male,2022,p10,8.9
+ITC17,Asti,nuts3,ITC,Female,2022,p10,8.74
+ITC17,Asti,nuts3,ITC,Total,2022,p10,8.82
+ITC17,Asti,nuts3,ITC,Male,2022,median,12.38
+ITC17,Asti,nuts3,ITC,Female,2022,median,11.56
+ITC17,Asti,nuts3,ITC,Total,2022,median,11.99
+ITC17,Asti,nuts3,ITC,Male,2022,p90,20.72
+ITC17,Asti,nuts3,ITC,Female,2022,p90,18.84
+ITC17,Asti,nuts3,ITC,Total,2022,p90,20.01
+ITC18,Alessandria,nuts3,ITC,Male,2022,mean,15.2
+ITC18,Alessandria,nuts3,ITC,Female,2022,mean,13.41
+ITC18,Alessandria,nuts3,ITC,Total,2022,mean,14.46
+ITC18,Alessandria,nuts3,ITC,Male,2022,p10,9.05
+ITC18,Alessandria,nuts3,ITC,Female,2022,p10,8.65
+ITC18,Alessandria,nuts3,ITC,Total,2022,p10,8.86
+ITC18,Alessandria,nuts3,ITC,Male,2022,median,12.7
+ITC18,Alessandria,nuts3,ITC,Female,2022,median,11.48
+ITC18,Alessandria,nuts3,ITC,Total,2022,median,12.14
+ITC18,Alessandria,nuts3,ITC,Male,2022,p90,22.28
+ITC18,Alessandria,nuts3,ITC,Female,2022,p90,18.4
+ITC18,Alessandria,nuts3,ITC,Total,2022,p90,20.81
+ITC13,Biella,nuts3,ITC,Male,2022,mean,15.42
+ITC13,Biella,nuts3,ITC,Female,2022,mean,13.89
+ITC13,Biella,nuts3,ITC,Total,2022,mean,14.69
+ITC13,Biella,nuts3,ITC,Male,2022,p10,9.11
+ITC13,Biella,nuts3,ITC,Female,2022,p10,8.83
+ITC13,Biella,nuts3,ITC,Total,2022,p10,8.97
+ITC13,Biella,nuts3,ITC,Male,2022,median,12.49
+ITC13,Biella,nuts3,ITC,Female,2022,median,11.61
+ITC13,Biella,nuts3,ITC,Total,2022,median,12.03
+ITC13,Biella,nuts3,ITC,Male,2022,p90,22.62
+ITC13,Biella,nuts3,ITC,Female,2022,p90,19.23
+ITC13,Biella,nuts3,ITC,Total,2022,p90,20.96
+ITC14,Verbano-Cusio-Ossola,nuts3,ITC,Male,2022,mean,13.84
+ITC14,Verbano-Cusio-Ossola,nuts3,ITC,Female,2022,mean,12.76
+ITC14,Verbano-Cusio-Ossola,nuts3,ITC,Total,2022,mean,13.34
+ITC14,Verbano-Cusio-Ossola,nuts3,ITC,Male,2022,p10,8.95
+ITC14,Verbano-Cusio-Ossola,nuts3,ITC,Female,2022,p10,8.65
+ITC14,Verbano-Cusio-Ossola,nuts3,ITC,Total,2022,p10,8.79
+ITC14,Verbano-Cusio-Ossola,nuts3,ITC,Male,2022,median,11.93
+ITC14,Verbano-Cusio-Ossola,nuts3,ITC,Female,2022,median,10.93
+ITC14,Verbano-Cusio-Ossola,nuts3,ITC,Total,2022,median,11.39
+ITC14,Verbano-Cusio-Ossola,nuts3,ITC,Male,2022,p90,19.79
+ITC14,Verbano-Cusio-Ossola,nuts3,ITC,Female,2022,p90,16.55
+ITC14,Verbano-Cusio-Ossola,nuts3,ITC,Total,2022,p90,18.51
+ITC2,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts2,ITC,Male,2022,mean,13.96
+ITC2,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts2,ITC,Female,2022,mean,12.6
+ITC2,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts2,ITC,Total,2022,mean,13.34
+ITC2,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts2,ITC,Male,2022,p10,8.97
+ITC2,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts2,ITC,Female,2022,p10,8.55
+ITC2,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts2,ITC,Total,2022,p10,8.77
+ITC2,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts2,ITC,Male,2022,median,12.09
+ITC2,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts2,ITC,Female,2022,median,11
+ITC2,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts2,ITC,Total,2022,median,11.5
+ITC2,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts2,ITC,Male,2022,p90,20.14
+ITC2,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts2,ITC,Female,2022,p90,16.5
+ITC2,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts2,ITC,Total,2022,p90,18.75
+ITC20,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts3,ITC,Male,2022,mean,13.96
+ITC20,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts3,ITC,Female,2022,mean,12.6
+ITC20,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts3,ITC,Total,2022,mean,13.34
+ITC20,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts3,ITC,Male,2022,p10,8.97
+ITC20,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts3,ITC,Female,2022,p10,8.55
+ITC20,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts3,ITC,Total,2022,p10,8.77
+ITC20,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts3,ITC,Male,2022,median,12.09
+ITC20,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts3,ITC,Female,2022,median,11
+ITC20,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts3,ITC,Total,2022,median,11.5
+ITC20,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts3,ITC,Male,2022,p90,20.14
+ITC20,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts3,ITC,Female,2022,p90,16.5
+ITC20,"'Valle d""'Aosta / Vallée d""'Aoste'",nuts3,ITC,Total,2022,p90,18.75
+ITC3,Liguria,nuts2,ITC,Male,2022,mean,16.08
+ITC3,Liguria,nuts2,ITC,Female,2022,mean,13.59
+ITC3,Liguria,nuts2,ITC,Total,2022,mean,15.04
+ITC3,Liguria,nuts2,ITC,Male,2022,p10,8.71
+ITC3,Liguria,nuts2,ITC,Female,2022,p10,8.37
+ITC3,Liguria,nuts2,ITC,Total,2022,p10,8.54
+ITC3,Liguria,nuts2,ITC,Male,2022,median,12.42
+ITC3,Liguria,nuts2,ITC,Female,2022,median,11.16
+ITC3,Liguria,nuts2,ITC,Total,2022,median,11.8
+ITC3,Liguria,nuts2,ITC,Male,2022,p90,24.96
+ITC3,Liguria,nuts2,ITC,Female,2022,p90,19.39
+ITC3,Liguria,nuts2,ITC,Total,2022,p90,22.78
+ITC31,Imperia,nuts3,ITC,Male,2022,mean,12.87
+ITC31,Imperia,nuts3,ITC,Female,2022,mean,12.69
+ITC31,Imperia,nuts3,ITC,Total,2022,mean,12.79
+ITC31,Imperia,nuts3,ITC,Male,2022,p10,8.27
+ITC31,Imperia,nuts3,ITC,Female,2022,p10,8.29
+ITC31,Imperia,nuts3,ITC,Total,2022,p10,8.28
+ITC31,Imperia,nuts3,ITC,Male,2022,median,11.22
+ITC31,Imperia,nuts3,ITC,Female,2022,median,10.8
+ITC31,Imperia,nuts3,ITC,Total,2022,median,11.01
+ITC31,Imperia,nuts3,ITC,Male,2022,p90,17.48
+ITC31,Imperia,nuts3,ITC,Female,2022,p90,15.95
+ITC31,Imperia,nuts3,ITC,Total,2022,p90,16.79
+ITC32,Savona,nuts3,ITC,Male,2022,mean,14.62
+ITC32,Savona,nuts3,ITC,Female,2022,mean,12.79
+ITC32,Savona,nuts3,ITC,Total,2022,mean,13.85
+ITC32,Savona,nuts3,ITC,Male,2022,p10,8.7
+ITC32,Savona,nuts3,ITC,Female,2022,p10,8.5
+ITC32,Savona,nuts3,ITC,Total,2022,p10,8.61
+ITC32,Savona,nuts3,ITC,Male,2022,median,11.96
+ITC32,Savona,nuts3,ITC,Female,2022,median,10.91
+ITC32,Savona,nuts3,ITC,Total,2022,median,11.39
+ITC32,Savona,nuts3,ITC,Male,2022,p90,22.54
+ITC32,Savona,nuts3,ITC,Female,2022,p90,16.86
+ITC32,Savona,nuts3,ITC,Total,2022,p90,20.23
+ITC33,Genova,nuts3,ITC,Male,2022,mean,17.38
+ITC33,Genova,nuts3,ITC,Female,2022,mean,14.2
+ITC33,Genova,nuts3,ITC,Total,2022,mean,16.08
+ITC33,Genova,nuts3,ITC,Male,2022,p10,8.85
+ITC33,Genova,nuts3,ITC,Female,2022,p10,8.31
+ITC33,Genova,nuts3,ITC,Total,2022,p10,8.59
+ITC33,Genova,nuts3,ITC,Male,2022,median,13.07
+ITC33,Genova,nuts3,ITC,Female,2022,median,11.44
+ITC33,Genova,nuts3,ITC,Total,2022,median,12.29
+ITC33,Genova,nuts3,ITC,Male,2022,p90,27.46
+ITC33,Genova,nuts3,ITC,Female,2022,p90,21.07
+ITC33,Genova,nuts3,ITC,Total,2022,p90,24.89
+ITC34,La Spezia,nuts3,ITC,Male,2022,mean,14.77
+ITC34,La Spezia,nuts3,ITC,Female,2022,mean,12.9
+ITC34,La Spezia,nuts3,ITC,Total,2022,mean,13.99
+ITC34,La Spezia,nuts3,ITC,Male,2022,p10,8.57
+ITC34,La Spezia,nuts3,ITC,Female,2022,p10,8.45
+ITC34,La Spezia,nuts3,ITC,Total,2022,p10,8.5
+ITC34,La Spezia,nuts3,ITC,Male,2022,median,11.96
+ITC34,La Spezia,nuts3,ITC,Female,2022,median,10.99
+ITC34,La Spezia,nuts3,ITC,Total,2022,median,11.46
+ITC34,La Spezia,nuts3,ITC,Male,2022,p90,21.34
+ITC34,La Spezia,nuts3,ITC,Female,2022,p90,17.33
+ITC34,La Spezia,nuts3,ITC,Total,2022,p90,19.83
+ITC4,Lombardia,nuts2,ITC,Male,2022,mean,17.69
+ITC4,Lombardia,nuts2,ITC,Female,2022,mean,15.4
+ITC4,Lombardia,nuts2,ITC,Total,2022,mean,16.73
+ITC4,Lombardia,nuts2,ITC,Male,2022,p10,8.83
+ITC4,Lombardia,nuts2,ITC,Female,2022,p10,8.44
+ITC4,Lombardia,nuts2,ITC,Total,2022,p10,8.64
+ITC4,Lombardia,nuts2,ITC,Male,2022,median,13.09
+ITC4,Lombardia,nuts2,ITC,Female,2022,median,11.91
+ITC4,Lombardia,nuts2,ITC,Total,2022,median,12.57
+ITC4,Lombardia,nuts2,ITC,Male,2022,p90,28.31
+ITC4,Lombardia,nuts2,ITC,Female,2022,p90,23.58
+ITC4,Lombardia,nuts2,ITC,Total,2022,p90,26.31
+ITC41,Varese,nuts3,ITC,Male,2022,mean,16.6
+ITC41,Varese,nuts3,ITC,Female,2022,mean,14.1
+ITC41,Varese,nuts3,ITC,Total,2022,mean,15.54
+ITC41,Varese,nuts3,ITC,Male,2022,p10,9.3
+ITC41,Varese,nuts3,ITC,Female,2022,p10,8.4
+ITC41,Varese,nuts3,ITC,Total,2022,p10,8.87
+ITC41,Varese,nuts3,ITC,Male,2022,median,13.29
+ITC41,Varese,nuts3,ITC,Female,2022,median,11.6
+ITC41,Varese,nuts3,ITC,Total,2022,median,12.5
+ITC41,Varese,nuts3,ITC,Male,2022,p90,25.21
+ITC41,Varese,nuts3,ITC,Female,2022,p90,20.2
+ITC41,Varese,nuts3,ITC,Total,2022,p90,23.18
+ITC42,Como,nuts3,ITC,Male,2022,mean,15.27
+ITC42,Como,nuts3,ITC,Female,2022,mean,13.68
+ITC42,Como,nuts3,ITC,Total,2022,mean,14.61
+ITC42,Como,nuts3,ITC,Male,2022,p10,8.48
+ITC42,Como,nuts3,ITC,Female,2022,p10,8.27
+ITC42,Como,nuts3,ITC,Total,2022,p10,8.38
+ITC42,Como,nuts3,ITC,Male,2022,median,12.43
+ITC42,Como,nuts3,ITC,Female,2022,median,11.49
+ITC42,Como,nuts3,ITC,Total,2022,median,12
+ITC42,Como,nuts3,ITC,Male,2022,p90,22.55
+ITC42,Como,nuts3,ITC,Female,2022,p90,19.21
+ITC42,Como,nuts3,ITC,Total,2022,p90,21.12
+ITC44,Sondrio,nuts3,ITC,Male,2022,mean,14.59
+ITC44,Sondrio,nuts3,ITC,Female,2022,mean,13
+ITC44,Sondrio,nuts3,ITC,Total,2022,mean,13.89
+ITC44,Sondrio,nuts3,ITC,Male,2022,p10,9.57
+ITC44,Sondrio,nuts3,ITC,Female,2022,p10,9.06
+ITC44,Sondrio,nuts3,ITC,Total,2022,p10,9.32
+ITC44,Sondrio,nuts3,ITC,Male,2022,median,12.62
+ITC44,Sondrio,nuts3,ITC,Female,2022,median,11.38
+ITC44,Sondrio,nuts3,ITC,Total,2022,median,11.99
+ITC44,Sondrio,nuts3,ITC,Male,2022,p90,20.62
+ITC44,Sondrio,nuts3,ITC,Female,2022,p90,16.6
+ITC44,Sondrio,nuts3,ITC,Total,2022,p90,19.04
+ITC45,Milano,nuts3,ITC,Male,2022,mean,20.14
+ITC45,Milano,nuts3,ITC,Female,2022,mean,17.25
+ITC45,Milano,nuts3,ITC,Total,2022,mean,18.92
+ITC45,Milano,nuts3,ITC,Male,2022,p10,8.57
+ITC45,Milano,nuts3,ITC,Female,2022,p10,8.32
+ITC45,Milano,nuts3,ITC,Total,2022,p10,8.44
+ITC45,Milano,nuts3,ITC,Male,2022,median,13.5
+ITC45,Milano,nuts3,ITC,Female,2022,median,12.72
+ITC45,Milano,nuts3,ITC,Total,2022,median,13.16
+ITC45,Milano,nuts3,ITC,Male,2022,p90,34.83
+ITC45,Milano,nuts3,ITC,Female,2022,p90,28.13
+ITC45,Milano,nuts3,ITC,Total,2022,p90,31.81
+ITC46,Bergamo,nuts3,ITC,Male,2022,mean,15.77
+ITC46,Bergamo,nuts3,ITC,Female,2022,mean,14.03
+ITC46,Bergamo,nuts3,ITC,Total,2022,mean,15.08
+ITC46,Bergamo,nuts3,ITC,Male,2022,p10,9.23
+ITC46,Bergamo,nuts3,ITC,Female,2022,p10,8.67
+ITC46,Bergamo,nuts3,ITC,Total,2022,p10,8.97
+ITC46,Bergamo,nuts3,ITC,Male,2022,median,13.04
+ITC46,Bergamo,nuts3,ITC,Female,2022,median,11.61
+ITC46,Bergamo,nuts3,ITC,Total,2022,median,12.43
+ITC46,Bergamo,nuts3,ITC,Male,2022,p90,23.18
+ITC46,Bergamo,nuts3,ITC,Female,2022,p90,19.41
+ITC46,Bergamo,nuts3,ITC,Total,2022,p90,21.82
+ITC47,Brescia,nuts3,ITC,Male,2022,mean,15.03
+ITC47,Brescia,nuts3,ITC,Female,2022,mean,13.49
+ITC47,Brescia,nuts3,ITC,Total,2022,mean,14.42
+ITC47,Brescia,nuts3,ITC,Male,2022,p10,9
+ITC47,Brescia,nuts3,ITC,Female,2022,p10,8.63
+ITC47,Brescia,nuts3,ITC,Total,2022,p10,8.82
+ITC47,Brescia,nuts3,ITC,Male,2022,median,12.58
+ITC47,Brescia,nuts3,ITC,Female,2022,median,11.31
+ITC47,Brescia,nuts3,ITC,Total,2022,median,12.01
+ITC47,Brescia,nuts3,ITC,Male,2022,p90,22.02
+ITC47,Brescia,nuts3,ITC,Female,2022,p90,18.28
+ITC47,Brescia,nuts3,ITC,Total,2022,p90,20.69
+ITC48,Pavia,nuts3,ITC,Male,2022,mean,14.37
+ITC48,Pavia,nuts3,ITC,Female,2022,mean,13.23
+ITC48,Pavia,nuts3,ITC,Total,2022,mean,13.88
+ITC48,Pavia,nuts3,ITC,Male,2022,p10,8.81
+ITC48,Pavia,nuts3,ITC,Female,2022,p10,8.59
+ITC48,Pavia,nuts3,ITC,Total,2022,p10,8.71
+ITC48,Pavia,nuts3,ITC,Male,2022,median,12.16
+ITC48,Pavia,nuts3,ITC,Female,2022,median,11.29
+ITC48,Pavia,nuts3,ITC,Total,2022,median,11.76
+ITC48,Pavia,nuts3,ITC,Male,2022,p90,20.65
+ITC48,Pavia,nuts3,ITC,Female,2022,p90,17.69
+ITC48,Pavia,nuts3,ITC,Total,2022,p90,19.45
+ITC4A,Cremona,nuts3,ITC,Male,2022,mean,15.65
+ITC4A,Cremona,nuts3,ITC,Female,2022,mean,13.34
+ITC4A,Cremona,nuts3,ITC,Total,2022,mean,14.66
+ITC4A,Cremona,nuts3,ITC,Male,2022,p10,9.24
+ITC4A,Cremona,nuts3,ITC,Female,2022,p10,8.38
+ITC4A,Cremona,nuts3,ITC,Total,2022,p10,8.76
+ITC4A,Cremona,nuts3,ITC,Male,2022,median,13.01
+ITC4A,Cremona,nuts3,ITC,Female,2022,median,11.29
+ITC4A,Cremona,nuts3,ITC,Total,2022,median,12.22
+ITC4A,Cremona,nuts3,ITC,Male,2022,p90,22.16
+ITC4A,Cremona,nuts3,ITC,Female,2022,p90,18.17
+ITC4A,Cremona,nuts3,ITC,Total,2022,p90,20.66
+ITC4B,Mantova,nuts3,ITC,Male,2022,mean,15
+ITC4B,Mantova,nuts3,ITC,Female,2022,mean,12.99
+ITC4B,Mantova,nuts3,ITC,Total,2022,mean,14.11
+ITC4B,Mantova,nuts3,ITC,Male,2022,p10,8.96
+ITC4B,Mantova,nuts3,ITC,Female,2022,p10,8.33
+ITC4B,Mantova,nuts3,ITC,Total,2022,p10,8.5
+ITC4B,Mantova,nuts3,ITC,Male,2022,median,12.72
+ITC4B,Mantova,nuts3,ITC,Female,2022,median,11.16
+ITC4B,Mantova,nuts3,ITC,Total,2022,median,11.93
+ITC4B,Mantova,nuts3,ITC,Male,2022,p90,21.87
+ITC4B,Mantova,nuts3,ITC,Female,2022,p90,17.5
+ITC4B,Mantova,nuts3,ITC,Total,2022,p90,20.12
+ITC43,Lecco,nuts3,ITC,Male,2022,mean,16.21
+ITC43,Lecco,nuts3,ITC,Female,2022,mean,13.91
+ITC43,Lecco,nuts3,ITC,Total,2022,mean,15.31
+ITC43,Lecco,nuts3,ITC,Male,2022,p10,9.58
+ITC43,Lecco,nuts3,ITC,Female,2022,p10,8.84
+ITC43,Lecco,nuts3,ITC,Total,2022,p10,9.25
+ITC43,Lecco,nuts3,ITC,Male,2022,median,13.65
+ITC43,Lecco,nuts3,ITC,Female,2022,median,11.75
+ITC43,Lecco,nuts3,ITC,Total,2022,median,12.83
+ITC43,Lecco,nuts3,ITC,Male,2022,p90,23.92
+ITC43,Lecco,nuts3,ITC,Female,2022,p90,18.94
+ITC43,Lecco,nuts3,ITC,Total,2022,p90,22.18
+ITC49,Lodi,nuts3,ITC,Male,2022,mean,15.46
+ITC49,Lodi,nuts3,ITC,Female,2022,mean,13.77
+ITC49,Lodi,nuts3,ITC,Total,2022,mean,14.77
+ITC49,Lodi,nuts3,ITC,Male,2022,p10,9.16
+ITC49,Lodi,nuts3,ITC,Female,2022,p10,8.81
+ITC49,Lodi,nuts3,ITC,Total,2022,p10,8.99
+ITC49,Lodi,nuts3,ITC,Male,2022,median,12.81
+ITC49,Lodi,nuts3,ITC,Female,2022,median,11.79
+ITC49,Lodi,nuts3,ITC,Total,2022,median,12.36
+ITC49,Lodi,nuts3,ITC,Male,2022,p90,23.17
+ITC49,Lodi,nuts3,ITC,Female,2022,p90,19.38
+ITC49,Lodi,nuts3,ITC,Total,2022,p90,21.65
+IT108,Monza e della Brianza,nuts3,IT1,Male,2022,mean,17.21
+IT108,Monza e della Brianza,nuts3,IT1,Female,2022,mean,14.92
+IT108,Monza e della Brianza,nuts3,IT1,Total,2022,mean,16.31
+IT108,Monza e della Brianza,nuts3,IT1,Male,2022,p10,8.76
+IT108,Monza e della Brianza,nuts3,IT1,Female,2022,p10,8.53
+IT108,Monza e della Brianza,nuts3,IT1,Total,2022,p10,8.66
+IT108,Monza e della Brianza,nuts3,IT1,Male,2022,median,13.14
+IT108,Monza e della Brianza,nuts3,IT1,Female,2022,median,11.93
+IT108,Monza e della Brianza,nuts3,IT1,Total,2022,median,12.63
+IT108,Monza e della Brianza,nuts3,IT1,Male,2022,p90,27.47
+IT108,Monza e della Brianza,nuts3,IT1,Female,2022,p90,22.17
+IT108,Monza e della Brianza,nuts3,IT1,Total,2022,p90,25.36
+ITD,Nord-est,nuts1,ITD,Male,2022,mean,15.64
+ITD,Nord-est,nuts1,ITD,Female,2022,mean,13.81
+ITD,Nord-est,nuts1,ITD,Total,2022,mean,14.85
+ITD,Nord-est,nuts1,ITD,Male,2022,p10,9.12
+ITD,Nord-est,nuts1,ITD,Female,2022,p10,8.7
+ITD,Nord-est,nuts1,ITD,Total,2022,p10,8.91
+ITD,Nord-est,nuts1,ITD,Male,2022,median,12.77
+ITD,Nord-est,nuts1,ITD,Female,2022,median,11.54
+ITD,Nord-est,nuts1,ITD,Total,2022,median,12.18
+ITD,Nord-est,nuts1,ITD,Male,2022,p90,23.34
+ITD,Nord-est,nuts1,ITD,Female,2022,p90,19.03
+ITD,Nord-est,nuts1,ITD,Total,2022,p90,21.54
+ITD1,Provincia Autonoma Bolzano / Bozen,nuts2,ITD,Male,2022,mean,16.99
+ITD1,Provincia Autonoma Bolzano / Bozen,nuts2,ITD,Female,2022,mean,15.54
+ITD1,Provincia Autonoma Bolzano / Bozen,nuts2,ITD,Total,2022,mean,16.37
+ITD1,Provincia Autonoma Bolzano / Bozen,nuts2,ITD,Male,2022,p10,9.98
+ITD1,Provincia Autonoma Bolzano / Bozen,nuts2,ITD,Female,2022,p10,10
+ITD1,Provincia Autonoma Bolzano / Bozen,nuts2,ITD,Total,2022,p10,9.99
+ITD1,Provincia Autonoma Bolzano / Bozen,nuts2,ITD,Male,2022,median,14.21
+ITD1,Provincia Autonoma Bolzano / Bozen,nuts2,ITD,Female,2022,median,13.07
+ITD1,Provincia Autonoma Bolzano / Bozen,nuts2,ITD,Total,2022,median,13.63
+ITD1,Provincia Autonoma Bolzano / Bozen,nuts2,ITD,Male,2022,p90,25.7
+ITD1,Provincia Autonoma Bolzano / Bozen,nuts2,ITD,Female,2022,p90,21.03
+ITD1,Provincia Autonoma Bolzano / Bozen,nuts2,ITD,Total,2022,p90,23.83
+ITD10,Bolzano / Bozen,nuts3,ITD,Male,2022,mean,16.99
+ITD10,Bolzano / Bozen,nuts3,ITD,Female,2022,mean,15.54
+ITD10,Bolzano / Bozen,nuts3,ITD,Total,2022,mean,16.37
+ITD10,Bolzano / Bozen,nuts3,ITD,Male,2022,p10,9.98
+ITD10,Bolzano / Bozen,nuts3,ITD,Female,2022,p10,10
+ITD10,Bolzano / Bozen,nuts3,ITD,Total,2022,p10,9.99
+ITD10,Bolzano / Bozen,nuts3,ITD,Male,2022,median,14.21
+ITD10,Bolzano / Bozen,nuts3,ITD,Female,2022,median,13.07
+ITD10,Bolzano / Bozen,nuts3,ITD,Total,2022,median,13.63
+ITD10,Bolzano / Bozen,nuts3,ITD,Male,2022,p90,25.7
+ITD10,Bolzano / Bozen,nuts3,ITD,Female,2022,p90,21.03
+ITD10,Bolzano / Bozen,nuts3,ITD,Total,2022,p90,23.83
+ITD2,Provincia Autonoma Trento,nuts2,ITD,Male,2022,mean,14.77
+ITD2,Provincia Autonoma Trento,nuts2,ITD,Female,2022,mean,13.03
+ITD2,Provincia Autonoma Trento,nuts2,ITD,Total,2022,mean,13.99
+ITD2,Provincia Autonoma Trento,nuts2,ITD,Male,2022,p10,9.07
+ITD2,Provincia Autonoma Trento,nuts2,ITD,Female,2022,p10,8.78
+ITD2,Provincia Autonoma Trento,nuts2,ITD,Total,2022,p10,8.93
+ITD2,Provincia Autonoma Trento,nuts2,ITD,Male,2022,median,12.59
+ITD2,Provincia Autonoma Trento,nuts2,ITD,Female,2022,median,11.35
+ITD2,Provincia Autonoma Trento,nuts2,ITD,Total,2022,median,11.92
+ITD2,Provincia Autonoma Trento,nuts2,ITD,Male,2022,p90,21.51
+ITD2,Provincia Autonoma Trento,nuts2,ITD,Female,2022,p90,17.17
+ITD2,Provincia Autonoma Trento,nuts2,ITD,Total,2022,p90,19.77
+ITD20,Trento,nuts3,ITD,Male,2022,mean,14.77
+ITD20,Trento,nuts3,ITD,Female,2022,mean,13.03
+ITD20,Trento,nuts3,ITD,Total,2022,mean,13.99
+ITD20,Trento,nuts3,ITD,Male,2022,p10,9.07
+ITD20,Trento,nuts3,ITD,Female,2022,p10,8.78
+ITD20,Trento,nuts3,ITD,Total,2022,p10,8.93
+ITD20,Trento,nuts3,ITD,Male,2022,median,12.59
+ITD20,Trento,nuts3,ITD,Female,2022,median,11.35
+ITD20,Trento,nuts3,ITD,Total,2022,median,11.92
+ITD20,Trento,nuts3,ITD,Male,2022,p90,21.51
+ITD20,Trento,nuts3,ITD,Female,2022,p90,17.17
+ITD20,Trento,nuts3,ITD,Total,2022,p90,19.77
+ITD3,Veneto,nuts2,ITD,Male,2022,mean,15.44
+ITD3,Veneto,nuts2,ITD,Female,2022,mean,13.7
+ITD3,Veneto,nuts2,ITD,Total,2022,mean,14.7
+ITD3,Veneto,nuts2,ITD,Male,2022,p10,9.18
+ITD3,Veneto,nuts2,ITD,Female,2022,p10,8.63
+ITD3,Veneto,nuts2,ITD,Total,2022,p10,8.9
+ITD3,Veneto,nuts2,ITD,Male,2022,median,12.69
+ITD3,Veneto,nuts2,ITD,Female,2022,median,11.39
+ITD3,Veneto,nuts2,ITD,Total,2022,median,12.07
+ITD3,Veneto,nuts2,ITD,Male,2022,p90,22.68
+ITD3,Veneto,nuts2,ITD,Female,2022,p90,18.64
+ITD3,Veneto,nuts2,ITD,Total,2022,p90,21.03
+ITD31,Verona,nuts3,ITD,Male,2022,mean,15.42
+ITD31,Verona,nuts3,ITD,Female,2022,mean,14
+ITD31,Verona,nuts3,ITD,Total,2022,mean,14.81
+ITD31,Verona,nuts3,ITD,Male,2022,p10,8.91
+ITD31,Verona,nuts3,ITD,Female,2022,p10,8.48
+ITD31,Verona,nuts3,ITD,Total,2022,p10,8.69
+ITD31,Verona,nuts3,ITD,Male,2022,median,12.53
+ITD31,Verona,nuts3,ITD,Female,2022,median,11.38
+ITD31,Verona,nuts3,ITD,Total,2022,median,11.99
+ITD31,Verona,nuts3,ITD,Male,2022,p90,22.73
+ITD31,Verona,nuts3,ITD,Female,2022,p90,19.38
+ITD31,Verona,nuts3,ITD,Total,2022,p90,21.34
+ITD32,Vicenza,nuts3,ITD,Male,2022,mean,15.62
+ITD32,Vicenza,nuts3,ITD,Female,2022,mean,13.6
+ITD32,Vicenza,nuts3,ITD,Total,2022,mean,14.8
+ITD32,Vicenza,nuts3,ITD,Male,2022,p10,9.37
+ITD32,Vicenza,nuts3,ITD,Female,2022,p10,8.68
+ITD32,Vicenza,nuts3,ITD,Total,2022,p10,9.03
+ITD32,Vicenza,nuts3,ITD,Male,2022,median,12.97
+ITD32,Vicenza,nuts3,ITD,Female,2022,median,11.34
+ITD32,Vicenza,nuts3,ITD,Total,2022,median,12.21
+ITD32,Vicenza,nuts3,ITD,Male,2022,p90,22.96
+ITD32,Vicenza,nuts3,ITD,Female,2022,p90,18.4
+ITD32,Vicenza,nuts3,ITD,Total,2022,p90,21.23
+ITD33,Belluno,nuts3,ITD,Male,2022,mean,15.36
+ITD33,Belluno,nuts3,ITD,Female,2022,mean,13.58
+ITD33,Belluno,nuts3,ITD,Total,2022,mean,14.51
+ITD33,Belluno,nuts3,ITD,Male,2022,p10,9.58
+ITD33,Belluno,nuts3,ITD,Female,2022,p10,9.2
+ITD33,Belluno,nuts3,ITD,Total,2022,p10,9.38
+ITD33,Belluno,nuts3,ITD,Male,2022,median,12.97
+ITD33,Belluno,nuts3,ITD,Female,2022,median,11.83
+ITD33,Belluno,nuts3,ITD,Total,2022,median,12.35
+ITD33,Belluno,nuts3,ITD,Male,2022,p90,21.16
+ITD33,Belluno,nuts3,ITD,Female,2022,p90,17.54
+ITD33,Belluno,nuts3,ITD,Total,2022,p90,19.51
+ITD34,Treviso,nuts3,ITD,Male,2022,mean,15.62
+ITD34,Treviso,nuts3,ITD,Female,2022,mean,13.77
+ITD34,Treviso,nuts3,ITD,Total,2022,mean,14.85
+ITD34,Treviso,nuts3,ITD,Male,2022,p10,9.38
+ITD34,Treviso,nuts3,ITD,Female,2022,p10,8.69
+ITD34,Treviso,nuts3,ITD,Total,2022,p10,9.01
+ITD34,Treviso,nuts3,ITD,Male,2022,median,12.91
+ITD34,Treviso,nuts3,ITD,Female,2022,median,11.47
+ITD34,Treviso,nuts3,ITD,Total,2022,median,12.26
+ITD34,Treviso,nuts3,ITD,Male,2022,p90,22.95
+ITD34,Treviso,nuts3,ITD,Female,2022,p90,18.74
+ITD34,Treviso,nuts3,ITD,Total,2022,p90,21.24
+ITD35,Venezia,nuts3,ITD,Male,2022,mean,15.29
+ITD35,Venezia,nuts3,ITD,Female,2022,mean,13.63
+ITD35,Venezia,nuts3,ITD,Total,2022,mean,14.56
+ITD35,Venezia,nuts3,ITD,Male,2022,p10,9.09
+ITD35,Venezia,nuts3,ITD,Female,2022,p10,8.75
+ITD35,Venezia,nuts3,ITD,Total,2022,p10,8.93
+ITD35,Venezia,nuts3,ITD,Male,2022,median,12.33
+ITD35,Venezia,nuts3,ITD,Female,2022,median,11.32
+ITD35,Venezia,nuts3,ITD,Total,2022,median,11.82
+ITD35,Venezia,nuts3,ITD,Male,2022,p90,22.53
+ITD35,Venezia,nuts3,ITD,Female,2022,p90,18.31
+ITD35,Venezia,nuts3,ITD,Total,2022,p90,20.78
+ITD36,Padova,nuts3,ITD,Male,2022,mean,15.57
+ITD36,Padova,nuts3,ITD,Female,2022,mean,13.71
+ITD36,Padova,nuts3,ITD,Total,2022,mean,14.8
+ITD36,Padova,nuts3,ITD,Male,2022,p10,9.22
+ITD36,Padova,nuts3,ITD,Female,2022,p10,8.52
+ITD36,Padova,nuts3,ITD,Total,2022,p10,8.87
+ITD36,Padova,nuts3,ITD,Male,2022,median,12.78
+ITD36,Padova,nuts3,ITD,Female,2022,median,11.4
+ITD36,Padova,nuts3,ITD,Total,2022,median,12.16
+ITD36,Padova,nuts3,ITD,Male,2022,p90,23.25
+ITD36,Padova,nuts3,ITD,Female,2022,p90,19.05
+ITD36,Padova,nuts3,ITD,Total,2022,p90,21.49
+ITD37,Rovigo,nuts3,ITD,Male,2022,mean,13.88
+ITD37,Rovigo,nuts3,ITD,Female,2022,mean,12.76
+ITD37,Rovigo,nuts3,ITD,Total,2022,mean,13.39
+ITD37,Rovigo,nuts3,ITD,Male,2022,p10,8.76
+ITD37,Rovigo,nuts3,ITD,Female,2022,p10,8.4
+ITD37,Rovigo,nuts3,ITD,Total,2022,p10,8.54
+ITD37,Rovigo,nuts3,ITD,Male,2022,median,12.08
+ITD37,Rovigo,nuts3,ITD,Female,2022,median,11.03
+ITD37,Rovigo,nuts3,ITD,Total,2022,median,11.6
+ITD37,Rovigo,nuts3,ITD,Male,2022,p90,19.35
+ITD37,Rovigo,nuts3,ITD,Female,2022,p90,16.66
+ITD37,Rovigo,nuts3,ITD,Total,2022,p90,18.27
+ITD4,Friuli-Venezia Giulia,nuts2,ITD,Male,2022,mean,15.31
+ITD4,Friuli-Venezia Giulia,nuts2,ITD,Female,2022,mean,13.38
+ITD4,Friuli-Venezia Giulia,nuts2,ITD,Total,2022,mean,14.49
+ITD4,Friuli-Venezia Giulia,nuts2,ITD,Male,2022,p10,9.05
+ITD4,Friuli-Venezia Giulia,nuts2,ITD,Female,2022,p10,8.65
+ITD4,Friuli-Venezia Giulia,nuts2,ITD,Total,2022,p10,8.85
+ITD4,Friuli-Venezia Giulia,nuts2,ITD,Male,2022,median,12.61
+ITD4,Friuli-Venezia Giulia,nuts2,ITD,Female,2022,median,11.32
+ITD4,Friuli-Venezia Giulia,nuts2,ITD,Total,2022,median,11.98
+ITD4,Friuli-Venezia Giulia,nuts2,ITD,Male,2022,p90,22.42
+ITD4,Friuli-Venezia Giulia,nuts2,ITD,Female,2022,p90,18.17
+ITD4,Friuli-Venezia Giulia,nuts2,ITD,Total,2022,p90,20.71
+ITD42,Udine,nuts3,ITD,Male,2022,mean,14.94
+ITD42,Udine,nuts3,ITD,Female,2022,mean,13.1
+ITD42,Udine,nuts3,ITD,Total,2022,mean,14.13
+ITD42,Udine,nuts3,ITD,Male,2022,p10,8.99
+ITD42,Udine,nuts3,ITD,Female,2022,p10,8.57
+ITD42,Udine,nuts3,ITD,Total,2022,p10,8.78
+ITD42,Udine,nuts3,ITD,Male,2022,median,12.48
+ITD42,Udine,nuts3,ITD,Female,2022,median,11.19
+ITD42,Udine,nuts3,ITD,Total,2022,median,11.83
+ITD42,Udine,nuts3,ITD,Male,2022,p90,21.64
+ITD42,Udine,nuts3,ITD,Female,2022,p90,17.47
+ITD42,Udine,nuts3,ITD,Total,2022,p90,19.97
+ITD43,Gorizia,nuts3,ITD,Male,2022,mean,13.81
+ITD43,Gorizia,nuts3,ITD,Female,2022,mean,12.88
+ITD43,Gorizia,nuts3,ITD,Total,2022,mean,13.47
+ITD43,Gorizia,nuts3,ITD,Male,2022,p10,8.62
+ITD43,Gorizia,nuts3,ITD,Female,2022,p10,8.53
+ITD43,Gorizia,nuts3,ITD,Total,2022,p10,8.59
+ITD43,Gorizia,nuts3,ITD,Male,2022,median,11.77
+ITD43,Gorizia,nuts3,ITD,Female,2022,median,11.17
+ITD43,Gorizia,nuts3,ITD,Total,2022,median,11.51
+ITD43,Gorizia,nuts3,ITD,Male,2022,p90,19.81
+ITD43,Gorizia,nuts3,ITD,Female,2022,p90,17.05
+ITD43,Gorizia,nuts3,ITD,Total,2022,p90,18.9
+ITD44,Trieste,nuts3,ITD,Male,2022,mean,17.06
+ITD44,Trieste,nuts3,ITD,Female,2022,mean,14.36
+ITD44,Trieste,nuts3,ITD,Total,2022,mean,15.88
+ITD44,Trieste,nuts3,ITD,Male,2022,p10,8.96
+ITD44,Trieste,nuts3,ITD,Female,2022,p10,8.58
+ITD44,Trieste,nuts3,ITD,Total,2022,p10,8.77
+ITD44,Trieste,nuts3,ITD,Male,2022,median,12.94
+ITD44,Trieste,nuts3,ITD,Female,2022,median,11.52
+ITD44,Trieste,nuts3,ITD,Total,2022,median,12.24
+ITD44,Trieste,nuts3,ITD,Male,2022,p90,26.86
+ITD44,Trieste,nuts3,ITD,Female,2022,p90,21.47
+ITD44,Trieste,nuts3,ITD,Total,2022,p90,24.45
+ITD41,Pordenone,nuts3,ITD,Male,2022,mean,15.5
+ITD41,Pordenone,nuts3,ITD,Female,2022,mean,13.4
+ITD41,Pordenone,nuts3,ITD,Total,2022,mean,14.61
+ITD41,Pordenone,nuts3,ITD,Male,2022,p10,9.57
+ITD41,Pordenone,nuts3,ITD,Female,2022,p10,8.9
+ITD41,Pordenone,nuts3,ITD,Total,2022,p10,9.24
+ITD41,Pordenone,nuts3,ITD,Male,2022,median,13.03
+ITD41,Pordenone,nuts3,ITD,Female,2022,median,11.5
+ITD41,Pordenone,nuts3,ITD,Total,2022,median,12.32
+ITD41,Pordenone,nuts3,ITD,Male,2022,p90,22.09
+ITD41,Pordenone,nuts3,ITD,Female,2022,p90,17.59
+ITD41,Pordenone,nuts3,ITD,Total,2022,p90,20.27
+ITD5,Emilia-Romagna,nuts2,ITD,Male,2022,mean,15.83
+ITD5,Emilia-Romagna,nuts2,ITD,Female,2022,mean,13.88
+ITD5,Emilia-Romagna,nuts2,ITD,Total,2022,mean,14.98
+ITD5,Emilia-Romagna,nuts2,ITD,Male,2022,p10,9
+ITD5,Emilia-Romagna,nuts2,ITD,Female,2022,p10,8.67
+ITD5,Emilia-Romagna,nuts2,ITD,Total,2022,p10,8.84
+ITD5,Emilia-Romagna,nuts2,ITD,Male,2022,median,12.69
+ITD5,Emilia-Romagna,nuts2,ITD,Female,2022,median,11.54
+ITD5,Emilia-Romagna,nuts2,ITD,Total,2022,median,12.13
+ITD5,Emilia-Romagna,nuts2,ITD,Male,2022,p90,24.04
+ITD5,Emilia-Romagna,nuts2,ITD,Female,2022,p90,19.46
+ITD5,Emilia-Romagna,nuts2,ITD,Total,2022,p90,22.08
+ITD51,Piacenza,nuts3,ITD,Male,2022,mean,14.95
+ITD51,Piacenza,nuts3,ITD,Female,2022,mean,13.41
+ITD51,Piacenza,nuts3,ITD,Total,2022,mean,14.32
+ITD51,Piacenza,nuts3,ITD,Male,2022,p10,9.17
+ITD51,Piacenza,nuts3,ITD,Female,2022,p10,8.75
+ITD51,Piacenza,nuts3,ITD,Total,2022,p10,8.97
+ITD51,Piacenza,nuts3,ITD,Male,2022,median,12.6
+ITD51,Piacenza,nuts3,ITD,Female,2022,median,11.37
+ITD51,Piacenza,nuts3,ITD,Total,2022,median,12.03
+ITD51,Piacenza,nuts3,ITD,Male,2022,p90,21.87
+ITD51,Piacenza,nuts3,ITD,Female,2022,p90,18.27
+ITD51,Piacenza,nuts3,ITD,Total,2022,p90,20.45
+ITD52,Parma,nuts3,ITD,Male,2022,mean,16.82
+ITD52,Parma,nuts3,ITD,Female,2022,mean,14.46
+ITD52,Parma,nuts3,ITD,Total,2022,mean,15.81
+ITD52,Parma,nuts3,ITD,Male,2022,p10,9.18
+ITD52,Parma,nuts3,ITD,Female,2022,p10,8.81
+ITD52,Parma,nuts3,ITD,Total,2022,p10,9
+ITD52,Parma,nuts3,ITD,Male,2022,median,13.25
+ITD52,Parma,nuts3,ITD,Female,2022,median,11.86
+ITD52,Parma,nuts3,ITD,Total,2022,median,12.58
+ITD52,Parma,nuts3,ITD,Male,2022,p90,26.29
+ITD52,Parma,nuts3,ITD,Female,2022,p90,20.6
+ITD52,Parma,nuts3,ITD,Total,2022,p90,23.87
+ITD53,"'Reggio nell""'Emilia'",nuts3,ITD,Male,2022,mean,16.57
+ITD53,"'Reggio nell""'Emilia'",nuts3,ITD,Female,2022,mean,14.32
+ITD53,"'Reggio nell""'Emilia'",nuts3,ITD,Total,2022,mean,15.64
+ITD53,"'Reggio nell""'Emilia'",nuts3,ITD,Male,2022,p10,9.15
+ITD53,"'Reggio nell""'Emilia'",nuts3,ITD,Female,2022,p10,8.8
+ITD53,"'Reggio nell""'Emilia'",nuts3,ITD,Total,2022,p10,8.98
+ITD53,"'Reggio nell""'Emilia'",nuts3,ITD,Male,2022,median,13.56
+ITD53,"'Reggio nell""'Emilia'",nuts3,ITD,Female,2022,median,11.94
+ITD53,"'Reggio nell""'Emilia'",nuts3,ITD,Total,2022,median,12.81
+ITD53,"'Reggio nell""'Emilia'",nuts3,ITD,Male,2022,p90,25.23
+ITD53,"'Reggio nell""'Emilia'",nuts3,ITD,Female,2022,p90,20.38
+ITD53,"'Reggio nell""'Emilia'",nuts3,ITD,Total,2022,p90,23.23
+ITD54,Modena,nuts3,ITD,Male,2022,mean,16.41
+ITD54,Modena,nuts3,ITD,Female,2022,mean,14.34
+ITD54,Modena,nuts3,ITD,Total,2022,mean,15.55
+ITD54,Modena,nuts3,ITD,Male,2022,p10,9.04
+ITD54,Modena,nuts3,ITD,Female,2022,p10,8.8
+ITD54,Modena,nuts3,ITD,Total,2022,p10,8.92
+ITD54,Modena,nuts3,ITD,Male,2022,median,13.07
+ITD54,Modena,nuts3,ITD,Female,2022,median,11.85
+ITD54,Modena,nuts3,ITD,Total,2022,median,12.52
+ITD54,Modena,nuts3,ITD,Male,2022,p90,25.03
+ITD54,Modena,nuts3,ITD,Female,2022,p90,20.25
+ITD54,Modena,nuts3,ITD,Total,2022,p90,23
+ITD55,Bologna,nuts3,ITD,Male,2022,mean,16.74
+ITD55,Bologna,nuts3,ITD,Female,2022,mean,14.83
+ITD55,Bologna,nuts3,ITD,Total,2022,mean,15.91
+ITD55,Bologna,nuts3,ITD,Male,2022,p10,9
+ITD55,Bologna,nuts3,ITD,Female,2022,p10,8.66
+ITD55,Bologna,nuts3,ITD,Total,2022,p10,8.83
+ITD55,Bologna,nuts3,ITD,Male,2022,median,13.06
+ITD55,Bologna,nuts3,ITD,Female,2022,median,11.95
+ITD55,Bologna,nuts3,ITD,Total,2022,median,12.55
+ITD55,Bologna,nuts3,ITD,Male,2022,p90,25.95
+ITD55,Bologna,nuts3,ITD,Female,2022,p90,21.57
+ITD55,Bologna,nuts3,ITD,Total,2022,p90,24.12
+ITD56,Ferrara,nuts3,ITD,Male,2022,mean,14.31
+ITD56,Ferrara,nuts3,ITD,Female,2022,mean,12.83
+ITD56,Ferrara,nuts3,ITD,Total,2022,mean,13.63
+ITD56,Ferrara,nuts3,ITD,Male,2022,p10,8.69
+ITD56,Ferrara,nuts3,ITD,Female,2022,p10,8.47
+ITD56,Ferrara,nuts3,ITD,Total,2022,p10,8.57
+ITD56,Ferrara,nuts3,ITD,Male,2022,median,12.07
+ITD56,Ferrara,nuts3,ITD,Female,2022,median,11.12
+ITD56,Ferrara,nuts3,ITD,Total,2022,median,11.56
+ITD56,Ferrara,nuts3,ITD,Male,2022,p90,20.4
+ITD56,Ferrara,nuts3,ITD,Female,2022,p90,16.94
+ITD56,Ferrara,nuts3,ITD,Total,2022,p90,18.78
+ITD57,Ravenna,nuts3,ITD,Male,2022,mean,15.25
+ITD57,Ravenna,nuts3,ITD,Female,2022,mean,12.94
+ITD57,Ravenna,nuts3,ITD,Total,2022,mean,14.24
+ITD57,Ravenna,nuts3,ITD,Male,2022,p10,9.03
+ITD57,Ravenna,nuts3,ITD,Female,2022,p10,8.69
+ITD57,Ravenna,nuts3,ITD,Total,2022,p10,8.86
+ITD57,Ravenna,nuts3,ITD,Male,2022,median,12.33
+ITD57,Ravenna,nuts3,ITD,Female,2022,median,11.22
+ITD57,Ravenna,nuts3,ITD,Total,2022,median,11.76
+ITD57,Ravenna,nuts3,ITD,Male,2022,p90,23.23
+ITD57,Ravenna,nuts3,ITD,Female,2022,p90,17.33
+ITD57,Ravenna,nuts3,ITD,Total,2022,p90,20.72
+ITD58,Forlì-Cesena,nuts3,ITD,Male,2022,mean,14.34
+ITD58,Forlì-Cesena,nuts3,ITD,Female,2022,mean,12.89
+ITD58,Forlì-Cesena,nuts3,ITD,Total,2022,mean,13.68
+ITD58,Forlì-Cesena,nuts3,ITD,Male,2022,p10,8.93
+ITD58,Forlì-Cesena,nuts3,ITD,Female,2022,p10,8.56
+ITD58,Forlì-Cesena,nuts3,ITD,Total,2022,p10,8.74
+ITD58,Forlì-Cesena,nuts3,ITD,Male,2022,median,11.99
+ITD58,Forlì-Cesena,nuts3,ITD,Female,2022,median,11.22
+ITD58,Forlì-Cesena,nuts3,ITD,Total,2022,median,11.6
+ITD58,Forlì-Cesena,nuts3,ITD,Male,2022,p90,20.39
+ITD58,Forlì-Cesena,nuts3,ITD,Female,2022,p90,17
+ITD58,Forlì-Cesena,nuts3,ITD,Total,2022,p90,18.84
+ITD59,Rimini,nuts3,ITD,Male,2022,mean,13.34
+ITD59,Rimini,nuts3,ITD,Female,2022,mean,12.3
+ITD59,Rimini,nuts3,ITD,Total,2022,mean,12.84
+ITD59,Rimini,nuts3,ITD,Male,2022,p10,8.66
+ITD59,Rimini,nuts3,ITD,Female,2022,p10,8.49
+ITD59,Rimini,nuts3,ITD,Total,2022,p10,8.56
+ITD59,Rimini,nuts3,ITD,Male,2022,median,11.46
+ITD59,Rimini,nuts3,ITD,Female,2022,median,10.92
+ITD59,Rimini,nuts3,ITD,Total,2022,median,11.17
+ITD59,Rimini,nuts3,ITD,Male,2022,p90,18.62
+ITD59,Rimini,nuts3,ITD,Female,2022,p90,15.64
+ITD59,Rimini,nuts3,ITD,Total,2022,p90,17.2
+ITE,Centro,nuts1,ITE,Male,2022,mean,15.65
+ITE,Centro,nuts1,ITE,Female,2022,mean,14.19
+ITE,Centro,nuts1,ITE,Total,2022,mean,15.03
+ITE,Centro,nuts1,ITE,Male,2022,p10,8.54
+ITE,Centro,nuts1,ITE,Female,2022,p10,8.26
+ITE,Centro,nuts1,ITE,Total,2022,p10,8.4
+ITE,Centro,nuts1,ITE,Male,2022,median,12.05
+ITE,Centro,nuts1,ITE,Female,2022,median,11.23
+ITE,Centro,nuts1,ITE,Total,2022,median,11.68
+ITE,Centro,nuts1,ITE,Male,2022,p90,24.61
+ITE,Centro,nuts1,ITE,Female,2022,p90,21.18
+ITE,Centro,nuts1,ITE,Total,2022,p90,23.17
+ITE1,Toscana,nuts2,ITE,Male,2022,mean,14.7
+ITE1,Toscana,nuts2,ITE,Female,2022,mean,13.45
+ITE1,Toscana,nuts2,ITE,Total,2022,mean,14.15
+ITE1,Toscana,nuts2,ITE,Male,2022,p10,8.72
+ITE1,Toscana,nuts2,ITE,Female,2022,p10,8.5
+ITE1,Toscana,nuts2,ITE,Total,2022,p10,8.62
+ITE1,Toscana,nuts2,ITE,Male,2022,median,12.02
+ITE1,Toscana,nuts2,ITE,Female,2022,median,11.19
+ITE1,Toscana,nuts2,ITE,Total,2022,median,11.62
+ITE1,Toscana,nuts2,ITE,Male,2022,p90,21.84
+ITE1,Toscana,nuts2,ITE,Female,2022,p90,18.69
+ITE1,Toscana,nuts2,ITE,Total,2022,p90,20.47
+ITE11,Massa-Carrara,nuts3,ITE,Male,2022,mean,14.18
+ITE11,Massa-Carrara,nuts3,ITE,Female,2022,mean,12.83
+ITE11,Massa-Carrara,nuts3,ITE,Total,2022,mean,13.65
+ITE11,Massa-Carrara,nuts3,ITE,Male,2022,p10,8.5
+ITE11,Massa-Carrara,nuts3,ITE,Female,2022,p10,8.38
+ITE11,Massa-Carrara,nuts3,ITE,Total,2022,p10,8.45
+ITE11,Massa-Carrara,nuts3,ITE,Male,2022,median,11.92
+ITE11,Massa-Carrara,nuts3,ITE,Female,2022,median,11.03
+ITE11,Massa-Carrara,nuts3,ITE,Total,2022,median,11.52
+ITE11,Massa-Carrara,nuts3,ITE,Male,2022,p90,20.88
+ITE11,Massa-Carrara,nuts3,ITE,Female,2022,p90,17.3
+ITE11,Massa-Carrara,nuts3,ITE,Total,2022,p90,19.68
+ITE12,Lucca,nuts3,ITE,Male,2022,mean,14.7
+ITE12,Lucca,nuts3,ITE,Female,2022,mean,13.2
+ITE12,Lucca,nuts3,ITE,Total,2022,mean,14.06
+ITE12,Lucca,nuts3,ITE,Male,2022,p10,8.82
+ITE12,Lucca,nuts3,ITE,Female,2022,p10,8.55
+ITE12,Lucca,nuts3,ITE,Total,2022,p10,8.69
+ITE12,Lucca,nuts3,ITE,Male,2022,median,12.29
+ITE12,Lucca,nuts3,ITE,Female,2022,median,11.23
+ITE12,Lucca,nuts3,ITE,Total,2022,median,11.78
+ITE12,Lucca,nuts3,ITE,Male,2022,p90,21.36
+ITE12,Lucca,nuts3,ITE,Female,2022,p90,17.83
+ITE12,Lucca,nuts3,ITE,Total,2022,p90,20.07
+ITE13,Pistoia,nuts3,ITE,Male,2022,mean,13.83
+ITE13,Pistoia,nuts3,ITE,Female,2022,mean,13.19
+ITE13,Pistoia,nuts3,ITE,Total,2022,mean,13.55
+ITE13,Pistoia,nuts3,ITE,Male,2022,p10,8.68
+ITE13,Pistoia,nuts3,ITE,Female,2022,p10,8.53
+ITE13,Pistoia,nuts3,ITE,Total,2022,p10,8.61
+ITE13,Pistoia,nuts3,ITE,Male,2022,median,11.76
+ITE13,Pistoia,nuts3,ITE,Female,2022,median,11.05
+ITE13,Pistoia,nuts3,ITE,Total,2022,median,11.43
+ITE13,Pistoia,nuts3,ITE,Male,2022,p90,19.43
+ITE13,Pistoia,nuts3,ITE,Female,2022,p90,17.21
+ITE13,Pistoia,nuts3,ITE,Total,2022,p90,18.5
+ITE14,Firenze,nuts3,ITE,Male,2022,mean,15.61
+ITE14,Firenze,nuts3,ITE,Female,2022,mean,14.26
+ITE14,Firenze,nuts3,ITE,Total,2022,mean,15
+ITE14,Firenze,nuts3,ITE,Male,2022,p10,8.76
+ITE14,Firenze,nuts3,ITE,Female,2022,p10,8.58
+ITE14,Firenze,nuts3,ITE,Total,2022,p10,8.67
+ITE14,Firenze,nuts3,ITE,Male,2022,median,12.25
+ITE14,Firenze,nuts3,ITE,Female,2022,median,11.5
+ITE14,Firenze,nuts3,ITE,Total,2022,median,11.88
+ITE14,Firenze,nuts3,ITE,Male,2022,p90,24.19
+ITE14,Firenze,nuts3,ITE,Female,2022,p90,20.58
+ITE14,Firenze,nuts3,ITE,Total,2022,p90,22.54
+ITE16,Livorno,nuts3,ITE,Male,2022,mean,15.29
+ITE16,Livorno,nuts3,ITE,Female,2022,mean,12.58
+ITE16,Livorno,nuts3,ITE,Total,2022,mean,14.11
+ITE16,Livorno,nuts3,ITE,Male,2022,p10,9.03
+ITE16,Livorno,nuts3,ITE,Female,2022,p10,8.1
+ITE16,Livorno,nuts3,ITE,Total,2022,p10,8.59
+ITE16,Livorno,nuts3,ITE,Male,2022,median,12.54
+ITE16,Livorno,nuts3,ITE,Female,2022,median,10.99
+ITE16,Livorno,nuts3,ITE,Total,2022,median,11.71
+ITE16,Livorno,nuts3,ITE,Male,2022,p90,23.24
+ITE16,Livorno,nuts3,ITE,Female,2022,p90,16.87
+ITE16,Livorno,nuts3,ITE,Total,2022,p90,20.86
+ITE17,Pisa,nuts3,ITE,Male,2022,mean,15.07
+ITE17,Pisa,nuts3,ITE,Female,2022,mean,13.61
+ITE17,Pisa,nuts3,ITE,Total,2022,mean,14.45
+ITE17,Pisa,nuts3,ITE,Male,2022,p10,9.03
+ITE17,Pisa,nuts3,ITE,Female,2022,p10,8.56
+ITE17,Pisa,nuts3,ITE,Total,2022,p10,8.79
+ITE17,Pisa,nuts3,ITE,Male,2022,median,12.42
+ITE17,Pisa,nuts3,ITE,Female,2022,median,11.38
+ITE17,Pisa,nuts3,ITE,Total,2022,median,11.96
+ITE17,Pisa,nuts3,ITE,Male,2022,p90,22.13
+ITE17,Pisa,nuts3,ITE,Female,2022,p90,18.87
+ITE17,Pisa,nuts3,ITE,Total,2022,p90,20.77
+ITE18,Arezzo,nuts3,ITE,Male,2022,mean,13.61
+ITE18,Arezzo,nuts3,ITE,Female,2022,mean,12.83
+ITE18,Arezzo,nuts3,ITE,Total,2022,mean,13.27
+ITE18,Arezzo,nuts3,ITE,Male,2022,p10,8.61
+ITE18,Arezzo,nuts3,ITE,Female,2022,p10,8.46
+ITE18,Arezzo,nuts3,ITE,Total,2022,p10,8.54
+ITE18,Arezzo,nuts3,ITE,Male,2022,median,11.62
+ITE18,Arezzo,nuts3,ITE,Female,2022,median,10.97
+ITE18,Arezzo,nuts3,ITE,Total,2022,median,11.32
+ITE18,Arezzo,nuts3,ITE,Male,2022,p90,19.23
+ITE18,Arezzo,nuts3,ITE,Female,2022,p90,16.98
+ITE18,Arezzo,nuts3,ITE,Total,2022,p90,18.23
+ITE19,Siena,nuts3,ITE,Male,2022,mean,14.97
+ITE19,Siena,nuts3,ITE,Female,2022,mean,14.2
+ITE19,Siena,nuts3,ITE,Total,2022,mean,14.61
+ITE19,Siena,nuts3,ITE,Male,2022,p10,9.02
+ITE19,Siena,nuts3,ITE,Female,2022,p10,8.66
+ITE19,Siena,nuts3,ITE,Total,2022,p10,8.83
+ITE19,Siena,nuts3,ITE,Male,2022,median,12.19
+ITE19,Siena,nuts3,ITE,Female,2022,median,11.34
+ITE19,Siena,nuts3,ITE,Total,2022,median,11.79
+ITE19,Siena,nuts3,ITE,Male,2022,p90,22.48
+ITE19,Siena,nuts3,ITE,Female,2022,p90,20.69
+ITE19,Siena,nuts3,ITE,Total,2022,p90,21.64
+ITE1A,Grosseto,nuts3,ITE,Male,2022,mean,13.03
+ITE1A,Grosseto,nuts3,ITE,Female,2022,mean,12.32
+ITE1A,Grosseto,nuts3,ITE,Total,2022,mean,12.7
+ITE1A,Grosseto,nuts3,ITE,Male,2022,p10,8.65
+ITE1A,Grosseto,nuts3,ITE,Female,2022,p10,8.55
+ITE1A,Grosseto,nuts3,ITE,Total,2022,p10,8.6
+ITE1A,Grosseto,nuts3,ITE,Male,2022,median,11.4
+ITE1A,Grosseto,nuts3,ITE,Female,2022,median,10.94
+ITE1A,Grosseto,nuts3,ITE,Total,2022,median,11.18
+ITE1A,Grosseto,nuts3,ITE,Male,2022,p90,17.29
+ITE1A,Grosseto,nuts3,ITE,Female,2022,p90,15.69
+ITE1A,Grosseto,nuts3,ITE,Total,2022,p90,16.54
+ITE15,Prato,nuts3,ITE,Male,2022,mean,13.05
+ITE15,Prato,nuts3,ITE,Female,2022,mean,12.49
+ITE15,Prato,nuts3,ITE,Total,2022,mean,12.8
+ITE15,Prato,nuts3,ITE,Male,2022,p10,8.46
+ITE15,Prato,nuts3,ITE,Female,2022,p10,8.43
+ITE15,Prato,nuts3,ITE,Total,2022,p10,8.45
+ITE15,Prato,nuts3,ITE,Male,2022,median,10.98
+ITE15,Prato,nuts3,ITE,Female,2022,median,10.48
+ITE15,Prato,nuts3,ITE,Total,2022,median,10.73
+ITE15,Prato,nuts3,ITE,Male,2022,p90,18.43
+ITE15,Prato,nuts3,ITE,Female,2022,p90,16.89
+ITE15,Prato,nuts3,ITE,Total,2022,p90,17.78
+ITE2,Umbria,nuts2,ITE,Male,2022,mean,13.77
+ITE2,Umbria,nuts2,ITE,Female,2022,mean,12.68
+ITE2,Umbria,nuts2,ITE,Total,2022,mean,13.3
+ITE2,Umbria,nuts2,ITE,Male,2022,p10,8.76
+ITE2,Umbria,nuts2,ITE,Female,2022,p10,8.31
+ITE2,Umbria,nuts2,ITE,Total,2022,p10,8.52
+ITE2,Umbria,nuts2,ITE,Male,2022,median,11.79
+ITE2,Umbria,nuts2,ITE,Female,2022,median,10.87
+ITE2,Umbria,nuts2,ITE,Total,2022,median,11.37
+ITE2,Umbria,nuts2,ITE,Male,2022,p90,18.62
+ITE2,Umbria,nuts2,ITE,Female,2022,p90,16.73
+ITE2,Umbria,nuts2,ITE,Total,2022,p90,17.85
+ITE21,Perugia,nuts3,ITE,Male,2022,mean,13.68
+ITE21,Perugia,nuts3,ITE,Female,2022,mean,12.75
+ITE21,Perugia,nuts3,ITE,Total,2022,mean,13.27
+ITE21,Perugia,nuts3,ITE,Male,2022,p10,8.79
+ITE21,Perugia,nuts3,ITE,Female,2022,p10,8.35
+ITE21,Perugia,nuts3,ITE,Total,2022,p10,8.55
+ITE21,Perugia,nuts3,ITE,Male,2022,median,11.76
+ITE21,Perugia,nuts3,ITE,Female,2022,median,10.9
+ITE21,Perugia,nuts3,ITE,Total,2022,median,11.37
+ITE21,Perugia,nuts3,ITE,Male,2022,p90,18.53
+ITE21,Perugia,nuts3,ITE,Female,2022,p90,16.92
+ITE21,Perugia,nuts3,ITE,Total,2022,p90,17.84
+ITE22,Terni,nuts3,ITE,Male,2022,mean,14.07
+ITE22,Terni,nuts3,ITE,Female,2022,mean,12.41
+ITE22,Terni,nuts3,ITE,Total,2022,mean,13.4
+ITE22,Terni,nuts3,ITE,Male,2022,p10,8.65
+ITE22,Terni,nuts3,ITE,Female,2022,p10,8.23
+ITE22,Terni,nuts3,ITE,Total,2022,p10,8.42
+ITE22,Terni,nuts3,ITE,Male,2022,median,11.88
+ITE22,Terni,nuts3,ITE,Female,2022,median,10.77
+ITE22,Terni,nuts3,ITE,Total,2022,median,11.36
+ITE22,Terni,nuts3,ITE,Male,2022,p90,18.88
+ITE22,Terni,nuts3,ITE,Female,2022,p90,16.06
+ITE22,Terni,nuts3,ITE,Total,2022,p90,17.9
+ITE3,Marche,nuts2,ITE,Male,2022,mean,13.79
+ITE3,Marche,nuts2,ITE,Female,2022,mean,12.77
+ITE3,Marche,nuts2,ITE,Total,2022,mean,13.35
+ITE3,Marche,nuts2,ITE,Male,2022,p10,8.79
+ITE3,Marche,nuts2,ITE,Female,2022,p10,8.51
+ITE3,Marche,nuts2,ITE,Total,2022,p10,8.65
+ITE3,Marche,nuts2,ITE,Male,2022,median,11.77
+ITE3,Marche,nuts2,ITE,Female,2022,median,11.04
+ITE3,Marche,nuts2,ITE,Total,2022,median,11.42
+ITE3,Marche,nuts2,ITE,Male,2022,p90,19.33
+ITE3,Marche,nuts2,ITE,Female,2022,p90,16.75
+ITE3,Marche,nuts2,ITE,Total,2022,p90,18.3
+ITE31,Pesaro e Urbino,nuts3,ITE,Male,2022,mean,14
+ITE31,Pesaro e Urbino,nuts3,ITE,Female,2022,mean,12.69
+ITE31,Pesaro e Urbino,nuts3,ITE,Total,2022,mean,13.46
+ITE31,Pesaro e Urbino,nuts3,ITE,Male,2022,p10,9
+ITE31,Pesaro e Urbino,nuts3,ITE,Female,2022,p10,8.73
+ITE31,Pesaro e Urbino,nuts3,ITE,Total,2022,p10,8.88
+ITE31,Pesaro e Urbino,nuts3,ITE,Male,2022,median,11.91
+ITE31,Pesaro e Urbino,nuts3,ITE,Female,2022,median,11.11
+ITE31,Pesaro e Urbino,nuts3,ITE,Total,2022,median,11.52
+ITE31,Pesaro e Urbino,nuts3,ITE,Male,2022,p90,19.79
+ITE31,Pesaro e Urbino,nuts3,ITE,Female,2022,p90,16.5
+ITE31,Pesaro e Urbino,nuts3,ITE,Total,2022,p90,18.5
+ITE32,Ancona,nuts3,ITE,Male,2022,mean,14.28
+ITE32,Ancona,nuts3,ITE,Female,2022,mean,12.97
+ITE32,Ancona,nuts3,ITE,Total,2022,mean,13.71
+ITE32,Ancona,nuts3,ITE,Male,2022,p10,8.88
+ITE32,Ancona,nuts3,ITE,Female,2022,p10,8.54
+ITE32,Ancona,nuts3,ITE,Total,2022,p10,8.72
+ITE32,Ancona,nuts3,ITE,Male,2022,median,11.98
+ITE32,Ancona,nuts3,ITE,Female,2022,median,11.09
+ITE32,Ancona,nuts3,ITE,Total,2022,median,11.54
+ITE32,Ancona,nuts3,ITE,Male,2022,p90,20.62
+ITE32,Ancona,nuts3,ITE,Female,2022,p90,17.19
+ITE32,Ancona,nuts3,ITE,Total,2022,p90,19.25
+ITE33,Macerata,nuts3,ITE,Male,2022,mean,13.15
+ITE33,Macerata,nuts3,ITE,Female,2022,mean,12.76
+ITE33,Macerata,nuts3,ITE,Total,2022,mean,12.98
+ITE33,Macerata,nuts3,ITE,Male,2022,p10,8.71
+ITE33,Macerata,nuts3,ITE,Female,2022,p10,8.5
+ITE33,Macerata,nuts3,ITE,Total,2022,p10,8.6
+ITE33,Macerata,nuts3,ITE,Male,2022,median,11.55
+ITE33,Macerata,nuts3,ITE,Female,2022,median,11.06
+ITE33,Macerata,nuts3,ITE,Total,2022,median,11.33
+ITE33,Macerata,nuts3,ITE,Male,2022,p90,17.71
+ITE33,Macerata,nuts3,ITE,Female,2022,p90,16.77
+ITE33,Macerata,nuts3,ITE,Total,2022,p90,17.34
+ITE34,Ascoli Piceno,nuts3,ITE,Male,2022,mean,13.7
+ITE34,Ascoli Piceno,nuts3,ITE,Female,2022,mean,12.7
+ITE34,Ascoli Piceno,nuts3,ITE,Total,2022,mean,13.27
+ITE34,Ascoli Piceno,nuts3,ITE,Male,2022,p10,8.43
+ITE34,Ascoli Piceno,nuts3,ITE,Female,2022,p10,8.24
+ITE34,Ascoli Piceno,nuts3,ITE,Total,2022,p10,8.33
+ITE34,Ascoli Piceno,nuts3,ITE,Male,2022,median,11.67
+ITE34,Ascoli Piceno,nuts3,ITE,Female,2022,median,10.95
+ITE34,Ascoli Piceno,nuts3,ITE,Total,2022,median,11.33
+ITE34,Ascoli Piceno,nuts3,ITE,Male,2022,p90,18.8
+ITE34,Ascoli Piceno,nuts3,ITE,Female,2022,p90,16.86
+ITE34,Ascoli Piceno,nuts3,ITE,Total,2022,p90,18.02
+IT109,Fermo,nuts3,IT1,Male,2022,mean,13.06
+IT109,Fermo,nuts3,IT1,Female,2022,mean,12.45
+IT109,Fermo,nuts3,IT1,Total,2022,mean,12.78
+IT109,Fermo,nuts3,IT1,Male,2022,p10,8.46
+IT109,Fermo,nuts3,IT1,Female,2022,p10,8.32
+IT109,Fermo,nuts3,IT1,Total,2022,p10,8.39
+IT109,Fermo,nuts3,IT1,Male,2022,median,11.39
+IT109,Fermo,nuts3,IT1,Female,2022,median,10.85
+IT109,Fermo,nuts3,IT1,Total,2022,median,11.13
+IT109,Fermo,nuts3,IT1,Male,2022,p90,17.38
+IT109,Fermo,nuts3,IT1,Female,2022,p90,15.88
+IT109,Fermo,nuts3,IT1,Total,2022,p90,16.73
+ITE4,Lazio,nuts2,ITE,Male,2022,mean,16.87
+ITE4,Lazio,nuts2,ITE,Female,2022,mean,15.25
+ITE4,Lazio,nuts2,ITE,Total,2022,mean,16.21
+ITE4,Lazio,nuts2,ITE,Male,2022,p10,8.3
+ITE4,Lazio,nuts2,ITE,Female,2022,p10,8.02
+ITE4,Lazio,nuts2,ITE,Total,2022,p10,8.17
+ITE4,Lazio,nuts2,ITE,Male,2022,median,12.21
+ITE4,Lazio,nuts2,ITE,Female,2022,median,11.43
+ITE4,Lazio,nuts2,ITE,Total,2022,median,11.87
+ITE4,Lazio,nuts2,ITE,Male,2022,p90,28.38
+ITE4,Lazio,nuts2,ITE,Female,2022,p90,24.83
+ITE4,Lazio,nuts2,ITE,Total,2022,p90,26.9
+ITE41,Viterbo,nuts3,ITE,Male,2022,mean,13.16
+ITE41,Viterbo,nuts3,ITE,Female,2022,mean,12.05
+ITE41,Viterbo,nuts3,ITE,Total,2022,mean,12.68
+ITE41,Viterbo,nuts3,ITE,Male,2022,p10,8.38
+ITE41,Viterbo,nuts3,ITE,Female,2022,p10,8.05
+ITE41,Viterbo,nuts3,ITE,Total,2022,p10,8.21
+ITE41,Viterbo,nuts3,ITE,Male,2022,median,11.29
+ITE41,Viterbo,nuts3,ITE,Female,2022,median,10.43
+ITE41,Viterbo,nuts3,ITE,Total,2022,median,10.89
+ITE41,Viterbo,nuts3,ITE,Male,2022,p90,18.05
+ITE41,Viterbo,nuts3,ITE,Female,2022,p90,15.64
+ITE41,Viterbo,nuts3,ITE,Total,2022,p90,17.01
+ITE42,Rieti,nuts3,ITE,Male,2022,mean,14.43
+ITE42,Rieti,nuts3,ITE,Female,2022,mean,12.01
+ITE42,Rieti,nuts3,ITE,Total,2022,mean,13.36
+ITE42,Rieti,nuts3,ITE,Male,2022,p10,8.69
+ITE42,Rieti,nuts3,ITE,Female,2022,p10,4.91
+ITE42,Rieti,nuts3,ITE,Total,2022,p10,6.98
+ITE42,Rieti,nuts3,ITE,Male,2022,median,12.11
+ITE42,Rieti,nuts3,ITE,Female,2022,median,10.49
+ITE42,Rieti,nuts3,ITE,Total,2022,median,11.44
+ITE42,Rieti,nuts3,ITE,Male,2022,p90,19.91
+ITE42,Rieti,nuts3,ITE,Female,2022,p90,17.31
+ITE42,Rieti,nuts3,ITE,Total,2022,p90,18.98
+ITE43,Roma,nuts3,ITE,Male,2022,mean,17.6
+ITE43,Roma,nuts3,ITE,Female,2022,mean,15.81
+ITE43,Roma,nuts3,ITE,Total,2022,mean,16.86
+ITE43,Roma,nuts3,ITE,Male,2022,p10,8.28
+ITE43,Roma,nuts3,ITE,Female,2022,p10,8.06
+ITE43,Roma,nuts3,ITE,Total,2022,p10,8.17
+ITE43,Roma,nuts3,ITE,Male,2022,median,12.41
+ITE43,Roma,nuts3,ITE,Female,2022,median,11.68
+ITE43,Roma,nuts3,ITE,Total,2022,median,12.1
+ITE43,Roma,nuts3,ITE,Male,2022,p90,30.39
+ITE43,Roma,nuts3,ITE,Female,2022,p90,26.23
+ITE43,Roma,nuts3,ITE,Total,2022,p90,28.67
+ITE44,Latina,nuts3,ITE,Male,2022,mean,13.22
+ITE44,Latina,nuts3,ITE,Female,2022,mean,12.5
+ITE44,Latina,nuts3,ITE,Total,2022,mean,12.94
+ITE44,Latina,nuts3,ITE,Male,2022,p10,8.28
+ITE44,Latina,nuts3,ITE,Female,2022,p10,7.95
+ITE44,Latina,nuts3,ITE,Total,2022,p10,8.12
+ITE44,Latina,nuts3,ITE,Male,2022,median,11.38
+ITE44,Latina,nuts3,ITE,Female,2022,median,10.62
+ITE44,Latina,nuts3,ITE,Total,2022,median,11.07
+ITE44,Latina,nuts3,ITE,Male,2022,p90,18.71
+ITE44,Latina,nuts3,ITE,Female,2022,p90,17
+ITE44,Latina,nuts3,ITE,Total,2022,p90,18.1
+ITE45,Frosinone,nuts3,ITE,Male,2022,mean,13.69
+ITE45,Frosinone,nuts3,ITE,Female,2022,mean,12.54
+ITE45,Frosinone,nuts3,ITE,Total,2022,mean,13.29
+ITE45,Frosinone,nuts3,ITE,Male,2022,p10,8.45
+ITE45,Frosinone,nuts3,ITE,Female,2022,p10,8
+ITE45,Frosinone,nuts3,ITE,Total,2022,p10,8.26
+ITE45,Frosinone,nuts3,ITE,Male,2022,median,11.79
+ITE45,Frosinone,nuts3,ITE,Female,2022,median,10.7
+ITE45,Frosinone,nuts3,ITE,Total,2022,median,11.39
+ITE45,Frosinone,nuts3,ITE,Male,2022,p90,19
+ITE45,Frosinone,nuts3,ITE,Female,2022,p90,17.14
+ITE45,Frosinone,nuts3,ITE,Total,2022,p90,18.42
+ITF,Sud,nuts1,ITF,Male,2022,mean,12.9
+ITF,Sud,nuts1,ITF,Female,2022,mean,11.94
+ITF,Sud,nuts1,ITF,Total,2022,mean,12.56
+ITF,Sud,nuts1,ITF,Male,2022,p10,7.91
+ITF,Sud,nuts1,ITF,Female,2022,p10,7.64
+ITF,Sud,nuts1,ITF,Total,2022,p10,7.79
+ITF,Sud,nuts1,ITF,Male,2022,median,11.06
+ITF,Sud,nuts1,ITF,Female,2022,median,10.32
+ITF,Sud,nuts1,ITF,Total,2022,median,10.76
+ITF,Sud,nuts1,ITF,Male,2022,p90,17.87
+ITF,Sud,nuts1,ITF,Female,2022,p90,15.96
+ITF,Sud,nuts1,ITF,Total,2022,p90,17.19
+ITF1,Abruzzo,nuts2,ITF,Male,2022,mean,13.47
+ITF1,Abruzzo,nuts2,ITF,Female,2022,mean,12.35
+ITF1,Abruzzo,nuts2,ITF,Total,2022,mean,13.02
+ITF1,Abruzzo,nuts2,ITF,Male,2022,p10,8.21
+ITF1,Abruzzo,nuts2,ITF,Female,2022,p10,7.95
+ITF1,Abruzzo,nuts2,ITF,Total,2022,p10,8.08
+ITF1,Abruzzo,nuts2,ITF,Male,2022,median,11.58
+ITF1,Abruzzo,nuts2,ITF,Female,2022,median,10.63
+ITF1,Abruzzo,nuts2,ITF,Total,2022,median,11.16
+ITF1,Abruzzo,nuts2,ITF,Male,2022,p90,18.67
+ITF1,Abruzzo,nuts2,ITF,Female,2022,p90,16.1
+ITF1,Abruzzo,nuts2,ITF,Total,2022,p90,17.71
+ITF11,"'L""'Aquila'",nuts3,ITF,Male,2022,mean,13.48
+ITF11,"'L""'Aquila'",nuts3,ITF,Female,2022,mean,12.46
+ITF11,"'L""'Aquila'",nuts3,ITF,Total,2022,mean,13.08
+ITF11,"'L""'Aquila'",nuts3,ITF,Male,2022,p10,8.51
+ITF11,"'L""'Aquila'",nuts3,ITF,Female,2022,p10,8.17
+ITF11,"'L""'Aquila'",nuts3,ITF,Total,2022,p10,8.35
+ITF11,"'L""'Aquila'",nuts3,ITF,Male,2022,median,11.74
+ITF11,"'L""'Aquila'",nuts3,ITF,Female,2022,median,10.75
+ITF11,"'L""'Aquila'",nuts3,ITF,Total,2022,median,11.32
+ITF11,"'L""'Aquila'",nuts3,ITF,Male,2022,p90,18.98
+ITF11,"'L""'Aquila'",nuts3,ITF,Female,2022,p90,16.49
+ITF11,"'L""'Aquila'",nuts3,ITF,Total,2022,p90,18
+ITF12,Teramo,nuts3,ITF,Male,2022,mean,12.64
+ITF12,Teramo,nuts3,ITF,Female,2022,mean,12.05
+ITF12,Teramo,nuts3,ITF,Total,2022,mean,12.4
+ITF12,Teramo,nuts3,ITF,Male,2022,p10,7.54
+ITF12,Teramo,nuts3,ITF,Female,2022,p10,7.98
+ITF12,Teramo,nuts3,ITF,Total,2022,p10,7.76
+ITF12,Teramo,nuts3,ITF,Male,2022,median,11.23
+ITF12,Teramo,nuts3,ITF,Female,2022,median,10.53
+ITF12,Teramo,nuts3,ITF,Total,2022,median,10.9
+ITF12,Teramo,nuts3,ITF,Male,2022,p90,16.77
+ITF12,Teramo,nuts3,ITF,Female,2022,p90,15.33
+ITF12,Teramo,nuts3,ITF,Total,2022,p90,16.17
+ITF13,Pescara,nuts3,ITF,Male,2022,mean,13.94
+ITF13,Pescara,nuts3,ITF,Female,2022,mean,12.65
+ITF13,Pescara,nuts3,ITF,Total,2022,mean,13.39
+ITF13,Pescara,nuts3,ITF,Male,2022,p10,8.06
+ITF13,Pescara,nuts3,ITF,Female,2022,p10,7.71
+ITF13,Pescara,nuts3,ITF,Total,2022,p10,7.88
+ITF13,Pescara,nuts3,ITF,Male,2022,median,11.4
+ITF13,Pescara,nuts3,ITF,Female,2022,median,10.61
+ITF13,Pescara,nuts3,ITF,Total,2022,median,11.01
+ITF13,Pescara,nuts3,ITF,Male,2022,p90,20.51
+ITF13,Pescara,nuts3,ITF,Female,2022,p90,16.78
+ITF13,Pescara,nuts3,ITF,Total,2022,p90,18.96
+ITF14,Chieti,nuts3,ITF,Male,2022,mean,13.81
+ITF14,Chieti,nuts3,ITF,Female,2022,mean,12.33
+ITF14,Chieti,nuts3,ITF,Total,2022,mean,13.25
+ITF14,Chieti,nuts3,ITF,Male,2022,p10,8.58
+ITF14,Chieti,nuts3,ITF,Female,2022,p10,7.98
+ITF14,Chieti,nuts3,ITF,Total,2022,p10,8.29
+ITF14,Chieti,nuts3,ITF,Male,2022,median,11.9
+ITF14,Chieti,nuts3,ITF,Female,2022,median,10.67
+ITF14,Chieti,nuts3,ITF,Total,2022,median,11.41
+ITF14,Chieti,nuts3,ITF,Male,2022,p90,18.87
+ITF14,Chieti,nuts3,ITF,Female,2022,p90,16.17
+ITF14,Chieti,nuts3,ITF,Total,2022,p90,18.12
+ITF2,Molise,nuts2,ITF,Male,2022,mean,12.97
+ITF2,Molise,nuts2,ITF,Female,2022,mean,12.29
+ITF2,Molise,nuts2,ITF,Total,2022,mean,12.71
+ITF2,Molise,nuts2,ITF,Male,2022,p10,8.07
+ITF2,Molise,nuts2,ITF,Female,2022,p10,7.86
+ITF2,Molise,nuts2,ITF,Total,2022,p10,7.97
+ITF2,Molise,nuts2,ITF,Male,2022,median,11.32
+ITF2,Molise,nuts2,ITF,Female,2022,median,10.49
+ITF2,Molise,nuts2,ITF,Total,2022,median,10.98
+ITF2,Molise,nuts2,ITF,Male,2022,p90,17.7
+ITF2,Molise,nuts2,ITF,Female,2022,p90,15.93
+ITF2,Molise,nuts2,ITF,Total,2022,p90,16.98
+ITF22,Campobasso,nuts3,ITF,Male,2022,mean,13.16
+ITF22,Campobasso,nuts3,ITF,Female,2022,mean,12.33
+ITF22,Campobasso,nuts3,ITF,Total,2022,mean,12.84
+ITF22,Campobasso,nuts3,ITF,Male,2022,p10,8.13
+ITF22,Campobasso,nuts3,ITF,Female,2022,p10,7.89
+ITF22,Campobasso,nuts3,ITF,Total,2022,p10,8.01
+ITF22,Campobasso,nuts3,ITF,Male,2022,median,11.44
+ITF22,Campobasso,nuts3,ITF,Female,2022,median,10.51
+ITF22,Campobasso,nuts3,ITF,Total,2022,median,11.05
+ITF22,Campobasso,nuts3,ITF,Male,2022,p90,18.23
+ITF22,Campobasso,nuts3,ITF,Female,2022,p90,15.91
+ITF22,Campobasso,nuts3,ITF,Total,2022,p90,17.28
+ITF21,Isernia,nuts3,ITF,Male,2022,mean,12.5
+ITF21,Isernia,nuts3,ITF,Female,2022,mean,12.22
+ITF21,Isernia,nuts3,ITF,Total,2022,mean,12.39
+ITF21,Isernia,nuts3,ITF,Male,2022,p10,7.95
+ITF21,Isernia,nuts3,ITF,Female,2022,p10,7.8
+ITF21,Isernia,nuts3,ITF,Total,2022,p10,7.88
+ITF21,Isernia,nuts3,ITF,Male,2022,median,11.05
+ITF21,Isernia,nuts3,ITF,Female,2022,median,10.43
+ITF21,Isernia,nuts3,ITF,Total,2022,median,10.79
+ITF21,Isernia,nuts3,ITF,Male,2022,p90,16.59
+ITF21,Isernia,nuts3,ITF,Female,2022,p90,16.01
+ITF21,Isernia,nuts3,ITF,Total,2022,p90,16.34
+ITF3,Campania,nuts2,ITF,Male,2022,mean,12.91
+ITF3,Campania,nuts2,ITF,Female,2022,mean,12.03
+ITF3,Campania,nuts2,ITF,Total,2022,mean,12.62
+ITF3,Campania,nuts2,ITF,Male,2022,p10,7.7
+ITF3,Campania,nuts2,ITF,Female,2022,p10,7.46
+ITF3,Campania,nuts2,ITF,Total,2022,p10,7.6
+ITF3,Campania,nuts2,ITF,Male,2022,median,10.94
+ITF3,Campania,nuts2,ITF,Female,2022,median,10.26
+ITF3,Campania,nuts2,ITF,Total,2022,median,10.69
+ITF3,Campania,nuts2,ITF,Male,2022,p90,18.36
+ITF3,Campania,nuts2,ITF,Female,2022,p90,16.57
+ITF3,Campania,nuts2,ITF,Total,2022,p90,17.77
+ITF31,Caserta,nuts3,ITF,Male,2022,mean,12.15
+ITF31,Caserta,nuts3,ITF,Female,2022,mean,11.51
+ITF31,Caserta,nuts3,ITF,Total,2022,mean,11.94
+ITF31,Caserta,nuts3,ITF,Male,2022,p10,7.5
+ITF31,Caserta,nuts3,ITF,Female,2022,p10,7.12
+ITF31,Caserta,nuts3,ITF,Total,2022,p10,7.38
+ITF31,Caserta,nuts3,ITF,Male,2022,median,10.71
+ITF31,Caserta,nuts3,ITF,Female,2022,median,9.99
+ITF31,Caserta,nuts3,ITF,Total,2022,median,10.47
+ITF31,Caserta,nuts3,ITF,Male,2022,p90,16.38
+ITF31,Caserta,nuts3,ITF,Female,2022,p90,15.7
+ITF31,Caserta,nuts3,ITF,Total,2022,p90,16.15
+ITF32,Benevento,nuts3,ITF,Male,2022,mean,12.26
+ITF32,Benevento,nuts3,ITF,Female,2022,mean,11.12
+ITF32,Benevento,nuts3,ITF,Total,2022,mean,11.85
+ITF32,Benevento,nuts3,ITF,Male,2022,p10,7.32
+ITF32,Benevento,nuts3,ITF,Female,2022,p10,6.64
+ITF32,Benevento,nuts3,ITF,Total,2022,p10,7.02
+ITF32,Benevento,nuts3,ITF,Male,2022,median,10.64
+ITF32,Benevento,nuts3,ITF,Female,2022,median,9.63
+ITF32,Benevento,nuts3,ITF,Total,2022,median,10.25
+ITF32,Benevento,nuts3,ITF,Male,2022,p90,16.78
+ITF32,Benevento,nuts3,ITF,Female,2022,p90,15.51
+ITF32,Benevento,nuts3,ITF,Total,2022,p90,16.32
+ITF33,Napoli,nuts3,ITF,Male,2022,mean,13.37
+ITF33,Napoli,nuts3,ITF,Female,2022,mean,12.49
+ITF33,Napoli,nuts3,ITF,Total,2022,mean,13.08
+ITF33,Napoli,nuts3,ITF,Male,2022,p10,7.82
+ITF33,Napoli,nuts3,ITF,Female,2022,p10,7.67
+ITF33,Napoli,nuts3,ITF,Total,2022,p10,7.76
+ITF33,Napoli,nuts3,ITF,Male,2022,median,11.03
+ITF33,Napoli,nuts3,ITF,Female,2022,median,10.46
+ITF33,Napoli,nuts3,ITF,Total,2022,median,10.82
+ITF33,Napoli,nuts3,ITF,Male,2022,p90,19.94
+ITF33,Napoli,nuts3,ITF,Female,2022,p90,17.57
+ITF33,Napoli,nuts3,ITF,Total,2022,p90,19.17
+ITF34,Avellino,nuts3,ITF,Male,2022,mean,12.82
+ITF34,Avellino,nuts3,ITF,Female,2022,mean,11.84
+ITF34,Avellino,nuts3,ITF,Total,2022,mean,12.48
+ITF34,Avellino,nuts3,ITF,Male,2022,p10,8.02
+ITF34,Avellino,nuts3,ITF,Female,2022,p10,7.32
+ITF34,Avellino,nuts3,ITF,Total,2022,p10,7.73
+ITF34,Avellino,nuts3,ITF,Male,2022,median,11.32
+ITF34,Avellino,nuts3,ITF,Female,2022,median,10.28
+ITF34,Avellino,nuts3,ITF,Total,2022,median,10.95
+ITF34,Avellino,nuts3,ITF,Male,2022,p90,17.38
+ITF34,Avellino,nuts3,ITF,Female,2022,p90,15.98
+ITF34,Avellino,nuts3,ITF,Total,2022,p90,16.93
+ITF35,Salerno,nuts3,ITF,Male,2022,mean,12.39
+ITF35,Salerno,nuts3,ITF,Female,2022,mean,11.49
+ITF35,Salerno,nuts3,ITF,Total,2022,mean,12.07
+ITF35,Salerno,nuts3,ITF,Male,2022,p10,7.55
+ITF35,Salerno,nuts3,ITF,Female,2022,p10,7.24
+ITF35,Salerno,nuts3,ITF,Total,2022,p10,7.46
+ITF35,Salerno,nuts3,ITF,Male,2022,median,10.81
+ITF35,Salerno,nuts3,ITF,Female,2022,median,9.99
+ITF35,Salerno,nuts3,ITF,Total,2022,median,10.51
+ITF35,Salerno,nuts3,ITF,Male,2022,p90,16.38
+ITF35,Salerno,nuts3,ITF,Female,2022,p90,15.35
+ITF35,Salerno,nuts3,ITF,Total,2022,p90,16.05
+ITF4,Puglia,nuts2,ITF,Male,2022,mean,12.87
+ITF4,Puglia,nuts2,ITF,Female,2022,mean,11.76
+ITF4,Puglia,nuts2,ITF,Total,2022,mean,12.44
+ITF4,Puglia,nuts2,ITF,Male,2022,p10,8.11
+ITF4,Puglia,nuts2,ITF,Female,2022,p10,7.82
+ITF4,Puglia,nuts2,ITF,Total,2022,p10,7.98
+ITF4,Puglia,nuts2,ITF,Male,2022,median,11.04
+ITF4,Puglia,nuts2,ITF,Female,2022,median,10.27
+ITF4,Puglia,nuts2,ITF,Total,2022,median,10.71
+ITF4,Puglia,nuts2,ITF,Male,2022,p90,17.42
+ITF4,Puglia,nuts2,ITF,Female,2022,p90,15.41
+ITF4,Puglia,nuts2,ITF,Total,2022,p90,16.69
+ITF41,Foggia,nuts3,ITF,Male,2022,mean,12.23
+ITF41,Foggia,nuts3,ITF,Female,2022,mean,11.49
+ITF41,Foggia,nuts3,ITF,Total,2022,mean,11.97
+ITF41,Foggia,nuts3,ITF,Male,2022,p10,8
+ITF41,Foggia,nuts3,ITF,Female,2022,p10,7.85
+ITF41,Foggia,nuts3,ITF,Total,2022,p10,7.94
+ITF41,Foggia,nuts3,ITF,Male,2022,median,10.83
+ITF41,Foggia,nuts3,ITF,Female,2022,median,10.2
+ITF41,Foggia,nuts3,ITF,Total,2022,median,10.59
+ITF41,Foggia,nuts3,ITF,Male,2022,p90,16.49
+ITF41,Foggia,nuts3,ITF,Female,2022,p90,14.69
+ITF41,Foggia,nuts3,ITF,Total,2022,p90,15.92
+ITF42,Bari,nuts3,ITF,Male,2022,mean,13.08
+ITF42,Bari,nuts3,ITF,Female,2022,mean,11.94
+ITF42,Bari,nuts3,ITF,Total,2022,mean,12.63
+ITF42,Bari,nuts3,ITF,Male,2022,p10,8.21
+ITF42,Bari,nuts3,ITF,Female,2022,p10,7.94
+ITF42,Bari,nuts3,ITF,Total,2022,p10,8.07
+ITF42,Bari,nuts3,ITF,Male,2022,median,11.23
+ITF42,Bari,nuts3,ITF,Female,2022,median,10.31
+ITF42,Bari,nuts3,ITF,Total,2022,median,10.85
+ITF42,Bari,nuts3,ITF,Male,2022,p90,17.99
+ITF42,Bari,nuts3,ITF,Female,2022,p90,15.92
+ITF42,Bari,nuts3,ITF,Total,2022,p90,17.21
+ITF43,Taranto,nuts3,ITF,Male,2022,mean,14.56
+ITF43,Taranto,nuts3,ITF,Female,2022,mean,12.08
+ITF43,Taranto,nuts3,ITF,Total,2022,mean,13.67
+ITF43,Taranto,nuts3,ITF,Male,2022,p10,8.38
+ITF43,Taranto,nuts3,ITF,Female,2022,p10,7.89
+ITF43,Taranto,nuts3,ITF,Total,2022,p10,8.15
+ITF43,Taranto,nuts3,ITF,Male,2022,median,11.61
+ITF43,Taranto,nuts3,ITF,Female,2022,median,10.5
+ITF43,Taranto,nuts3,ITF,Total,2022,median,11.13
+ITF43,Taranto,nuts3,ITF,Male,2022,p90,19.3
+ITF43,Taranto,nuts3,ITF,Female,2022,p90,15.81
+ITF43,Taranto,nuts3,ITF,Total,2022,p90,18.12
+ITF44,Brindisi,nuts3,ITF,Male,2022,mean,13.37
+ITF44,Brindisi,nuts3,ITF,Female,2022,mean,12.27
+ITF44,Brindisi,nuts3,ITF,Total,2022,mean,12.93
+ITF44,Brindisi,nuts3,ITF,Male,2022,p10,8.46
+ITF44,Brindisi,nuts3,ITF,Female,2022,p10,7.96
+ITF44,Brindisi,nuts3,ITF,Total,2022,p10,8.25
+ITF44,Brindisi,nuts3,ITF,Male,2022,median,11.28
+ITF44,Brindisi,nuts3,ITF,Female,2022,median,10.44
+ITF44,Brindisi,nuts3,ITF,Total,2022,median,10.91
+ITF44,Brindisi,nuts3,ITF,Male,2022,p90,18.89
+ITF44,Brindisi,nuts3,ITF,Female,2022,p90,15.87
+ITF44,Brindisi,nuts3,ITF,Total,2022,p90,17.68
+ITF45,Lecce,nuts3,ITF,Male,2022,mean,11.95
+ITF45,Lecce,nuts3,ITF,Female,2022,mean,11.24
+ITF45,Lecce,nuts3,ITF,Total,2022,mean,11.66
+ITF45,Lecce,nuts3,ITF,Male,2022,p10,7.66
+ITF45,Lecce,nuts3,ITF,Female,2022,p10,7.48
+ITF45,Lecce,nuts3,ITF,Total,2022,p10,7.56
+ITF45,Lecce,nuts3,ITF,Male,2022,median,10.52
+ITF45,Lecce,nuts3,ITF,Female,2022,median,10.04
+ITF45,Lecce,nuts3,ITF,Total,2022,median,10.31
+ITF45,Lecce,nuts3,ITF,Male,2022,p90,15.79
+ITF45,Lecce,nuts3,ITF,Female,2022,p90,14.63
+ITF45,Lecce,nuts3,ITF,Total,2022,p90,15.33
+IT110,Barletta-Andria-Trani,nuts3,IT1,Male,2022,mean,11.96
+IT110,Barletta-Andria-Trani,nuts3,IT1,Female,2022,mean,11.53
+IT110,Barletta-Andria-Trani,nuts3,IT1,Total,2022,mean,11.81
+IT110,Barletta-Andria-Trani,nuts3,IT1,Male,2022,p10,8.27
+IT110,Barletta-Andria-Trani,nuts3,IT1,Female,2022,p10,7.9
+IT110,Barletta-Andria-Trani,nuts3,IT1,Total,2022,p10,8.13
+IT110,Barletta-Andria-Trani,nuts3,IT1,Male,2022,median,10.75
+IT110,Barletta-Andria-Trani,nuts3,IT1,Female,2022,median,10.21
+IT110,Barletta-Andria-Trani,nuts3,IT1,Total,2022,median,10.56
+IT110,Barletta-Andria-Trani,nuts3,IT1,Male,2022,p90,15.16
+IT110,Barletta-Andria-Trani,nuts3,IT1,Female,2022,p90,14.66
+IT110,Barletta-Andria-Trani,nuts3,IT1,Total,2022,p90,15
+ITF5,Basilicata,nuts2,ITF,Male,2022,mean,13.13
+ITF5,Basilicata,nuts2,ITF,Female,2022,mean,12.02
+ITF5,Basilicata,nuts2,ITF,Total,2022,mean,12.75
+ITF5,Basilicata,nuts2,ITF,Male,2022,p10,8.25
+ITF5,Basilicata,nuts2,ITF,Female,2022,p10,7.75
+ITF5,Basilicata,nuts2,ITF,Total,2022,p10,8.02
+ITF5,Basilicata,nuts2,ITF,Male,2022,median,11.57
+ITF5,Basilicata,nuts2,ITF,Female,2022,median,10.4
+ITF5,Basilicata,nuts2,ITF,Total,2022,median,11.12
+ITF5,Basilicata,nuts2,ITF,Male,2022,p90,17.85
+ITF5,Basilicata,nuts2,ITF,Female,2022,p90,16.18
+ITF5,Basilicata,nuts2,ITF,Total,2022,p90,17.31
+ITF51,Potenza,nuts3,ITF,Male,2022,mean,13.58
+ITF51,Potenza,nuts3,ITF,Female,2022,mean,12.41
+ITF51,Potenza,nuts3,ITF,Total,2022,mean,13.2
+ITF51,Potenza,nuts3,ITF,Male,2022,p10,8.56
+ITF51,Potenza,nuts3,ITF,Female,2022,p10,8.01
+ITF51,Potenza,nuts3,ITF,Total,2022,p10,8.32
+ITF51,Potenza,nuts3,ITF,Male,2022,median,11.87
+ITF51,Potenza,nuts3,ITF,Female,2022,median,10.58
+ITF51,Potenza,nuts3,ITF,Total,2022,median,11.39
+ITF51,Potenza,nuts3,ITF,Male,2022,p90,18.39
+ITF51,Potenza,nuts3,ITF,Female,2022,p90,16.65
+ITF51,Potenza,nuts3,ITF,Total,2022,p90,17.84
+ITF52,Matera,nuts3,ITF,Male,2022,mean,12.21
+ITF52,Matera,nuts3,ITF,Female,2022,mean,11.38
+ITF52,Matera,nuts3,ITF,Total,2022,mean,11.9
+ITF52,Matera,nuts3,ITF,Male,2022,p10,7.73
+ITF52,Matera,nuts3,ITF,Female,2022,p10,7.49
+ITF52,Matera,nuts3,ITF,Total,2022,p10,7.58
+ITF52,Matera,nuts3,ITF,Male,2022,median,11.07
+ITF52,Matera,nuts3,ITF,Female,2022,median,10.1
+ITF52,Matera,nuts3,ITF,Total,2022,median,10.7
+ITF52,Matera,nuts3,ITF,Male,2022,p90,16.28
+ITF52,Matera,nuts3,ITF,Female,2022,p90,14.69
+ITF52,Matera,nuts3,ITF,Total,2022,p90,15.73
+ITF6,Calabria,nuts2,ITF,Male,2022,mean,12.19
+ITF6,Calabria,nuts2,ITF,Female,2022,mean,11.56
+ITF6,Calabria,nuts2,ITF,Total,2022,mean,11.95
+ITF6,Calabria,nuts2,ITF,Male,2022,p10,7.75
+ITF6,Calabria,nuts2,ITF,Female,2022,p10,7.52
+ITF6,Calabria,nuts2,ITF,Total,2022,p10,7.65
+ITF6,Calabria,nuts2,ITF,Male,2022,median,10.78
+ITF6,Calabria,nuts2,ITF,Female,2022,median,10.19
+ITF6,Calabria,nuts2,ITF,Total,2022,median,10.55
+ITF6,Calabria,nuts2,ITF,Male,2022,p90,16.25
+ITF6,Calabria,nuts2,ITF,Female,2022,p90,15.14
+ITF6,Calabria,nuts2,ITF,Total,2022,p90,15.83
+ITF61,Cosenza,nuts3,ITF,Male,2022,mean,11.89
+ITF61,Cosenza,nuts3,ITF,Female,2022,mean,11.38
+ITF61,Cosenza,nuts3,ITF,Total,2022,mean,11.7
+ITF61,Cosenza,nuts3,ITF,Male,2022,p10,7.51
+ITF61,Cosenza,nuts3,ITF,Female,2022,p10,7.37
+ITF61,Cosenza,nuts3,ITF,Total,2022,p10,7.48
+ITF61,Cosenza,nuts3,ITF,Male,2022,median,10.55
+ITF61,Cosenza,nuts3,ITF,Female,2022,median,10.02
+ITF61,Cosenza,nuts3,ITF,Total,2022,median,10.34
+ITF61,Cosenza,nuts3,ITF,Male,2022,p90,15.72
+ITF61,Cosenza,nuts3,ITF,Female,2022,p90,14.92
+ITF61,Cosenza,nuts3,ITF,Total,2022,p90,15.4
+ITF63,Catanzaro,nuts3,ITF,Male,2022,mean,12.36
+ITF63,Catanzaro,nuts3,ITF,Female,2022,mean,11.92
+ITF63,Catanzaro,nuts3,ITF,Total,2022,mean,12.21
+ITF63,Catanzaro,nuts3,ITF,Male,2022,p10,8.04
+ITF63,Catanzaro,nuts3,ITF,Female,2022,p10,7.92
+ITF63,Catanzaro,nuts3,ITF,Total,2022,p10,7.99
+ITF63,Catanzaro,nuts3,ITF,Male,2022,median,10.97
+ITF63,Catanzaro,nuts3,ITF,Female,2022,median,10.5
+ITF63,Catanzaro,nuts3,ITF,Total,2022,median,10.79
+ITF63,Catanzaro,nuts3,ITF,Male,2022,p90,16.46
+ITF63,Catanzaro,nuts3,ITF,Female,2022,p90,15.62
+ITF63,Catanzaro,nuts3,ITF,Total,2022,p90,16.18
+ITF65,Reggio di Calabria,nuts3,ITF,Male,2022,mean,12.51
+ITF65,Reggio di Calabria,nuts3,ITF,Female,2022,mean,11.74
+ITF65,Reggio di Calabria,nuts3,ITF,Total,2022,mean,12.22
+ITF65,Reggio di Calabria,nuts3,ITF,Male,2022,p10,7.83
+ITF65,Reggio di Calabria,nuts3,ITF,Female,2022,p10,7.57
+ITF65,Reggio di Calabria,nuts3,ITF,Total,2022,p10,7.72
+ITF65,Reggio di Calabria,nuts3,ITF,Male,2022,median,11
+ITF65,Reggio di Calabria,nuts3,ITF,Female,2022,median,10.28
+ITF65,Reggio di Calabria,nuts3,ITF,Total,2022,median,10.71
+ITF65,Reggio di Calabria,nuts3,ITF,Male,2022,p90,17.11
+ITF65,Reggio di Calabria,nuts3,ITF,Female,2022,p90,15.5
+ITF65,Reggio di Calabria,nuts3,ITF,Total,2022,p90,16.59
+ITF62,Crotone,nuts3,ITF,Male,2022,mean,12.48
+ITF62,Crotone,nuts3,ITF,Female,2022,mean,11.65
+ITF62,Crotone,nuts3,ITF,Total,2022,mean,12.2
+ITF62,Crotone,nuts3,ITF,Male,2022,p10,7.85
+ITF62,Crotone,nuts3,ITF,Female,2022,p10,7.65
+ITF62,Crotone,nuts3,ITF,Total,2022,p10,7.77
+ITF62,Crotone,nuts3,ITF,Male,2022,median,10.93
+ITF62,Crotone,nuts3,ITF,Female,2022,median,10.22
+ITF62,Crotone,nuts3,ITF,Total,2022,median,10.64
+ITF62,Crotone,nuts3,ITF,Male,2022,p90,16.28
+ITF62,Crotone,nuts3,ITF,Female,2022,p90,15.09
+ITF62,Crotone,nuts3,ITF,Total,2022,p90,15.81
+ITF64,Vibo Valentia,nuts3,ITF,Male,2022,mean,11.81
+ITF64,Vibo Valentia,nuts3,ITF,Female,2022,mean,10.84
+ITF64,Vibo Valentia,nuts3,ITF,Total,2022,mean,11.45
+ITF64,Vibo Valentia,nuts3,ITF,Male,2022,p10,7.77
+ITF64,Vibo Valentia,nuts3,ITF,Female,2022,p10,7.44
+ITF64,Vibo Valentia,nuts3,ITF,Total,2022,p10,7.54
+ITF64,Vibo Valentia,nuts3,ITF,Male,2022,median,10.58
+ITF64,Vibo Valentia,nuts3,ITF,Female,2022,median,9.89
+ITF64,Vibo Valentia,nuts3,ITF,Total,2022,median,10.32
+ITF64,Vibo Valentia,nuts3,ITF,Male,2022,p90,15.06
+ITF64,Vibo Valentia,nuts3,ITF,Female,2022,p90,13.75
+ITF64,Vibo Valentia,nuts3,ITF,Total,2022,p90,14.64
+ITG,Isole,nuts1,ITG,Male,2022,mean,13.23
+ITG,Isole,nuts1,ITG,Female,2022,mean,12.58
+ITG,Isole,nuts1,ITG,Total,2022,mean,12.99
+ITG,Isole,nuts1,ITG,Male,2022,p10,8.34
+ITG,Isole,nuts1,ITG,Female,2022,p10,8.03
+ITG,Isole,nuts1,ITG,Total,2022,p10,8.2
+ITG,Isole,nuts1,ITG,Male,2022,median,11.26
+ITG,Isole,nuts1,ITG,Female,2022,median,10.61
+ITG,Isole,nuts1,ITG,Total,2022,median,11.02
+ITG,Isole,nuts1,ITG,Male,2022,p90,18.12
+ITG,Isole,nuts1,ITG,Female,2022,p90,16.11
+ITG,Isole,nuts1,ITG,Total,2022,p90,17.31
+ITG1,Sicilia,nuts2,ITG,Male,2022,mean,13.12
+ITG1,Sicilia,nuts2,ITG,Female,2022,mean,12.13
+ITG1,Sicilia,nuts2,ITG,Total,2022,mean,12.78
+ITG1,Sicilia,nuts2,ITG,Male,2022,p10,8.24
+ITG1,Sicilia,nuts2,ITG,Female,2022,p10,7.87
+ITG1,Sicilia,nuts2,ITG,Total,2022,p10,8.08
+ITG1,Sicilia,nuts2,ITG,Male,2022,median,11.25
+ITG1,Sicilia,nuts2,ITG,Female,2022,median,10.51
+ITG1,Sicilia,nuts2,ITG,Total,2022,median,10.99
+ITG1,Sicilia,nuts2,ITG,Male,2022,p90,18.37
+ITG1,Sicilia,nuts2,ITG,Female,2022,p90,16.18
+ITG1,Sicilia,nuts2,ITG,Total,2022,p90,17.55
+ITG11,Trapani,nuts3,ITG,Male,2022,mean,12.51
+ITG11,Trapani,nuts3,ITG,Female,2022,mean,11.98
+ITG11,Trapani,nuts3,ITG,Total,2022,mean,12.32
+ITG11,Trapani,nuts3,ITG,Male,2022,p10,8.52
+ITG11,Trapani,nuts3,ITG,Female,2022,p10,8.09
+ITG11,Trapani,nuts3,ITG,Total,2022,p10,8.35
+ITG11,Trapani,nuts3,ITG,Male,2022,median,11.2
+ITG11,Trapani,nuts3,ITG,Female,2022,median,10.52
+ITG11,Trapani,nuts3,ITG,Total,2022,median,10.93
+ITG11,Trapani,nuts3,ITG,Male,2022,p90,16.05
+ITG11,Trapani,nuts3,ITG,Female,2022,p90,14.99
+ITG11,Trapani,nuts3,ITG,Total,2022,p90,15.65
+ITG12,Palermo,nuts3,ITG,Male,2022,mean,14.09
+ITG12,Palermo,nuts3,ITG,Female,2022,mean,12.78
+ITG12,Palermo,nuts3,ITG,Total,2022,mean,13.64
+ITG12,Palermo,nuts3,ITG,Male,2022,p10,8.37
+ITG12,Palermo,nuts3,ITG,Female,2022,p10,8
+ITG12,Palermo,nuts3,ITG,Total,2022,p10,8.21
+ITG12,Palermo,nuts3,ITG,Male,2022,median,11.51
+ITG12,Palermo,nuts3,ITG,Female,2022,median,10.82
+ITG12,Palermo,nuts3,ITG,Total,2022,median,11.28
+ITG12,Palermo,nuts3,ITG,Male,2022,p90,21.09
+ITG12,Palermo,nuts3,ITG,Female,2022,p90,17.5
+ITG12,Palermo,nuts3,ITG,Total,2022,p90,19.86
+ITG13,Messina,nuts3,ITG,Male,2022,mean,13.59
+ITG13,Messina,nuts3,ITG,Female,2022,mean,11.89
+ITG13,Messina,nuts3,ITG,Total,2022,mean,12.97
+ITG13,Messina,nuts3,ITG,Male,2022,p10,8.08
+ITG13,Messina,nuts3,ITG,Female,2022,p10,7.71
+ITG13,Messina,nuts3,ITG,Total,2022,p10,7.92
+ITG13,Messina,nuts3,ITG,Male,2022,median,11.22
+ITG13,Messina,nuts3,ITG,Female,2022,median,10.41
+ITG13,Messina,nuts3,ITG,Total,2022,median,10.89
+ITG13,Messina,nuts3,ITG,Male,2022,p90,18.75
+ITG13,Messina,nuts3,ITG,Female,2022,p90,15.7
+ITG13,Messina,nuts3,ITG,Total,2022,p90,17.49
+ITG14,Agrigento,nuts3,ITG,Male,2022,mean,12.49
+ITG14,Agrigento,nuts3,ITG,Female,2022,mean,12.12
+ITG14,Agrigento,nuts3,ITG,Total,2022,mean,12.37
+ITG14,Agrigento,nuts3,ITG,Male,2022,p10,8.72
+ITG14,Agrigento,nuts3,ITG,Female,2022,p10,8.25
+ITG14,Agrigento,nuts3,ITG,Total,2022,p10,8.54
+ITG14,Agrigento,nuts3,ITG,Male,2022,median,11.21
+ITG14,Agrigento,nuts3,ITG,Female,2022,median,10.51
+ITG14,Agrigento,nuts3,ITG,Total,2022,median,10.96
+ITG14,Agrigento,nuts3,ITG,Male,2022,p90,15.81
+ITG14,Agrigento,nuts3,ITG,Female,2022,p90,15.74
+ITG14,Agrigento,nuts3,ITG,Total,2022,p90,15.78
+ITG15,Caltanissetta,nuts3,ITG,Male,2022,mean,12.6
+ITG15,Caltanissetta,nuts3,ITG,Female,2022,mean,11.35
+ITG15,Caltanissetta,nuts3,ITG,Total,2022,mean,12.2
+ITG15,Caltanissetta,nuts3,ITG,Male,2022,p10,8.09
+ITG15,Caltanissetta,nuts3,ITG,Female,2022,p10,7.64
+ITG15,Caltanissetta,nuts3,ITG,Total,2022,p10,7.88
+ITG15,Caltanissetta,nuts3,ITG,Male,2022,median,11.12
+ITG15,Caltanissetta,nuts3,ITG,Female,2022,median,10.08
+ITG15,Caltanissetta,nuts3,ITG,Total,2022,median,10.77
+ITG15,Caltanissetta,nuts3,ITG,Male,2022,p90,16.73
+ITG15,Caltanissetta,nuts3,ITG,Female,2022,p90,15.06
+ITG15,Caltanissetta,nuts3,ITG,Total,2022,p90,16.09
+ITG16,Enna,nuts3,ITG,Male,2022,mean,12.22
+ITG16,Enna,nuts3,ITG,Female,2022,mean,11.76
+ITG16,Enna,nuts3,ITG,Total,2022,mean,12.06
+ITG16,Enna,nuts3,ITG,Male,2022,p10,8.09
+ITG16,Enna,nuts3,ITG,Female,2022,p10,7.63
+ITG16,Enna,nuts3,ITG,Total,2022,p10,7.92
+ITG16,Enna,nuts3,ITG,Male,2022,median,11.21
+ITG16,Enna,nuts3,ITG,Female,2022,median,10.48
+ITG16,Enna,nuts3,ITG,Total,2022,median,10.93
+ITG16,Enna,nuts3,ITG,Male,2022,p90,15.92
+ITG16,Enna,nuts3,ITG,Female,2022,p90,15.89
+ITG16,Enna,nuts3,ITG,Total,2022,p90,15.9
+ITG17,Catania,nuts3,ITG,Male,2022,mean,12.89
+ITG17,Catania,nuts3,ITG,Female,2022,mean,12.32
+ITG17,Catania,nuts3,ITG,Total,2022,mean,12.69
+ITG17,Catania,nuts3,ITG,Male,2022,p10,8.4
+ITG17,Catania,nuts3,ITG,Female,2022,p10,8.03
+ITG17,Catania,nuts3,ITG,Total,2022,p10,8.21
+ITG17,Catania,nuts3,ITG,Male,2022,median,11.32
+ITG17,Catania,nuts3,ITG,Female,2022,median,10.7
+ITG17,Catania,nuts3,ITG,Total,2022,median,11.12
+ITG17,Catania,nuts3,ITG,Male,2022,p90,17.86
+ITG17,Catania,nuts3,ITG,Female,2022,p90,16.68
+ITG17,Catania,nuts3,ITG,Total,2022,p90,17.45
+ITG18,Ragusa,nuts3,ITG,Male,2022,mean,11.37
+ITG18,Ragusa,nuts3,ITG,Female,2022,mean,10.97
+ITG18,Ragusa,nuts3,ITG,Total,2022,mean,11.22
+ITG18,Ragusa,nuts3,ITG,Male,2022,p10,7.49
+ITG18,Ragusa,nuts3,ITG,Female,2022,p10,7.37
+ITG18,Ragusa,nuts3,ITG,Total,2022,p10,7.44
+ITG18,Ragusa,nuts3,ITG,Male,2022,median,10.4
+ITG18,Ragusa,nuts3,ITG,Female,2022,median,9.9
+ITG18,Ragusa,nuts3,ITG,Total,2022,median,10.19
+ITG18,Ragusa,nuts3,ITG,Male,2022,p90,14.91
+ITG18,Ragusa,nuts3,ITG,Female,2022,p90,14.3
+ITG18,Ragusa,nuts3,ITG,Total,2022,p90,14.69
+ITG19,Siracusa,nuts3,ITG,Male,2022,mean,13.34
+ITG19,Siracusa,nuts3,ITG,Female,2022,mean,11.87
+ITG19,Siracusa,nuts3,ITG,Total,2022,mean,12.88
+ITG19,Siracusa,nuts3,ITG,Male,2022,p10,7.99
+ITG19,Siracusa,nuts3,ITG,Female,2022,p10,7.64
+ITG19,Siracusa,nuts3,ITG,Total,2022,p10,7.86
+ITG19,Siracusa,nuts3,ITG,Male,2022,median,11.11
+ITG19,Siracusa,nuts3,ITG,Female,2022,median,10.2
+ITG19,Siracusa,nuts3,ITG,Total,2022,median,10.77
+ITG19,Siracusa,nuts3,ITG,Male,2022,p90,20.53
+ITG19,Siracusa,nuts3,ITG,Female,2022,p90,15.92
+ITG19,Siracusa,nuts3,ITG,Total,2022,p90,18.83
+ITG2,Sardegna,nuts2,ITG,Male,2022,mean,13.54
+ITG2,Sardegna,nuts2,ITG,Female,2022,mean,13.47
+ITG2,Sardegna,nuts2,ITG,Total,2022,mean,13.51
+ITG2,Sardegna,nuts2,ITG,Male,2022,p10,8.59
+ITG2,Sardegna,nuts2,ITG,Female,2022,p10,8.39
+ITG2,Sardegna,nuts2,ITG,Total,2022,p10,8.5
+ITG2,Sardegna,nuts2,ITG,Male,2022,median,11.3
+ITG2,Sardegna,nuts2,ITG,Female,2022,median,10.8
+ITG2,Sardegna,nuts2,ITG,Total,2022,median,11.08
+ITG2,Sardegna,nuts2,ITG,Male,2022,p90,17.52
+ITG2,Sardegna,nuts2,ITG,Female,2022,p90,15.98
+ITG2,Sardegna,nuts2,ITG,Total,2022,p90,16.83
+ITG25,Sassari,nuts3,ITG,Male,2022,mean,14.13
+ITG25,Sassari,nuts3,ITG,Female,2022,mean,15.4
+ITG25,Sassari,nuts3,ITG,Total,2022,mean,14.67
+ITG25,Sassari,nuts3,ITG,Male,2022,p10,8.43
+ITG25,Sassari,nuts3,ITG,Female,2022,p10,8.26
+ITG25,Sassari,nuts3,ITG,Total,2022,p10,8.36
+ITG25,Sassari,nuts3,ITG,Male,2022,median,11.12
+ITG25,Sassari,nuts3,ITG,Female,2022,median,10.7
+ITG25,Sassari,nuts3,ITG,Total,2022,median,10.94
+ITG25,Sassari,nuts3,ITG,Male,2022,p90,16.89
+ITG25,Sassari,nuts3,ITG,Female,2022,p90,15.85
+ITG25,Sassari,nuts3,ITG,Total,2022,p90,16.39
+ITG26,Nuoro,nuts3,ITG,Male,2022,mean,12.25
+ITG26,Nuoro,nuts3,ITG,Female,2022,mean,11.55
+ITG26,Nuoro,nuts3,ITG,Total,2022,mean,11.95
+ITG26,Nuoro,nuts3,ITG,Male,2022,p10,8.51
+ITG26,Nuoro,nuts3,ITG,Female,2022,p10,8.35
+ITG26,Nuoro,nuts3,ITG,Total,2022,p10,8.43
+ITG26,Nuoro,nuts3,ITG,Male,2022,median,11.02
+ITG26,Nuoro,nuts3,ITG,Female,2022,median,10.46
+ITG26,Nuoro,nuts3,ITG,Total,2022,median,10.74
+ITG26,Nuoro,nuts3,ITG,Male,2022,p90,15.93
+ITG26,Nuoro,nuts3,ITG,Female,2022,p90,14.64
+ITG26,Nuoro,nuts3,ITG,Total,2022,p90,15.4
+ITG27,Cagliari,nuts3,ITG,Male,2022,mean,13.78
+ITG27,Cagliari,nuts3,ITG,Female,2022,mean,12.84
+ITG27,Cagliari,nuts3,ITG,Total,2022,mean,13.4
+ITG27,Cagliari,nuts3,ITG,Male,2022,p10,8.78
+ITG27,Cagliari,nuts3,ITG,Female,2022,p10,8.54
+ITG27,Cagliari,nuts3,ITG,Total,2022,p10,8.68
+ITG27,Cagliari,nuts3,ITG,Male,2022,median,11.61
+ITG27,Cagliari,nuts3,ITG,Female,2022,median,11.11
+ITG27,Cagliari,nuts3,ITG,Total,2022,median,11.4
+ITG27,Cagliari,nuts3,ITG,Male,2022,p90,19.23
+ITG27,Cagliari,nuts3,ITG,Female,2022,p90,16.89
+ITG27,Cagliari,nuts3,ITG,Total,2022,p90,18.23
+ITG28,Oristano,nuts3,ITG,Male,2022,mean,12.41
+ITG28,Oristano,nuts3,ITG,Female,2022,mean,12.08
+ITG28,Oristano,nuts3,ITG,Total,2022,mean,12.27
+ITG28,Oristano,nuts3,ITG,Male,2022,p10,8.58
+ITG28,Oristano,nuts3,ITG,Female,2022,p10,8.5
+ITG28,Oristano,nuts3,ITG,Total,2022,p10,8.55
+ITG28,Oristano,nuts3,ITG,Male,2022,median,11.2
+ITG28,Oristano,nuts3,ITG,Female,2022,median,10.78
+ITG28,Oristano,nuts3,ITG,Total,2022,median,11.01
+ITG28,Oristano,nuts3,ITG,Male,2022,p90,15.92
+ITG28,Oristano,nuts3,ITG,Female,2022,p90,15.42
+ITG28,Oristano,nuts3,ITG,Total,2022,p90,15.72
+IT111,Sud Sardegna,nuts3,IT1,Male,2022,mean,12.88
+IT111,Sud Sardegna,nuts3,IT1,Female,2022,mean,12.01
+IT111,Sud Sardegna,nuts3,IT1,Total,2022,mean,12.52
+IT111,Sud Sardegna,nuts3,IT1,Male,2022,p10,8.63
+IT111,Sud Sardegna,nuts3,IT1,Female,2022,p10,8.41
+IT111,Sud Sardegna,nuts3,IT1,Total,2022,p10,8.52
+IT111,Sud Sardegna,nuts3,IT1,Male,2022,median,11.34
+IT111,Sud Sardegna,nuts3,IT1,Female,2022,median,10.67
+IT111,Sud Sardegna,nuts3,IT1,Total,2022,median,11.03
+IT111,Sud Sardegna,nuts3,IT1,Male,2022,p90,16.88
+IT111,Sud Sardegna,nuts3,IT1,Female,2022,p90,15.2
+IT111,Sud Sardegna,nuts3,IT1,Total,2022,p90,16.15

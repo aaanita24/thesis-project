@@ -37,11 +37,9 @@ demographic details.
 A small bridge table (*regional_codes*) maps each NUTS-2 region to its
 NUTS-1 macro-area, accommodating the fact that RACLI still uses the
 pre-2021 NUTS coding (ITD, ITE) while the modern standard uses ITH and
-ITI. Neither data set alone has the joint distribution of demographics ×
-sector × NUTS-2 region; which could potentially be the gap filled with
-the LLMs (?).
+ITI. Neither data set alone has the joint distribution of demographics.
 
-```{r include=FALSE}
+```{r results=FALSE}
 library(tidyr)
 library(readxl)
 library(dplyr)
@@ -101,7 +99,7 @@ main idea is to identify them, use fill() to propagate the label
 downward, then remove the marker rows themselves and the footnotes.
 
 ```{r}
-sections <- c("ATTIVITÀ ECONOMICA","ATTIVITÀ ECONOMICA ",   # ISTAT has a trailing space in some tables so ATTIVITA' ECONOMICA is repeated with a space afterwards too
+sections <- c("ATTIVITÃ€ ECONOMICA","ATTIVITÃ€ ECONOMICA ",   # ISTAT has a trailing space in some tables so ATTIVITA' ECONOMICA is repeated with a space afterwards too
               "RIPARTIZIONE GEOGRAFICA",
               "CLASSE DIMENSIONALE", 
               "TIPO DI CONTROLLO ECONOMICO")
@@ -124,8 +122,8 @@ tav1_clean <- tav1_raw |>
 # shorten the section labels to something clean
 tav1_clean <- tav1_clean |>
   mutate(strat_type = recode(str_trim(strat_type),
-    "ATTIVITÀ ECONOMICA" = "sector",
-    "ATTIVITÀ ECONOMICA "  = "sector",
+    "ATTIVITÃ€ ECONOMICA" = "sector",
+    "ATTIVITÃ€ ECONOMICA "  = "sector",
     "RIPARTIZIONE GEOGRAFICA" = "geography",
     "CLASSE DIMENSIONALE" = "firm_size",
     "TIPO DI CONTROLLO ECONOMICO" = "control_type"))
@@ -200,7 +198,7 @@ meta_education_level <- list(raw_names = c("row_label","F_low", "F_med", "F_high
                                            "M_low", "M_med", "M_high", "M_total", "sep2",
                                            "T_low", "T_med", "T_high", "T_total"),
   breakdown_var = "education",
-  cat_labels = c(low = "≤ lower secondary",
+  cat_labels = c(low = "â‰¤ lower secondary",
                     med = "upper secondary",
                     high = "tertiary",
                     total = "total"))
@@ -319,8 +317,8 @@ parse_ses_table <- function(sheet_name, meta, outcome_label) {
       !str_detect(row_label, fixed("Fonte"))) |>
     # recode section labels
     mutate(strat_type = recode(str_trim(strat_type),
-      "ATTIVITÀ ECONOMICA"          = "sector",
-      "ATTIVITÀ ECONOMICA "         = "sector",
+      "ATTIVITÃ€ ECONOMICA"          = "sector",
+      "ATTIVITÃ€ ECONOMICA "         = "sector",
       "RIPARTIZIONE GEOGRAFICA"     = "geography",
       "CLASSE DIMENSIONALE"         = "firm_size",
       "TIPO DI CONTROLLO ECONOMICO" = "control_type"))
@@ -440,17 +438,17 @@ What these processes and function gave me:
 -   row_label; the specific category within strat_type (53 unique).
     Concretely:
 
-    -   for *sector*: NACE letter/double-letter codes B–S with Italian
-        descriptions (e.g. "C - Attività manifatturiere", "K - Attività
-        finanziarie e assicurative").
+    -   for *sector*: NACE letter/double-letter codes Bâ€“S with Italian
+        descriptions (e.g. "C - AttivitÃ  manifatturiere", "K -
+        AttivitÃ  finanziarie e assicurative").
 
     -   for *geography*: Nord-Ovest, Nord-Est, Centro, Sud, Isole,
         'Totale' (total; maybe to drop?)
 
     -   for *firm_size*: 10-49, 50-249, 250-499, 500-999, 1000+,
         'Totale' = total (plus two stray Controllo pubblico/privato rows
-        that look like leakage from a firm-size × control_type table —
-        worth a sanity check).
+        that look like leakage from a firm-size Ã— control_type table
+        â€” worth a sanity check).
 
     -   for control_type: public control (controllo pubblico), private
         control (controllo privato), and total (also maybe to be
@@ -491,7 +489,7 @@ What these processes and function gave me:
     implied by outcome_var. No missing values in the file.
 
 'breakdown_cat_label' was developed as a human-readable version of
-'breakdown_cat' (e.g. low --\> ≤ lower secondary, yr35plus --\> 35+
+'breakdown_cat' (e.g. low --\> â‰¤ lower secondary, yr35plus --\> 35+
 years, manager --\> Managers etc.), and then kept as the 'breakdown_cat'
 variable.
 
@@ -525,8 +523,11 @@ The final goal is to have these data sets:
 -   ses_clean = wages by sector / firm size / control type at NUTS-1 (5
     macro geographical areas)
 
--   racli_clean = wages by region/province × sex × year × quantile at
-    NUTS-2 (20 regions, 107 provinces)
+-   racli_clean = wages by region/province, sex, year quantile at NUTS-2
+    (20 regions, 107 provinces) - from which the regional disadvantage
+    score can be created. This will data set will not be subject to the
+    experiment but will be used to create a score according to which
+    MNAR missingness will be engineered.
 
 -   region_keys = combination of NUTS-1 macro-areas and NUTS-2 regions
     (bridge between the sets)
@@ -535,7 +536,7 @@ The final goal is to have these data sets:
 
 The RACLI data set has four main dimensions: geography (137 territories:
 country / NUTS-1 geographical macro areas / 20 NUTS-2 regions / \~107
-provinces), sex (Male / Female / Total), year (2014–2023, that I
+provinces), sex (Male / Female / Total), year (2014â€“2023, that I
 filtered 2022) and wage statistics (mean / p10 / median / p90).
 
 Differently from the SES data, it only has information regarding every
@@ -628,86 +629,12 @@ regional_codes <- racli_clean |>
 
 # PHASE 1
 
-## Exploratory Data Analysis
+## Exploratory Data Analysis - TO EXPAND
 
-The EDA covers both datasets before any missingness is introduced. The
-goal is to understand their structure, distributions, and any quality
-issues, and to produce a first-pass look at the gender wage gap signal
-visible in the raw data.
-
-## RACLI data
-
-```{r eda-racli}
-plot_intro(racli_clean)
-plot_missing(racli_clean)
-
-# bar plot
-plot_bar(racli_clean |> select(geo_level, sex, indicator))
-
-# density by sex
-racli_clean |>
-  filter(sex %in% c("Male", "Female"), indicator == "mean", 
-         geo_level == "nuts2") |> 
-  ggplot(aes(x = value, fill = sex)) +
-  geom_density(alpha = 0.5) +
-  labs(x = "Mean hourly wage (EUR/hour)", title = "NUTS-2 wage density by sex")
-```
-
-```{r eda-racli-2}
-# pivot wide
-racli_wide_eda <- racli_clean |>
-  filter(sex %in% c("Male", "Female")) |>
-  select(geo_code, geo_label, geo_level, nuts1_code, sex, indicator, value) |>
-  pivot_wider(names_from = indicator, values_from = value)
-
-# histogram
-plot_histogram(
-  racli_wide_eda |> filter(geo_level == "nuts2") |> select(mean, p10, median, p90))
-
-racli_wide_eda |>
-  filter(geo_level == "nuts2") |>
-  ggplot(aes(x = nuts1_code, y = mean, fill = sex)) +
-  geom_boxplot() +
-  labs(x = "NUTS-1 macro-area", y = "Mean hourly wage")
-
-plot_correlation(
-  racli_wide_eda |> filter(geo_level == "nuts2") |> select(mean, p10, median, p90))
-```
-
-```{r eda-racli-summary}
-racli_clean |>
-  filter(sex %in% c("Male", "Female")) |>
-  group_by(indicator, sex) |>
-  summarise(
-    mean_val = mean(value, na.rm = TRUE),
-    sd = sd(value, na.rm = TRUE),
-    min_val = min(value, na.rm = TRUE),
-    max_val = max(value, na.rm = TRUE))
-```
-
-Main findings:
-
--   The dataset is fully complete, no missing values.
-
--   `geo_level` has 3 levels, but the most prominent one is NUTS-3 (107
-    provinces); sex and indicator perfectly balanced in thirds. Female
-    distribution in the density plot shows a clear left shift. The two
-    genders are overlapping, but distinct peaks reflecting the gender
-    gap.
-
--   From the histogram the wage quantiles at NUTS-2 (regional) level,
-    all four statistics roughly right-skewed; p10 clusters around 8-10
-    €/hour, the mean around 13-16, and p90 around 18-22 euros. Boxplot
-    by NUTS-1 area show that ITC/ITD (North East and West) have higher
-    medians and wider spreads compared to the South and the Islands,
-    which have it lower and more compressed.
-
--   In the correlation heatmap all four quantiles show strong
-    correlation with each other (\>0.95). The summary table (indicator x
-    sex) indicate that male wages exceed female's across every quantile,
-    and the gap seems to be somewhat stable across the distribution.
-
-## SES data
+The EDA covers the Structure of Earnings dataset before any missingness
+is introduced. The goal is to understand their structure, distributions,
+and any quality issues, and to produce a first-pass look at the gender
+wage gap signal visible in the raw data.
 
 ```{r eda-ses-intro}
 introduce(ses_data)
@@ -757,8 +684,8 @@ ses_data |>
     some areas as well.
 
 -   The histogram shows a right-skew of the `value,` because hourly
-    wages (\~10–20), annual wages (\~15,000–25,000), and annual hours
-    (\~1,400–1,800) are mixed on the same axis. It must be
+    wages (\~10â€“20), annual wages (\~15,000â€“25,000), and annual
+    hours (\~1,400â€“1,800) are mixed on the same axis. It must be
     differentiated through `outcome_var`. The boxplot of sex x
     outcome_var shows that female earn less than males, for hourly and
     annual wages. The annual hours gap is smaller but still present,
@@ -778,63 +705,14 @@ ses_data |>
 
 # PHASE 2
 
-## Measuring gender wage gap
+## 2.1 Measuring gender wage gap
 
 The first phase of this experimental process is to establish a baseline
-gender pay gap calculated from real ISTAT 2022 data. First, the
-unadjusted gender pay gap will be calculated. It refers to the total
-observed wage disparity per region, calculated from RACLI data. The mean
-hourly wages of women and men in region r: 1 - (mean hourly wage for
-women / mean hourly wave for men in region r). It will also be
-calculated on a country and macro area.
-
-```{r unadj-GPG}
-# pivot Male/Female mean hourly wages to columns and compute the gap
-ugpg <- function(level) {
-  racli_clean |>
-    filter(indicator == "mean",
-           geo_level == level,
-           sex %in% c("Male", "Female")) |>
-    select(geo_code, geo_label, nuts1_code, sex, value) |>
-    pivot_wider(names_from = sex, values_from = value) |>
-    mutate(uGPG = 1 - Female / Male)
-}
-
-ugpg_country <- ugpg("country")
-ugpg_nuts1 <- ugpg("nuts1") |> arrange(desc(uGPG))
-ugpg_nuts2 <- ugpg("nuts2") |> arrange(desc(uGPG))
-
-ugpg_country
-ugpg_nuts1
-ugpg_nuts2
-
-# SAVE  
-# write_csv(ugpg_country, file = "ugpg_country.csv")
-# write_csv(ugpg_nuts1, file = "ugpg_nuts1.csv")
-# write_csv(ugpg_nuts2, file = "ugpg_nuts2.csv")
-```
-
-On the national level, women earn \~9.87% less per hour than men. When
-looking at the pay gap in the macro areas, surprisingly the gender pay
-gap is higher in the northern areas, where women tend to earn more than
-compared to the center and southern areas, but the difference compared
-with men is staggering. The bigger difference is found in the North-West
-area, where women earn approximately 13% less than men, closely followed
-by the North-East. The Islands, Sicily and Sardinia, have the smallest
-unadjusted pay gap, reaching almost 5%.
-
-On a regional level, the unadjusted regional GPG confirms the expected
-pattern: the widest gaps are concentrated in the wealthy Northern
-regions, such as Liguria (15.5%), Lombardia (12.9%), Friuli-Venezia
-Giulia (12.6%), Emilia-Romagna (12.3%) and Piemonte (12.2%) top the
-ranking. The Southern regions cluster at the bottom, with Calabria
-(\~5.2%), Molise (5.2%), Campania (6.8%) and Sicilia (7.5%) showing the
-narrowest raw gaps.
-
-A "composition-adjusted" GPG will be calculated next. Using the SES
-data, for each NUTS-1 macro area and each breakdown category (education
-level, contract type, hours regime, occupation, tenure bracket), compute
-the gender gap.
+gender pay gap calculated from real ISTAT 2022 data. A
+"composition-adjusted" GPG will be calculated. Using the SES data, for
+each NUTS-1 macro area and each breakdown category (education level,
+contract type, hours regime, occupation, tenure bracket), compute the
+gender gap.
 
 ```{r gender-gap-sections}
 within_gaps <- ses_data |>
@@ -873,14 +751,14 @@ agpg_area_breakdown
 
 The composition-adjusted GPG reveals two important patterns. First,
 occupation and education are the dimensions where the gap remains
-largest and most stable across all macro-areas (occupation: \~10–19%;
-education: \~6–18%), confirming that even within the same job category
-or education level, men out-earn women. These are the dimensions where
-the "unexplained" residual is hardest to wash away. Second, and most
-strikingly, the South and the islands flip negative on contract_type,
-hours_regime, and tenure (women out-earn men within
-full-time/permanent/longer-tenured cells), while these gaps stay
-positive in the central regions, North-East and North-West
+largest and most stable across all macro-areas, confirming that even
+within the same job category or education level, men out-earn women.
+These are the dimensions where the "unexplained" residual is hardest to
+wash away. Second, and most strikingly, the South and the islands flip
+negative on `contract_type`, `hours_regime`, and `tenure` (women
+out-earn men within full-time/permanent/longer-tenured cells), while
+these gaps stay positive in the central regions, and in the North-East
+and North-West areas.
 
 A single aGPG number per area, taken as the mean across the five
 breakdown variables.
@@ -899,10 +777,9 @@ agpg_area
 These tables are the ground-truth baseline against which the imputed
 (MICE / LLM) datasets will later be evaluated in Step 4.
 
-!! higher gap in more productive and richer regions –\> SELECTION
-EFFECT - to be looked into for theoretical background !!
+!! SELECTION EFFECT - to be looked into for theoretical background !!
 
-# 2.1 Regional disadvantages
+## 2.2 Regional disadvantages
 
 A regional disadvantage score (reg_dis) is built from the RACLI 'sex ==
 total' cells at NUTS-2 micro level, using two indicators:
@@ -947,18 +824,32 @@ reg_dis <- racli_clean |>
                       include.lowest = TRUE)) |>
   arrange(desc(reg_dis))
 
+# adapted to NUTS-1 for SES
+# RACLI codes -> SES macro-area labels, average the composite reg_dis within each macro-area, then re-cut into tiers 
+reg_dis <- reg_dis |>
+  mutate(
+    nuts1 = recode(nuts1_code,
+      "ITC" = "Nord-Ovest",
+      "ITD" = "Nord-Est", "ITH" = "Nord-Est",
+      "ITE" = "Centro",   "ITI" = "Centro",
+      "ITF" = "Sud",
+      "ITG" = "Isole")) |>
+  group_by(nuts1) |>
+  summarise(reg_dis = mean(reg_dis), .groups = "drop") |>
+  mutate(reg_dis_lvl = cut(reg_dis,
+                      breaks = quantile(reg_dis, c(0, 1/3, 2/3, 1)),
+                      labels = c("low", "moderate", "high"),
+                      include.lowest = TRUE)) |>
+  arrange(desc(reg_dis))
+
 reg_dis 
 
 # write_csv(reg_dis, file = "reg_dis.csv")
 ```
 
-!! Important to note: the 'sex == total' mean wage used here is a
-weighted average of male and female wages, so 'reg_dis' is not fully
-independent of the unadjusted GPG as the two share underlying data.
-
 # PHASE 3
 
-## MCAR pilot on RACLI
+## 3.1 MCAR and MICE pilot
 
 To test the ability and accuracy of LLM's imputation methods, I will
 first test the basic MCAR missingness scenario: missing completely at
@@ -967,87 +858,23 @@ random.
 Under the MCAR assumption, there is no relationship between missingness
 and either the wage or the region, as each cell has the same probability
 of being missing. This is therefore ideal as a baseline for MAE and
-RMSE, it is the baseline 'noise'. It will be calculated both on the
-RACLI data and on the
+RMSE, it is the baseline 'noise'.
 
 STEPS:
 
-1.  Pivot RACLI data wide so MICE has structural predictors to work
-    with. One row per region × sex, with 'mean' , ' p10', 'median',
-    'p90' as columns.
+1.  Structure a new data set where about 20% of the SES data,
+    specifically on the data relevant for the composition-adjusted GPG
+    is missing completely at random (MCAR).
 
-2.  A new data set where about 20% of the 'mean' column is missing
-    completely at random (MCAR).
-
-3.  Run MICE with predictive mean matching (PMM) as the standard
+2.  Run MICE with predictive mean matching (PMM) as the standard
     practice. PMM here selected because it is robust, and because it
     draws imputed values from observed values rather than from a fitted
     distribution: every imputed wage is a real euro/hour figure within
     the empirical support.
 
-4.  Pivot back to long, recompute the GPG measures using the already
+3.  Pivot back to long, recompute the GPG measure using the already
     present function, as a comparison to understand how well the PMM and
     MICE metrics were at reconstructing the missing data.
-
-```{r MICE-imputation-RACLI}
-library(mice)
-set.seed(240603) # for reproducibility
-
-# RACLI wide format 
-racli_wide <- racli_clean |>
-  filter(sex %in% c("Male", "Female")) |>
-  select(geo_code, geo_label, geo_level, nuts1_code, sex, indicator, value) |>
-  pivot_wider(names_from = indicator, values_from = value)
-
-racli_wide  # ground truth, keep aside
-
-# MCAR mask: ~20% of mean cells set to NA, independently of anything
-miss_rate <- 0.20
-racli_missing <- racli_wide |>
-  mutate(mean = if_else(runif(n()) < miss_rate, NA_real_, mean))
-
-# SAVE THE GROUND TRUTH - MNAR missingness will be then applied to it
-# write_csv(racli_wide, file = "racli_wide_original.csv")
-```
-
-Now about 20% of the 'mean' column has missing data completely at
-random.
-
-## MICE imputation on pilot MCAR
-
-Imputation on the RACLI with the engineered missingness completely at
-random.
-
-```{r MCAR-mice-RACLI}
-# MICE with PMM where predictors: the other quantiles + sex + geographical factors
-mice_imputed <- racli_missing |>
-  mutate(across(c(sex, geo_level, nuts1_code), as.factor)) |>
-  select(sex, geo_level, nuts1_code, mean, p10, median, p90)
-
-mice_fit <- mice(mice_imputed, m = 5, method = "pmm", printFlag = FALSE)
-
-# pool the 5 imputed data sets by averaging the imputed 'mean' column
-imp_means <- sapply(1:5, function(i) complete(mice_fit, i)$mean)
-racli_imp <- racli_missing |>
-  mutate(mean = rowMeans(imp_means))
-
-# SAVE
-# write_csv(racli_imp, file = "racli_baseline_mcar.csv")
-```
-
-The same process will be performed on the SES dataset.
-
-## MCAR pilot on SES
-
-The missingness completely at random will be engineered as pilot for the
-SES data, specifically on the data relevant for the composition-adjusted
-GPG. This pilot run will establish the baseline noise of the imputation
-pipeline on this dataset.
-
-The steps followed for this step will be similar to the ones executed
-when establishing the baseline noise for the RACLI data, but the
-missingness here will be around 5% of the data. !! ACCORDING TO THE
-LITERATURE !!
 
 ```{r}
 library(mice)
@@ -1067,7 +894,8 @@ ses_wide <- ses_data |>
   filter(!is.na(Female), !is.na(Male), Male > 0)
 
 # create the baseline corrupted MCAR dataset
-miss_rate_ses <- 0.05
+miss_rate_ses <- 0.20
+
 ses_missing <- ses_wide |> 
   mutate(
     Female = if_else(runif(n()) < miss_rate_ses, NA_real_, Female),
@@ -1076,12 +904,15 @@ ses_missing <- ses_wide |>
 
 # SAVE ses_wide as ground truth - MNAR missingness will be then applied to it
 # write_csv(ses_wide, file = "ses_wide_original.csv")
+
+# SAVE ses_missing as this is MCAR missingness
+# write_csv(ses_missing, file = "ses_missing_mcar.csv")
 ```
 
-## MICE imputation on pilot SES
+### Imputation
 
 MICE imputation using PMM. The SES dataset was filtered to the 5 sheets
-reporting hourly wages (Tav. 1–5). Within each sheet, only the geography
+reporting hourly wages (Tav. 1-5). Within each sheet, only the geography
 stratification rows were kept with the specified 5 NUTS-1 macro-areas
 (Nord-Ovest, Nord-Est, Centro, Sud, Isole), and "Total" dropped. Each of
 those rows is crossed with the breakdown categories from each table.
@@ -1102,147 +933,21 @@ i)$Female)
 imp_male_matrix <- sapply(1:5, function(i) complete(mice_ses_fit,
 i)$Male)
 
-ses_imputed <- ses_missing |>
+ses_imputed_mcar <- ses_missing |>
 mutate(
-Female = rowMeans(imp_female_matrix),
-Male = rowMeans(imp_male_matrix)
-)
+  Female = rowMeans(imp_female_matrix),
+  Male = rowMeans(imp_male_matrix))
 
+# write_csv(ses_imputed_mcar, file = "ses_imputed_mcar.csv")
 ```
 
-Now I have the imputed pilot datasets to establish algorithmic noise for
-both the RACLI data (from which the unadjusted gpg was calculated) SES
-data (from which the "composition-adjusted" gpg was measured).
+Now I have the imputed pilot dataset to establish algorithmic noise for
+the data (from which the "composition-adjusted" gpg was measured).
+Before evaluating the MICE's performance on MCAR missingness, the entire
+missing not at random pipeline will be ran so that the evaluation can be
+compared.
 
-## Recreating and comparing GPG metrics
-
-First, let's look at how the uadjusted GPG was recreated and let's
-evaluate it against the original metric. Here bias is computed per
-region as 'uGPG_imp' − 'uGPG_true', where 'uGPG_true' is the baseline
-gap calculated from the complete RACLI data.
-
-```{r}
-# recompute uGPG on imputed data
-ugpg_from_imp <- function(level) {
-  racli_imp |>
-    filter(geo_level == level) |>
-    select(geo_code, geo_label, nuts1_code, sex, mean) |>
-    pivot_wider(names_from = sex, values_from = mean) |>
-    mutate(uGPG = 1 - Female / Male)
-}
-
-ugpg_nuts2_imp <- ugpg_from_imp("nuts2")
-
-compare_nuts2 <- ugpg_nuts2 |>
-  select(geo_code, geo_label, uGPG_true = uGPG) |>
-  inner_join(ugpg_nuts2_imp |> select(geo_code, uGPG_imp = uGPG),
-             by = "geo_code") |>
-  mutate(bias      = uGPG_imp - uGPG_true,
-         abs_error = abs(bias))
-
-summary_metrics <- compare_nuts2 |>
-  summarise(
-    mean_bias = mean(bias),
-    MAE       = mean(abs_error),
-    RMSE      = sqrt(mean(bias^2)),
-    spearman  = cor(uGPG_true, uGPG_imp, method = "spearman")
-  )
-
-summary_metrics
-compare_nuts2 |> arrange(desc(abs_error))
-```
-
-This initial baseline attempt behaves very well. Mean bias across the 20
-micro-level regions is essentially zero (0.0005), MAE is 0.3 percentage
-points, RMSE equals to 0.007, and the Spearman rank correlation between
-true and imputed regional uGPGs is 0.96, indicating that regional
-rankings are almost perfectly preserved.
-
-The fact that the substantive ordering of regions survives the MCAR
-missing data method is especially reassuring, since the focus of the GPG
-depends more on which regions stand out than on the exact decimal of
-each gap. Taken together, these results establish the noise floor of the
-pipeline: the residual error attributable to the imputation procedure
-itself, before any informative missingness is introduced. The most
-relevant takeaway of this initial MCAR test on PMM is that any possible
-deterioration observed in the following steps of experiment can be
-attributed to the missingness mechanism rather than to limitations of
-the MICE-PMM method as such.
-
--   well performing baseline when the NAs are missing completely at
-    random and retreived through MICE imputation (PMM).
-
-Now, from the imputed data, the composition-adjusted GPG will be
-calculated and compared to the one obtained based on the real SES data.
-
-```{r}
-# compute the within-category gaps and weight them by the female-wage share
-agpg_breakdown_imp <- ses_imputed |>
-  group_by(area, breakdown_var) |>
-  mutate(
-    gap    = 1 - Female / Male,
-    weight = Female / sum(Female, na.rm = TRUE)) |>
-  summarise(
-    aGPG_imp     = sum(weight * gap, na.rm = TRUE),
-    n_categories = n(),
-    .groups      = "drop")
-
-# aggregate to a single aGPG value per NUTS-1 macro-area (mean across 5 variables)
-agpg_area_imp <- agpg_breakdown_imp |>
-  group_by(area) |>
-  summarise(aGPG_imp = mean(aGPG_imp), .groups = "drop")
-
-# evaluation at the Area × Breakdown level (25 data points for robust metrics)
-compare_ses_breakdown <- agpg_area_breakdown |>
-  select(area, breakdown_var, aGPG_true = aGPG) |>
-  inner_join(agpg_breakdown_imp |> select(area, breakdown_var, aGPG_imp),
-             by = c("area", "breakdown_var")) |>
-  mutate(bias      = aGPG_imp - aGPG_true,
-         abs_error = abs(bias))
-
-summary_ses_breakdown_metrics <- compare_ses_breakdown |>
-  summarise(mean_bias = mean(bias),
-            MAE = mean(abs_error),
-            RMSE = sqrt(mean(bias^2)),
-            spearman = cor(aGPG_true, aGPG_imp, method = "spearman"))
-
-# evaluation at the macro Area level (5 NUTS-1 regions)
-compare_ses_area <- agpg_area |>
-  select(area, aGPG_true = aGPG) |>
-  inner_join(agpg_area_imp |> select(area, aGPG_imp), by = "area") |>
-  mutate(bias = aGPG_imp - aGPG_true,
-         abs_error = abs(bias))
-```
-
-This initial baseline attempt also behaves really well. Mean bias across
-the 25 micro-level area-breakdown strata is essentially zero (-0.0002),
-MAE is under 0.1 percentage points (0.00096), RMSE equals 0.0014, and
-the Spearman rank correlation between true and imputed stratified aGPGs
-is 0.999, indicating that the composition-adjusted rankings are almost
-perfectly preserved. Looking at the macro-area aggregates, absolute
-errors remain low, peaking at just 0.14 percentage points in the *Isole*
-macro-area and dropping to near-zero for both the *Sud* and *Nord-est*
-zones.
-
-These results establish the noise floor of the SES pipeline, meaning the
-residual error attributable to the imputation procedure itself, before
-any widespread missingness is introduced. The most relevant takeaway of
-this initial MCAR test on PMM is that any future performance changes
-observed in the next steps of the experiment can be confidently
-attributed to the missingness mechanism, rather than to baseline
-limitations of the MICE-PMM performance on this data structure.
-
--   well performing baseline when the NAs are missing completely at
-    random and retreived through MICE imputation (PMM), for SES data as
-    well.
-
-The next step is to create the datasets (one for SES and one for RACLI)
-for MICE and the LLM to actually reproduce. In the case on RACLI, the
-dataset will be objected to MNAR (missing not at random), while for the
-Structure of Earnings data, the dataframe will be subjected to a higher
-amount of data missing completely at random, MCAR.
-
-# 3.1 Engineered MNAR dataset (RACLI)
+## 3.4 Engineered MNAR dataset
 
 Using the regional disaggregation metric that was developed for each
 region, the information will be modified in order to fabricate the
@@ -1252,12 +957,13 @@ both using the standard MICE package, and using the LLMs.
 MNAR is the method selected to define missingness because we are
 assuming that the probability of the data cells being missing are
 directly related to the lack of information/difficulty of collecting
-data/increased inequalities in the regions with the lowest regions +
+data/increased inequalities in the areas with the lowest possibilities +
 lowest female participation. It is a structural issue rather than a
 random one, hence the construction of the regional disadvantage levels.
-Here, this will be fabricated by dropping data from the *'racli_clean'*
-data (wide format), where the 'mean' cells will be dropped with a
-probability scaled according to the regional disadvantage measured.
+Missingness will be fabricated through MNAR at the macro-area level
+according to the (adapted) regional disadvantage index. Only the rows
+with the specified stratification type at the geographic level will be
+kept (already specified with `ses_wide`).
 
 -   low reg_dis level = \~0.10 probability of mean values being missing
 
@@ -1268,75 +974,30 @@ probability scaled according to the regional disadvantage measured.
 
 !! How do I justify/specify this selection of probability scores?
 
-```{r MNAR-reg_dis}
-set.seed(240603)
+```{r MNAR-ses}
+set.seed(240306) # seed for reproducibility
 
-# average drop rate across tiers ~25%, comparable to the MCAR 20% baseline
-p_miss_mnar <- c(low = 0.10, moderate = 0.25, high = 0.45)
-
-# tier lookup defined at NUTS-2; NUTS-3 provinces will inherit the
-# disadvantage tier of their NUTS-2 region, so missingness propagates 
-# down the geographic hierarchy
-tier_lookup <- reg_dis |>
-  select(geo_code, reg_dis_lvl)
-
-# geo code matching
-racli_wide_mnar <- racli_wide |>
-  mutate(
-    # each row's NUTS-2 region: itself if NUTS-2, truncated 
-    # geo_code if NUTS-3, NA otherwise (NUTS-1 / country stay untouched)
-    nuts2_parent = case_when(geo_level == "nuts2" ~ geo_code,
-                             geo_level == "nuts3" ~ substr(geo_code, 1, 4),
-                             TRUE ~ NA_character_)) |>
-  left_join(tier_lookup, by = c("nuts2_parent" = "geo_code"))
-
-# Bernoulli draw conditional on tier; aggregate / country rows never masked
-racli_exp_mnar <- racli_wide_mnar |>
-  mutate(p_drop = p_miss_mnar[as.character(reg_dis_lvl)],
-         p_drop = if_else(is.na(p_drop), 0, p_drop),
-         drop = runif(n()) < p_drop,
-         mean = if_else(drop, NA_real_, mean)) |>
-  select(-nuts2_parent, -p_drop, -drop)  # tidy up
-
-plot_missing(racli_exp_mnar)
-
-# SAVE
-# write_csv(racli_exp_mnar, file = "racli_exp_mnar.csv")
-```
-
-Each cell in the `mean` column is dropped with a probability that
-depends on its region's disadvantage tier: roughly 10% in `low`, 25% in
-`moderate`, and 45% in `high`, so that the presence of NAs is
-concentrated in structurally weaker labor markets, but never
-deterministic. NUTS-3 provinces inherit the tier of their NUTS-2 region,
-while NUTS-1 and country rows are left intact. `racli_missing_mnar` is
-the dataset that MICE and the LLM will both later attempt to
-reconstruct.
-
-# 3.2 Engineered MNAR dataset (SES)
-
-For the SES data, the missingness will be fabricated through MNAR at the
-macro-area level according to the (adapted) regional disadvantage index.
-Only the rows with the specified stratification type at the geographic
-level will be kept (already specified with ses_wide).
-
-```{r MCAR-ses}
-set.seed(2026) # seed for reproducibility
-
-p_miss_step <- 0.20
+# MNAR: missingness probability rises with disadvantage tier
+tier_p <- c(low = 0.10, moderate = 0.25, high = 0.45)
 
 ses_exp_mnar <- ses_wide |>
-  rename(nuts1 = area) |>          # `area` has the NUTS-1 macro-area label
-  filter(!is.na(nuts1)) |>         # keep ONLY rows with a defined NUTS-1 area
-  mutate(
-    # independent cell-level draws for Female / Male missingness
-    drop_F = runif(n()) < p_miss_step,
-    drop_M = runif(n()) < p_miss_step,
-    Female = if_else(drop_F, NA_real_, Female),
-    Male  = if_else(drop_M, NA_real_, Male)) |>
-  select(-drop_F, -drop_M)         # tidy up
+  rename(nuts1 = area) |>
+  filter(!is.na(nuts1)) |>   # keep defined NUTS-1 areas
+  left_join(reg_dis |> select(nuts1, reg_dis_lvl), by = "nuts1") |>
+  mutate(p_miss = tier_p[as.character(reg_dis_lvl)],             # per-row drop probability
+         drop_F = runif(n()) < p_miss, 
+         drop_M = runif(n()) < p_miss,  
+         Female = if_else(drop_F, NA_real_, Female),
+         Male   = if_else(drop_M, NA_real_, Male)) |> 
+  select(-drop_F, -drop_M, -p_miss)
 
 plot_missing(ses_exp_mnar)
+
+# sanity check
+ses_exp_mnar |>
+  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
+  group_by(reg_dis_lvl) |>
+  summarise(missing_rate = mean(is.na(value)), n_cells = n(), .groups = "drop")
 
 # SAVE EXPERIMENTAL DATASET
 # write_csv(ses_exp_mnar, file = "ses_exp_mnar.csv")
@@ -1348,238 +1009,370 @@ LLM.
 
 # PHASE 4
 
-# Baseline LLM & Uniform Function
+## 4.1 MICE imputation on MNAR engineered missingness
+
+The standard imputation method using MICE will be tested on the
+engineered missingness (not at random) on both data set, to establish
+how well this process retrieves the missing data.
+
+The PMM approach is applied to the MNAR-enigneered SES data set. Here
+the 20% masking is applied uniformly across the `Female` and `Male` wage
+columns of `ses_exp_mnar`: the comparison with the Phase 3 pilot (20%
+MCAR) will reveal whether recovery degrades.
+
+```{r mice-mnar-ses}
+set.seed(240603)
+
+mice_ses_mnar_input <- ses_exp_mnar |>
+  mutate(across(c(nuts1, breakdown_var, breakdown_cat), as.factor)) |>
+  select(nuts1, breakdown_var, breakdown_cat, Female, Male)
+
+mice_ses_mnar_fit <- mice(mice_ses_mnar_input, m = 5, method = "pmm", printFlag = FALSE)
+
+# pool: average imputed Female and Male columns
+imp_female_mnar <- sapply(1:5, function(i) complete(mice_ses_mnar_fit, i)$Female)
+imp_male_mnar   <- sapply(1:5, function(i) complete(mice_ses_mnar_fit, i)$Male)
+
+ses_mice_mnar <- ses_exp_mnar |>
+  mutate(
+    Female = rowMeans(imp_female_mnar),
+    Male   = rowMeans(imp_male_mnar)) |>
+  rename(area = nuts1)   # match column name expected by evaluate_imputation
+
+# write_csv(ses_mice_mnar, file = "ses_mice_mnar.csv")
+```
+
+This dataset will now be evaluated
+
+## 4.3 Evaluation
+
+One single evaluation function is developed, to be used with different
+results throughout the experiment:
+
+```{r eval-ses}
+metrics_tracker <- tibble(
+  method    = character(),
+  metric    = character(),
+  n         = integer(),
+  mean_bias = double(),
+  MAE       = double(),
+  RMSE      = double(),
+  spearman  = double())
+
+eval_ses <- function(ses_imp, label) {
+
+  # 1. aGPG-level accuracy (25 area x breakdown cells) 
+  imp <- ses_imp |>
+    group_by(area, breakdown_var) |>
+    mutate(gap    = 1 - Female / Male,
+           weight = Female / sum(Female, na.rm = TRUE)) |>
+    summarise(value_imp = sum(weight * gap, na.rm = TRUE), .groups = "drop") |>
+    unite("unit", area, breakdown_var, sep = " | ")
+
+  truth <- agpg_area_breakdown |>
+    select(area, breakdown_var, value_true = aGPG) |>
+    unite("unit", area, breakdown_var, sep = " | ")
+
+  scores <- truth |>
+    inner_join(imp, by = "unit") |>
+    mutate(bias = value_imp - value_true, abs_error = abs(bias)) |>
+    summarise(
+      method    = label,
+      metric    = "agpg",
+      n         = sum(!is.na(bias)),
+      mean_bias = mean(bias, na.rm = TRUE),
+      MAE       = mean(abs_error, na.rm = TRUE),
+      RMSE      = sqrt(mean(bias^2, na.rm = TRUE)),
+      spearman  = cor(value_true, value_imp, method = "spearman", use = "complete.obs"))
+
+  metrics_tracker <<- bind_rows(metrics_tracker, scores)
+  cat(sprintf("\n--- %s ---\n", label))
+  print(scores)
+
+  # 2. Cell-level distributional fidelity
+  se <- ses_imp |>
+    pivot_longer(c(Female, Male), names_to = "sex", values_to = "value_imp") |>
+    left_join(
+      ses_wide |> pivot_longer(c(Female, Male), names_to = "sex", values_to = "value_true"),
+      by = c("area", "breakdown_var", "breakdown_cat", "sex")) |>
+    mutate(bias = value_imp - value_true, abs_error = abs(bias))
+
+  cat("\n=== Cell-level ===\n")
+  print(se |> arrange(desc(abs_error)) |>
+    select(area, breakdown_var, breakdown_cat, sex, value_true, value_imp, bias))
+
+  ks <- ks.test(se$value_imp, se$value_true)
+  cat(sprintf("\nK-S: D=%.4f  p=%.4f\n", ks$statistic, ks$p.value))
+  cat(sprintf("Bias direction: %.1f%% of cells over-estimated\n",
+              mean(se$bias > 0, na.rm = TRUE) * 100))
+
+  # 3. Fairness by breakdown variable
+  cat("\n=== Fairness by breakdown variable ===\n")
+  fairness <- se |>
+    group_by(breakdown_var) |>
+    summarise(bias = mean(bias, na.rm = TRUE),
+              MAE  = mean(abs_error, na.rm = TRUE),
+              n    = n(), .groups = "drop") |>
+    arrange(breakdown_var)
+  print(fairness)
+  cat(sprintf("MAE ratio (worst / best): %.3f\n", max(fairness$MAE) / min(fairness$MAE)))
+
+  # 4. Fairness by disadvantage tier (MNAR datasets only)
+  if ("reg_dis_lvl" %in% names(se)) {
+    cat("\n=== Fairness by disadvantage tier ===\n")
+    tier_fair <- se |>
+      group_by(reg_dis_lvl) |>
+      summarise(bias = mean(bias, na.rm = TRUE),
+                MAE  = mean(abs_error, na.rm = TRUE),
+                n    = n(), .groups = "drop") |>
+      arrange(reg_dis_lvl)
+    print(tier_fair)
+    cat(sprintf("MAE ratio (high / low tier): %.3f\n",
+                max(tier_fair$MAE) / min(tier_fair$MAE)))
+  }
+
+  # 5. aGPG MAE at two aggregation levels 
+  agpg_cells <- ses_imp |>
+    group_by(area, breakdown_var) |>
+    mutate(gap    = 1 - Female / Male,
+           weight = Female / sum(Female, na.rm = TRUE)) |>
+    summarise(aGPG_imp = sum(weight * gap, na.rm = TRUE), .groups = "drop") |>
+    left_join(agpg_area_breakdown |> select(area, breakdown_var, aGPG_true = aGPG),
+              by = c("area", "breakdown_var")) |>
+    mutate(agpg_error = abs(aGPG_imp - aGPG_true))
+
+  agpg_area_res <- agpg_cells |>
+    group_by(area) |>
+    summarise(aGPG_imp = mean(aGPG_imp), .groups = "drop") |>
+    left_join(agpg_area |> select(area, aGPG_true = aGPG), by = "area") |>
+    mutate(agpg_error = abs(aGPG_imp - aGPG_true))
+
+  cat(sprintf("\naGPG MAE (25 cells): %.4f\n", mean(agpg_cells$agpg_error, na.rm = TRUE)))
+  cat(sprintf("aGPG MAE (5 NUTS-1): %.4f\n",  mean(agpg_area_res$agpg_error, na.rm = TRUE)))
+
+  if (exists("mcar_mae_ses")) {
+    cat(sprintf("MNAR/MCAR MAE ratio: %.2fx\n", scores$MAE / mcar_mae_ses))
+  }
+
+  invisible(metrics_tracker)
+}
+
+# evaluating MNAR and MCAR MICE retreival
+eval_ses(ses_mice_mnar, "MICE_MNAR")
+eval_ses(ses_imputed_mcar, "MICE_MCAR")
+```
+
+The function produces 5 outputs:
+
+-   **Cell-level SES table**: the same concept but adapted to SES, so
+    one row per macro-area x breakdown category x sex cell. It shows
+    true vs imputed wage and bias, sorted by largest error as well.
+
+-   **K-S statistic:** it tests whether the imputed wages follow the
+    same distribution as the true wages. D close to 0 = distributions
+    match well. A low p-value means the imputed distribution is
+    significantly different from the true one.
+
+-   **Bias direction:** the percentage of imputed cells where the model
+    over-estimated (bias \> 0). It indicates whether the errors are
+    systematic or random.
+
+-   **Fairness by disadvantage tier:** the mean bias and MAE broken down
+    by low/moderate/high disadvantage regions. If the method performs
+    much worse in high-disadvantage areas (which had the most
+    missingness engineered into them), the imputation is most likely not
+    recovering the structural gap fairly.
+
+EVALUATION OF MICE MNAR RECOVERY: Under MNAR, MICE-PMM underperformes
+sharply compared to the MCAR noise floor. The adjusted gap is now
+systematically understated (mean_bias = -0.048 across the 25 strata),
+MAE rises to 0.107 and RMSE to 0.142, and the Spearman rank correlation
+collapses from near-unity to 0.159, meaning the composition-adjusted
+regional rankings are effectively not preserved. PMM draws from the
+observed information, but when missingness is concentrated in the most
+disadvantaged areas, the cells it borrows from are systematically the
+wrong ones, so it reconstructs plausible-looking wages that no longer
+respect the true ordering between regions.
+
+The K-S statistic is small and non-significant (D = 0.116, p = 0.069),
+so the marginal wage distribution is roughly intact. Errors are also
+unevenly spread: bias is negative in \~77% of cells (only 22.8%
+over-estimated), confirming a one-directional under-recovery, and MAE
+varies 3.55x across breakdown variables, worst on occupation (2.011)
+where missingness is more dense, and best on tenure (0.566). In short,
+MICE is able to reconstruct the wages, but it loses the regional/macro
+area structure.
+
+# PHASE 5
+
+# 5.1 Baseline LLM & Uniform Function
 
 Before actually starting the experiment, a baseline analysis of the LLM
 will be carried out. Based on previous research, the selected LLM will
-be OLMo 3: "a competitive, truly Open Language Model, to enable the
-scientific study of language models. Unlike most prior efforts that have
-only released model weights and inference code, we release OLMo
-alongside open training data and training and evaluation code." It also
-has a lower verbatim memorization rate, making it the least likely to
-possess pre-existing knowledge of specific records that would bias the
-results.
+be Qwen 3-32B - chosen because the previous model (Olmo) did not have an
+available thinking version, and this is a reasoning model. It has a
+black box algorithm, differently from the first choice, but the 32B
+parameter is a scale that establishes the compression rate, and it is in
+line with the Olmo model. (to be expanded with literature)
 
-<https://arxiv.org/html/2402.00838> <https://arxiv.org/html/2512.13961>
-
-OLMo 3 is a neural network with billions of numbers (weights) in it. To
-actually run it and use it, the weights have to be loaded into the
+To actually run it and use it, the weights have to be loaded into the
 memory of a machine with a powerful GPU. For computational constraints,
-an API key was obtained for 5 dollars (of tokens) from HuggingFace.com -
-a company that maintains a huge open-source community of the same name
-that builds tools, machine learning models and platforms for working
-with artificial intelligence, with a focus on data science, machine
-learning and natural language processing (NLP). Hugging Face is notable
-for its NLP transformers library and a platform that allows users to
-share models and data sets (from
-<https://www.ibm.com/think/topics/hugging-face>).
+an API key was obtained for 5 dollars (of tokens) from OpenRouter.com.
 
-It will be used through the 'olmo_chat' function.
+It will be used through the 'llm_chat' function.
+
+The selected model is the Qwen 3-32B thinking model, and the temperature
+and probability were set according to the model's card recommendation.
+
+*temperature* = a scaling factor on the token probabilities before
+sampling; "a higher value for temperature produces a softer probability
+distribution over classes" (Hinton et al., 2015, pg. 3)
+<https://arxiv.org/pdf/1503.02531>
+
+*top_p* = nucleus sampling - a principled alternative to top-k sampling,
+which uses the probability distribution to determine a set of tokens to
+be sampled from // it selects the highest probability tokens whose
+cumulative probability mass exceeds our pre-chosen threshold *p*
+[https://arxiv.org/htlm/1904.09751v1](https://arxiv.org/pdf/1904.09751v1){.uri}
+
+In this scenario, with temperature at 0.6 and top_p at 0.9 introduces
+controlled stochasticity (as recommended by the model's instructions).
+Qwen 3-32B generates with mild randomness rather than deterministically:
+the 0.6 temperature keeps the distribution moderately sharp, while top_p
+of 0.9 restricts sampling to the most probable tokens covering 90% of
+the mass.
+
+This functions turns a prompt into a one single cell number, but because
+the parameters that were recommended for the model introduce
+stochasticity, the outputs will have to be run N times (starting with
+standard 5) to ensure reproducibility. The function has 3 parts:
+
+-   base call for the model, sends the prompt and returns the model's
+    raw reply.
+
+-   strip_think + extract_number which extract the numbers from the
+    textual answer.
+
+-   impute_cell calls the model N times and takes the mean.
 
 ```{r}
 library(httr)
+library(httr2)
 library(jsonlite)
 
-olmo_chat <- function(prompt,
-                      model = "allenai/Olmo-3-7B-Instruct",
-                      system = NULL,
-                      temperature = 0) {
+llm_chat <- function(prompt,
+                     model = "qwen/qwen3-32b",
+                     system = NULL,
+                     temperature = 0.6,
+                     top_p = 0.9,
+                     max_tokens = 8192,
+                     retries = 5) {
 
   msgs <- list()
   if (!is.null(system)) msgs <- c(msgs, list(list(role = "system", content = system)))
   msgs <- c(msgs, list(list(role = "user", content = prompt)))
 
-  resp <- POST(
-    url = "https://router.huggingface.co/v1/chat/completions",
-    add_headers(
-      Authorization = paste("Bearer", Sys.getenv("HF_TOKEN")),
-      `Content-Type` = "application/json"),
-    body = toJSON(list(
-      model  = model,
-      messages = msgs,
-      temperature = temperature), auto_unbox = TRUE),
-    encode = "raw")
+  for (attempt in seq_len(retries)) {
+    resp <- POST(
+      url = "https://openrouter.ai/api/v1/chat/completions",
+      add_headers(
+        Authorization = paste("Bearer", Sys.getenv("OPENROUTER_API_KEY")),
+        `Content-Type` = "application/json"),
+      body = toJSON(list(
+        model       = model,
+        messages    = msgs,
+        temperature = temperature,
+        top_p       = top_p,
+        max_tokens  = max_tokens), auto_unbox = TRUE),
+      encode = "raw",
+      timeout(300))
 
-  stop_for_status(resp)
-  content(resp, as = "parsed")$choices[[1]]$message$content
-}
-```
+    sc <- status_code(resp)
 
-Sanity check:
+    if (sc == 200)
+      return(content(resp, as = "parsed")$choices[[1]]$message$content)
 
-```{r}
+    if (sc %in% c(429L, 503L, 504L) && attempt < retries) {
+      message("HF API ", sc, " on attempt ", attempt, " -- retrying in ",
+              20 * attempt, "s ...")
+      Sys.sleep(20 * attempt)
+      next
+    }
 
-olmo_chat("What was the approximate average gross hourly wage in Italy in 2022, in euros? 
-          Reply with a single number.",
-  system = "You are a careful estimator. Reply with only a number, no text.")
-```
-
-# 4.1 Evaluation function
-
-An evaluation function was created, as a one single function to apply to
-every imputed dataset, and create a uniform and cleaner workflow. It
-returns a one-row tibble, the results of which will be added in the
-metrics tracker.
-
-```{r evaluate-function}
-
-evaluate_imputation <- function(imp_dataset, label, metric = c("ugpg", "agpg")) {
-  metric <- match.arg(metric)
-
-  if (metric == "ugpg") {
-    # RACLI: unadjusted gap from mean hourly wage at NUTS-2
-    imp <- imp_dataset |>
-      filter(geo_level == "nuts2", sex %in% c("Male", "Female")) |>
-      select(geo_code, sex, mean) |>
-      pivot_wider(names_from = sex, values_from = mean) |>
-      mutate(value_imp = 1 - Female / Male) |>
-      select(unit = geo_code, value_imp)
-
-    truth <- ugpg_nuts2 |> select(unit = geo_code, value_true = uGPG)
-
-  } else {
-    # SES: composition-adjusted gap, within-category gaps weighted by female-wage share
-    imp <- imp_dataset |>
-      group_by(area, breakdown_var) |>
-      mutate(gap = 1 - Female / Male,
-             weight = Female / sum(Female, na.rm = TRUE)) |>
-      summarise(value_imp = sum(weight * gap, na.rm = TRUE), .groups = "drop") |>
-      unite("unit", area, breakdown_var, sep = " | ")
-
-    truth <- agpg_area_breakdown |>
-      select(area, breakdown_var, value_true = aGPG) |>
-      unite("unit", area, breakdown_var, sep = " | ")
+    stop("API error ", sc, ": ",
+         content(resp, as = "text", encoding = "UTF-8"))
   }
-
-  truth |>
-    inner_join(imp, by = "unit") |>
-    mutate(bias = value_imp - value_true, abs_error = abs(bias)) |>
-    summarise(
-      method = label,
-      metric = metric,
-      n = sum(!is.na(bias)),
-      mean_bias = mean(bias, na.rm = TRUE),
-      MAE = mean(abs_error, na.rm = TRUE),
-      RMSE = sqrt(mean(bias^2, na.rm = TRUE)),
-      spearman = cor(value_true, value_imp, method = "spearman", use = "complete.obs"))
+  stop("All ", retries, " retries exhausted.")
 }
 
-# metrics tracker
-metrics_tracker <- tibble(
-  method = character(),
-  metric = character(),
-  n = integer(),
-  mean_bias = double(),
-  MAE = double(),
-  RMSE = double(),
-  spearman = double())
+# shared LLM extraction config + helpers (used by EVERY LLM condition)
+wage_lower        <- 6       # plausible EUR/hr bounds for RACLI
+wage_higher        <- 45
+
+strip_think <- function(x) {
+  if (length(x) == 0 || is.na(x)) return(NA_character_)
+  x <- gsub("(?s)<think>.*?</think>", "", x, perl = TRUE) # closed trace
+  if (grepl("</think>", x)) x <- sub("(?s).*</think>", "", x, perl = TRUE)  # keep text after last </think>
+  trimws(x)
+}
+
+# primary: first number after stripping the think trace; fallback: LAST number in the raw reply
+extract_number <- function(raw) {
+  if (length(raw) == 0 || is.na(raw)) return(NA_real_)
+  pick <- function(s, last = FALSE) {
+    nums <- regmatches(s, gregexpr("-?[0-9]+(?:[.,][0-9]+)?", s, perl = TRUE))[[1]]
+    nums <- nums[!grepl("^(19|20)[0-9]{2}$", nums)]   # drop year-like tokens
+    if (length(nums) == 0) return(NA_real_)
+    as.numeric(gsub(",", ".", if (last) tail(nums, 1) else nums[1]))
+  }
+  val <- pick(strip_think(raw), last = FALSE)
+  if (is.na(val)) val <- pick(raw, last = TRUE)
+  val
+}
+
+# one call + parse + validate path 
+llm_impute_value <- function(prompt, system, sleep = 2,
+                             lo = wage_lower, hi = wage_higher,
+                             max_tokens = 8192) {
+  Sys.sleep(sleep)
+  raw <- tryCatch(
+    llm_chat(prompt, system = system, max_tokens = max_tokens),
+    error = function(e) { message("API error: ", conditionMessage(e)); NULL })
+  if (is.null(raw)) return(NA_real_)
+  val <- extract_number(raw)
+  if (is.na(val))          { message("extract -> NA"); return(NA_real_) }
+  if (val < lo | val > hi) { message("out of range: ", val); return(NA_real_) }
+  val
+}
 ```
 
-# 4.2 LLM Uninformed baseline (RACLI)
+# 5.2 Uninformed baseline on SES
 
-OLMo 3 is asked about each missing RACLI cells by region name and sex
-only, with zero data context. This defined the prior knowledge that
-model carries about Italian regional wages from training, and the
-metrics can therefore be used as a baseline. When using the LLM, the
-MNAR engineered missingness will be used, instead of using the MCAR as
-it was done to establish the baseline MICE performance and metrics. This
-is done because the uninformed LLM ignores all observed data, so the
-missingness mechanism doesn't change its guesses or mechanism.
+Qwen 3-32B is asked about each missing cells by area and sex only, with
+zero data context. This defined the prior knowledge that model carries
+about Italian regional wages from training, and the metrics can
+therefore be used as a baseline. When using the LLM, the MNAR engineered
+missingness will be used, instead of using the MCAR as it was done to
+establish the baseline MICE performance and metrics. This is done
+because the uninformed LLM ignores all observed data, so the missingness
+mechanism doesn't change its guesses or mechanism.
 
-In this chunk, MNAR-deleted RACLI cells will be replaced by OLMo's
-uninformed guesses: for each missing NUTS-2 region x sex wage, it builds
-a prompt asking the model for that 2022 mean hourly wage with no data
-given, which is then parsed into a single number from the reply.
-Furthermore, the function discards implausible values (outside €6–25) as
-NA, producing one estimated wage per gap.
-
-```{r llm-baseline}
-library(purrr)
-
-missing_nuts2 <- racli_exp_mnar |>
-  filter(is.na(mean), geo_level == "nuts2") |>
-  select(geo_code, geo_label, sex)
-
-llm_baseline <- missing_nuts2 |>
-  mutate(prompt = paste0(
-    "What was the mean gross hourly wage for ", sex,
-    " workers in the Italian region of ", geo_label,
-    " in 2022? Reply with a single number in EUR per hour, no explanation."),
-    mean_imp = map_dbl(prompt, \(p) {
-      Sys.sleep(1)
-      resp <- olmo_chat(p,
-                        system = "You are a careful economic estimator. Reply with only a single number.")
-     
-      nums <- str_extract_all(resp, "[0-9]+(?:[.,][0-9]+)?")[[1]]
-      nums <- nums[!str_detect(nums, "^(19|20)[0-9]{2}$")] # drop 4-digit years so they aren't read as wages
-      val  <- as.numeric(str_replace(nums[1], ",", "."))  # NA only if nothing left
-    }))
-
-llm_baseline |> select(geo_label, sex, mean_imp)
-```
-
-Result: 16 cells that were removed my the MNAR process are here
-recovered, and are the baseline knowledge of the LLM. They are to be
-joined with the rest of the data and compared with the real information
-from ISTAT, and added to the metrics table to keep track of every step.
-
-```{r llm-v0-fill}
-racli_llm_baseline <- racli_exp_mnar |>
-  left_join(llm_baseline |> select(geo_code, sex, mean_imp),
-            by = c("geo_code", "sex")) |>
-  mutate(mean = if_else(is.na(mean), mean_imp, mean)) |>
-  select(-mean_imp)
-
-# SAVE
-# write_csv(racli_llm_baseline, file = "racli_llm_baseline.csv")
-
-metrics_tracker <- bind_rows(
-  metrics_tracker,
-  evaluate_imputation(racli_llm_baseline, "LLM_uninformed", metric = "ugpg"))
-
-metrics_tracker
-```
-
-The NAs that are still present here are at the province level --\> keep
-it like this or expand the prompt to recover NUTS-3 level?
-
-The main findings here, compared to the initial MICE with MCAR
-imputation, are:
-
--   the LLM guesses nearly the same hourly wage for men and women, so
-    the imputed gender gap collapses toward zero, explaining the −0.20
-    bias, the model systematically flattens the gap
-
--   because only the missing cells are replaced (and the real values are
-    added to the LLM imputed), there are strongly differing cases. For
-    example, the €8.50 male estimate compared to a real €13.59 female
-    value produces a wildly wrong (even negative) uGPG for that region.
-    These cases combined explain why RMSE (0.408) is almost double than
-    the MAE (0.261), but the error is concentrated in a few blown-up
-    regions that differ strongly with the estimated wages by the LLM.
-
-This poses an interesting finding in itself, as the MICE retrieval
-baseline performed extremely well. PMM recovered the regional gaps
-almost perfectly because the imputed mean cell is tightly correlated
-with the observed quantiles in the same row, allowing the method to
-establish values through interpolation. The test will be whether this
-accuracy survives the structured, disadvantage-driven gaps of the MNAR
-scenario.
-
-In contrast, the uninformed LLM had no structure to draw on, and
-collapsed the gender gap toward zero, showcasing a weak performance from
-the low-memorization model.
-
-# 4.3 LLM Uninformed baseline SES
-
-The same process will be adapted to the missing SES cell (Female or Male
-hourly wage in a given macro-area × breakdown category) with no data
-context. Because `ses_exp_mnar` has separate `Female` and `Male` columns
-that both have NAs, the missing cells are first pivoted to long format
-to build one prompt per gap, then the imputed values are pivoted back to
-wide before evaluation.
+The aim of this phase is to establish Qwen 3-32B's uninformed baseline
+on the MNAR-deleted SES cells: for each missing NUTS-1 area x sex wage,
+it builds a prompt asking the model for that 2022 mean hourly wage with
+no data given, which is then parsed into a single number from the reply.
+Furthermore, the function discards implausible values (outside the
+established range) as NA, producing one estimated wage per gap. Because
+`ses_exp_mnar` has separate `Female` and `Male` columns that both have
+NAs, the missing cells are first pivoted to long format to build one
+prompt per gap, then the imputed values are pivoted back to wide before
+evaluation.
 
 ```{r llm-baseline-ses}
+set.seed(240603)
+
+sys_ses_base <- "You are an economic estimator. Reply with only a single number."
+
 ses_exp_mnar2 <- ses_exp_mnar |>
   pivot_longer(cols = c(Female, Male), names_to = "sex", values_to = "value") |>
   filter(is.na(value)) |>
@@ -1591,35 +1384,18 @@ llm_baseline_ses <- ses_exp_mnar2 |>
       "What was the mean gross hourly wage for ", sex,
       " workers in ", nuts1, ", Italy, in 2022,",
       " in the ", breakdown_var, " category '", breakdown_cat, "'?",
-      " Reply with a single number in EUR per hour, no explanation."
-    ),
-    value_imp = map_dbl(prompt, \(p) {
-      Sys.sleep(1)
-      resp <- olmo_chat(p,
-                        system = "You are a careful economic estimator. Reply with only a single number.")
-      
-      nums <- str_extract_all(resp, "[0-9]+(?:[.,][0-9]+)?")[[1]]
-      nums <- nums[!str_detect(nums, "^(19|20)[0-9]{2}$")]
-      as.numeric(str_replace(nums[1], ",", "."))
-    }),
-    value_imp = if_else(value_imp < 6 | value_imp > 40, NA_real_, value_imp))
+      " Reply with a single number in EUR per hour, no explanation."),
+    value_imp = map_dbl(prompt, \(p) llm_impute_value(p, system = sys_ses_base, hi = 50)))
 
 llm_baseline_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, value_imp)
-```
 
-The imputed values show almost no separation by sex, as for the RACLI
-imputation: OLMo placed both female and male wages around the same €8-9
-floor (mean €9.31 for women, €9.51 for men), generalizing the female
-estimates especially: 21 of 23 collapsed onto the single value €8.12.
-The male guesses were only roughly more varied. The model essentially
-assigns to men and women the same value, regardless of region or
-education level, and the within-cell gender gap is here recorded to be
-near zero.
+# write_csv(llm_baseline_ses, file = "llm_baseline_ses.csv")
+```
 
 Now it will be merged:
 
 ```{r llm-ses}
-ses_llm_baseline <- ses_exp_mnar |>
+ses_llm_baseline_merged <- ses_exp_mnar |>
   pivot_longer(cols = c(Female, Male), names_to = "sex", values_to = "value") |>
   left_join(
     llm_baseline_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, value_imp),
@@ -1631,13 +1407,403 @@ ses_llm_baseline <- ses_exp_mnar |>
   rename(area = nuts1)
 
 # SAVE
-# write_csv(ses_llm_baseline, file = "ses_llm_baseline.csv")
-
-metrics_tracker <- bind_rows(
-  metrics_tracker,
-  evaluate_imputation(ses_llm_baseline, "LLM_uninformed", metric = "agpg"))
-
-metrics_tracker
+# write_csv(ses_llm_baseline_merged, file = "ses_llm_baseline_merged.csv")
 ```
 
-The weak performance highlighted with the RACLI data is here confirmed.
+The adjusted gap is essentially unbiased (with mean_bias at -0.035),
+with a fairly low MAE (0.100) and a moderate ranking correlation
+(Spearman 0.532). The cell-level wage inflations seen earlier largely
+cancel once collapsed into a composition-adjusted regional gap, which is
+probably why the gap-level metrics are not as noisy. The RMSE (0.150),
+bigger than the MAE, shows the error remains concentrated in a few
+regions.The SES-measured adjusted gap is a smaller,
+composition-controlled quantity that's inherently easier to recover.
+
+# PHASE 6 - FIRST ATTEMPTS
+
+Two types of imputation on Qwen 3-32B: free-form contextual prompt and
+structured table completion.
+
+## 6.1 Contextual imputation
+
+The model is given one observed row as context and asked to impute the
+missing wage for the opposite sex. For SES cells there are no within-row
+quantiles, but the counterpart sex's wage sits in the same row, and the
+other macro-areas provide cross-area distributional anchors for the same
+breakdown category. The context layers are:
+
+-   the counterpart-sex wage in the same area x category cell, if
+    observed;
+
+-   the national mean for that sex x category from unmasked reference
+    data;
+
+-   the area-level mean for that sex from observed non-missing cells;
+
+-   all other observed areas' wages for the same sex x category, so the
+    model can see how the target area relates to the distribution.
+
+```{r ses-ctx-prep}
+nat_avg_ses <- ses_wide |>
+  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
+  group_by(breakdown_var, breakdown_cat, sex) |>
+  summarise(nat_mean = round(mean(value, na.rm = TRUE), 2), .groups = "drop")
+
+area_avg_ses <- ses_exp_mnar |>
+  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
+  filter(!is.na(value)) |>
+  group_by(nuts1, sex) |>
+  summarise(area_mean = round(mean(value), 2), .groups = "drop")
+
+other_areas_ses <- ses_exp_mnar |>
+  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
+  filter(!is.na(value)) |>
+  group_by(breakdown_var, breakdown_cat, sex) |>
+  summarise(
+    other_areas = paste0(nuts1, ": ", round(value, 2), " EUR/hr", collapse = "; "),
+    .groups = "drop")
+
+ses_obs_long <- ses_exp_mnar |>
+  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
+  filter(!is.na(value))
+
+ses_missing_ctx <- ses_exp_mnar |>
+  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
+  filter(is.na(value)) |>
+  select(nuts1, breakdown_var, breakdown_cat, sex) |>
+  mutate(counterpart_sex = if_else(sex == "Female", "Male", "Female")) |>
+  left_join(
+    ses_obs_long |> rename(counterpart_sex = sex, counterpart_val = value),
+    by = c("nuts1", "breakdown_var", "breakdown_cat", "counterpart_sex")) |>
+  left_join(nat_avg_ses,     by = c("breakdown_var", "breakdown_cat", "sex")) |>
+  left_join(area_avg_ses,    by = c("nuts1", "sex")) |>
+  left_join(other_areas_ses, by = c("breakdown_var", "breakdown_cat", "sex"))
+```
+
+The imputation:
+
+```{r ses-ctx-impute, cache=FALSE}
+sys_ctx <- paste(
+  "You have to recover the missing cells in a data set on Italian wages through imputation.",
+  "Only use the provided quantile and macro context.",
+  "Do not reproduce memorized ISTAT statistics or exact 2022 official wage figures,",
+  "strictly basing your outputs only on what is present in the given data.",
+  "Be concise in your reasoning. Return one number in EUR/hour, nothing else.")
+
+llm_ctx_ses <- ses_missing_ctx |>
+  mutate(
+    ctr_line = ifelse(!is.na(counterpart_val),
+      paste0("- Observed ", counterpart_sex, " wage (same area and category): ", counterpart_val, " EUR/hr"),
+      paste0("- ", counterpart_sex, " wage (same area and category): not observed")),
+    prompt = paste0(
+      "Macro-area: ", nuts1, " | Sex: ", sex, " ",
+      "Category: ", breakdown_var, " - ", breakdown_cat, " ",
+      ctr_line, " ",
+      "National avg (", sex, ", this category): ", nat_mean, " EUR/hr",
+      "Macro-area mean (", sex, ", all categories): ", area_mean, " EUR/hr",
+      "Other areas (", sex, ", same category): ", other_areas, " ",
+      "Impute: mean gross hourly wage in EUR/hr."),
+    value_imp = map_dbl(prompt, \(p) llm_impute_value(p, system = sys_ctx, hi = 50))
+  ) |>
+  select(-ctr_line)
+
+llm_ctx_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, counterpart_val, value_imp)
+# write_csv(llm_ctx_ses, file = "llm_ctx_ses.csv")
+```
+
+Merged and evaluation:
+
+```{r ses-ctx-eval}
+ses_llm_ctx_merged <- ses_exp_mnar |>
+  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
+  left_join(
+    llm_ctx_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, value_imp),
+    by = c("nuts1", "breakdown_var", "breakdown_cat", "sex")) |>
+  mutate(value = if_else(is.na(value), value_imp, value)) |>
+  select(-value_imp) |>
+  pivot_wider(names_from = sex, values_from = value) |>
+  rename(area = nuts1)
+
+# write_csv(ses_llm_ctx_merged, "ses_llm_ctx_merged.csv")
+```
+
+## 6.2 Structured Table Completion
+
+This prompt will ask the LLM return valid JSON/CSV only, and it will be
+given only a small table with missing cells. This last imputation method
+is closer to the thesis question, because synthetic data should preserve
+relationships across region, sex, and category, not guess cells
+independently.
+
+The structured table completion tries to understand whether structured
+tabular framing (with an explicit MISSING cell) elicits better
+imputation than free-form bullet points, because it more closely
+resembles how synthetic data generation actually works. Same context,
+same data, same model, just different presentation. Therefore, for the
+LLM's imputation we have that:
+
+*H0:* structured tabular framing obtains better imputation results than
+contextual imputation (more prompt-structured), because the format is
+more similar to actual data generation and formatting.
+
+*H1:* structured tabular framing does not obtain better imputation
+results, as it does not differ substantially enough from the contextual
+prompt to elicit differences.
+
+```{r tbl-ctx-eval}
+# the prompt
+sys_tbl <- paste(
+  "You are completing a table of Italian gross hourly wages.",
+  "Use only the values visible in the table as context.",
+  "Do not reproduce memorized ISTAT statistics.",
+  "Return only valid JSON with the missing value, nothing else.")
+
+llm_tbl_ses <- ses_missing_ctx |>
+  mutate(
+    ctr_val = ifelse(!is.na(counterpart_val), paste0(counterpart_val, " EUR/hr"), "MISSING"),
+    
+      # table-like structure
+    prompt = paste0(
+      "Area: ", nuts1, " | Sex to impute: ", sex,
+      " | Category: ", breakdown_var, " - ", breakdown_cat, "
+
+",
+      "| variable | value |
+|---|---|
+",
+      "| ", counterpart_sex, " wage (same area/category) | ", ctr_val, " |",
+      "| national mean (", sex, ", this category) | ", nat_mean, " EUR/hr |",
+      "| area mean (", sex, ", all categories) | ", area_mean, " EUR/hr |",
+      "| other areas (", sex, ", same category) | ", other_areas, " |",
+      "| ", sex, " wage | MISSING |",
+      'Return {"value": <number>}'),
+    value_imp = map_dbl(prompt, \(p) llm_impute_value(p, system = sys_tbl, hi = 50))
+  ) |>
+  select(-ctr_val)
+
+llm_tbl_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, counterpart_val, value_imp)
+
+# write_csv(llm_tbl_ses, file = "llm_tbl_ses.csv")
+
+ses_llm_tbl_merged <- ses_exp_mnar |>
+  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
+  left_join(llm_tbl_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, value_imp),
+            by = c("nuts1", "breakdown_var", "breakdown_cat", "sex")) |>
+  mutate(value = if_else(is.na(value), value_imp, value)) |>
+  select(-value_imp) |>
+  pivot_wider(names_from = sex, values_from = value) |>
+  rename(area = nuts1)
+
+# write_csv(ses_llm_tbl_merged, file = "ses_llm_tbl_merged.csv")
+```
+
+## 6.3 Evaluation
+
+Evaluation metrics function, applicable to each LLM's dataset:
+
+```{r eval-ses-llm}
+# baseline
+eval_ses(ses_llm_baseline_merged, "LLM_uninformed")
+
+# contextual
+eval_ses(ses_llm_ctx_merged, "LLM_ctx_v1")
+
+# structured table completion
+eval_ses(ses_llm_tbl_merged, "LLM_tbl_v1")
+```
+
+The structured table prompt's results were compared to the contextual's
+to understand the different performances and to defend the hypothesis.
+An initial evaluation comparison through the `eval_ses` function shows
+that the differences are very nuanced. No prompt is dominating the
+other: contextual is marginally better in the low and high tier (MAE of
+0.18 vs 0.20 for structured), while structured is clearly better in the
+moderate tier (0.49 vs 0.56). In the high-disadvantage regions the more
+telling difference is bias rather than magnitude: structured is
+essentially unbiased (0.06), whereas contextual mildly under-estimates
+(-0.10). The bias direction shows that both prompts under-estimate wages
+overall (mean bias of -0.004 for contextual and -0.006 for structured),
+but they behave differently where it matters most. Contextual stays
+negative, while structured table completion is essentially unbiased
+there and spreads its error more evenly across tiers (a high/low MAE
+ratio of 2.33 against 3.0 for contextual).
+
+This is very interesting as the MNAR missingness was engineered to 'hit'
+high-disadvantage regions the hardest as a representation of higher
+structural inequalities (both social and economic). Structured table
+completion is therefore more robust to the regions with the most missing
+data, even if it is not strictly more precise overall. Both approaches
+fail differently: neither reaches the MCAR noise floor on point
+accuracy, yet both preserve the regional ranking far better than MICE
+does under MNAR (Spearman ≈ 0.95 against 0.16). The raw per-tier MAE
+gaps are small, so no clean "more observed context favors the contextual
+prompt" pattern emerges. The most meaningful findings is the
+structured's near-zero bias and flatter error profile in the sparsest
+regions. Neither hypothesis fully holds: a **partial rejection of
+both.** Structured framing matters because it constrains the model's
+tendency to under-estimate in data-sparse regions, but it doesn't
+strictly perform better or worse than a contextual case.
+
+# PHASE 7
+
+## 7.1 One-shot broad-context imputation
+
+Phase 6 gave the LLM geographic context per cell: the counterpart sex
+wage, national mean, area mean, and other regions' values for that exact
+category. Phase 7 gives two layers of context at once:
+
+-   The observed MNAR cells (in the target table itself), `ses_exp_mnar`
+    all geography × breakdown_var combinations that weren't dropped. The
+    LLM still gets geographic anchoring from these, same as Phase 6.
+-   The reference table: breakdowns for education, occupation, tenure,
+    hours_regime and contract_type (identified in the literature for the
+    most influential factors impacting wage inequalities). This adds
+    structural depth: the LLM can see how, for example, an occupation
+    gap plays out across industries and firm sizes, which informs its
+    prediction for an area.
+
+Phase 7 is broader in the sense that it combines geographic anchoring
+(from the observed MNAR cells) with structural/demographic depth (from
+the reference). The imputation method is also different from Phase 6, as
+the LLM here does not 'fill out' the missing cells row by row, but in a
+one-shot imputation.
+
+The two data sets used for reference and for the imputation target:
+
+-   **Reference (context)**: `ses_data` rows with
+    `strat_type != "geography"`. These cover the same five breakdown
+    variables (education, occupation/ISCO, contract type, hours regime,
+    seniority/tenure) but cross-tabulated with industry, firm size, and
+    ownership type rather than macro areas. Provides a broader context
+    to the LLM to predict from.
+
+-   **Target (to impute)**: `ses_exp_mnar`,geography-stratified wages
+    with engineered MNAR missingness. Missing cells are marked `MISSING`
+    and given an ID. Because the reference and target use different
+    stratification axes, there is no overlap: the LLM cannot copy
+    answers from the reference.
+
+```{r llm-oneshot-impute, cache=FALSE}
+# reference table to give the LLM context: education / occupation / tenure / contract-type
+ref_csv <- ses_data |>
+  filter(strat_type != "geography",
+         outcome_var == "hourly_wage",
+         breakdown_var %in% c("education", "occupation", "tenure", 
+                              "contract_type", "hours_regime"),
+         breakdown_cat != "total",
+         sex %in% c("Female", "Male"),
+         !is.na(value)) |>
+  select(strat_type, strat_value = row_label, breakdown_var, 
+         breakdown_cat, sex, value) |>
+  mutate(value = round(value, 2),
+         row   = paste(strat_type, strat_value, breakdown_var, 
+                       breakdown_cat, sex, value, 
+                       sep = ",")) |>
+  pull(row) |>
+  paste(collapse = "\n")
+
+# target: MNAR table -> tag each MISSING cell with a numeric ID so the join is ID-based, to aviod mismatch
+mnar_long <- ses_exp_mnar |>
+  rename(area = nuts1) |>
+  select(area, breakdown_var, breakdown_cat, Female, Male) |>
+  pivot_longer(c(Female, Male), names_to = "sex", values_to = "val") |>
+  mutate(cell_id = row_number(),
+         display = if_else(is.na(val), paste0("MISSING_", cell_id), 
+                           as.character(round(val, 2))),
+         row = paste(cell_id, area, breakdown_var, breakdown_cat, 
+                     sex, display, sep = ","))
+
+mnar_csv  <- paste(mnar_long$row, collapse = "\n")
+missing_keys <- mnar_long |> 
+  filter(is.na(val)) |> 
+  select(cell_id, area, breakdown_var, breakdown_cat, sex)
+
+# prompt
+sys_oneshot <- paste(
+  "You are completing missing wage cells in an ISTAT Structure of Earnings survey table.",
+  "All values are mean gross hourly wages in EUR/hour, Italy 2022.",
+  "You are given two tables: a reference table and a target table stratified by NUTS-1 macro-area.",
+  "Learn ONLY from the observed reference table, strictly basing your outputs on what is present in the given data.",
+  "Each missing cell in the target table is marked MISSING_<id> where <id> is a number.",
+  "Return ONLY a two-column CSV with header: cell_id,value",
+  "One row per missing cell, where cell_id is the number from MISSING_<id> and value is your imputed wage.",
+  "Values must be between 6 and 50. No markdown, no explanation.")
+
+prompt_oneshot <- paste0(
+  "REFERENCE TABLE (Italian wage patterns by sector, firm size, and control type)\n",
+  "strat_type,strat_value,breakdown_var,breakdown_cat,sex,value\n", ref_csv, "\n\n",
+  "TARGET TABLE (geography-stratified wages: impute every MISSING_<id> cell)\n",
+  "cell_id,area,breakdown_var,breakdown_cat,sex,value\n", mnar_csv, "\n\n",
+  "Return a CSV with header: cell_id,value: one row per MISSING_<id> cell only.")
+
+# imputation
+set.seed(240603)
+raw_oneshot <- llm_chat(prompt_oneshot, system = sys_oneshot, max_tokens = 32768)
+
+# parse: find the cell_id,value header and read from there
+clean_resp <- strip_think(raw_oneshot)
+clean_resp <- gsub("```[a-z]*\n?|```", "", clean_resp) # strip markdown fences
+lines <- strsplit(trimws(clean_resp), "\n")[[1]]
+lines <- lines[nchar(trimws(lines)) > 0]  # drop blank lines
+
+# error catch
+if (length(lines) == 0 || all(is.na(lines)))
+  stop("LLM returned empty response")
+
+hdr_idx  <- which(grepl("^cell_id,", lines, ignore.case = TRUE))[1]
+if (is.na(hdr_idx)) hdr_idx <- 1
+csv_text <- paste(lines[hdr_idx:length(lines)], collapse = "\n")
+
+# I() forces read_csv to treat csv_text as literal text, never as a file path
+llm_oneshot_df <- read_csv(I(csv_text), show_col_types = FALSE) |>
+  mutate(value = suppressWarnings(as.numeric(value)),
+         value = if_else(value < wage_lower | value > wage_higher, NA_real_, 
+                         value)) |>
+  left_join(missing_keys, by = "cell_id") # join by id
+
+# checking the work
+returned <- llm_oneshot_df |> filter(!is.na(cell_id), !is.na(value))
+cat(sprintf("masked: %d | returned: %d | usable: %d | still NA: %d\n",
+            nrow(missing_keys), nrow(llm_oneshot_df),
+            nrow(returned), nrow(missing_keys) - nrow(returned)))
+
+print(llm_oneshot_df)
+
+# merged
+ses_llm_oneshot_merged <- ses_exp_mnar |>
+  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
+  left_join(llm_oneshot_df |> rename(nuts1 = area, value_imp = value) |>
+              select(nuts1, breakdown_var, breakdown_cat, sex, value_imp),
+            by = c("nuts1", "breakdown_var", "breakdown_cat", "sex")) |>
+  mutate(value = if_else(is.na(value), value_imp, value)) |>
+  select(-value_imp) |>
+  pivot_wider(names_from = sex, values_from = value) |>
+  rename(area = nuts1)
+
+# write_csv(llm_oneshot_df, file = "llm_oneshot_df.csv")
+# write_csv(ses_llm_oneshot_merged, "ses_llm_oneshot_merged.csv")
+
+plot_missing(ses_llm_oneshot_merged)
+```
+
+## 7.2 Evaluation
+
+```{r eval-oneshot}
+eval_ses(ses_llm_oneshot_merged, "LLM_oneshot_v1")
+```
+
+The one-shot approach recovers the composition-adjusted gap very well.
+There is a strong regional ranking preservation, the model correctly
+orders which areas have larger or smaller gaps. The imputed wage
+distribution is statistically indistinguishable from the true one, and
+has the best distributional fit of any method tested so far.
+
+Worth flagging:
+
+-   Bias direction: 11.3% over-estimated, 88.7% of cells are
+    under-estimated.
+
+-   MAE ratio (tier high/low) = 11.892, the model performs much worse in
+    high-disadvantage regions than low ones, even more so than MICE_MNAR
+    (4.797). The MNAR design specifically drops more cells in those
+    regions, and the broader context doesn't seem to compensate.
