@@ -1,30 +1,73 @@
-## ----results=FALSE-------------------------------------------------------------------------------------------------------
+---
+title: "Data Analysis for the Thesis"
+author: "Anita Di Gennaro"
+date: "2026-04-27"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# PHASE 0
+
+This initial phase 0 deals with the data cleaning and preparation of the
+real-data backbone of the thesis from two ISTAT sources: SES income data
+and RACLI regional data from 2022. The output is three tidy datasets:
+*'ses_data', 'racli_clean'*, and *'regional_codes',* that together
+describe the structure of Italian wages along the demographic, sectoral,
+and geographic macro and micro areas, which will be used as the
+experiment's backbone.
+
+```{r warning=FALSE, message=FALSE}
 library(tidyr)
 library(readxl)
 library(dplyr)
 library(tidyverse)
 library(stringr)
 library(readr)
-library(ggplot2)
 library(DataExplorer)
 
+# visualizations
+library(ggplot2)
+library(sf)
+library(giscoR)
+library(showtext)
+library(scales)
+library(ggforce)    # for facet_col
+library(showtext)   # for Google Fonts
 
-## ------------------------------------------------------------------------------------------------------------------------
+# imputation
+library(mice)
+library(httr)
+library(httr2)
+library(jsonlite)
+```
+
+# Load Data
+
+The Structure of Earnings Survey for 2022 in Italy is a series of
+aggregated tables. In order to understand how to navigate them, the
+first sheet will be uploaded and looked at manually.
+
+```{r lead-data}
 # this will read the index sheet
 # we can see that the first two are indexes - so skip
 ses_2022 <- read_excel("data/Tavole_Struttura-delle-retribuzioni_2022.xlsx",
                        skip = 2) # skip blank rows on top
 
 
-all_sheets <- excel_sheets("data/Tavole_Struttura-delle-retribuzioni_2022.xlsx") # list of all sheets
+all_sheets <- excel_sheets("data/Tavole_Struttura-delle-retribuzioni_2022.xlsx") 
+# list of all sheets
 print(ses_2022)
+```
 
+## Test on Table 1 (tav 1)
 
-## ------------------------------------------------------------------------------------------------------------------------
+```{r tav1}
 tav1_raw <- read_excel("data/Tavole_Struttura-delle-retribuzioni_2022.xlsx",
                        sheet = "Tav.1",
                        col_names = FALSE,
-                       col_types = "text")   # force everything to text and avoids type-guessing issues
+                       col_types = "text")   # force everything to text and avoid type-guessing issues
 
 
 
@@ -38,10 +81,16 @@ tav1_raw <- read_excel("data/Tavole_Struttura-delle-retribuzioni_2022.xlsx",
                        col_names = tav1_col_names,
                        col_types = "text",
                        skip = 4)
+```
 
+## Section types and filter to data rows
 
-## ------------------------------------------------------------------------------------------------------------------------
-sections <- c("ATTIVITÃ€ ECONOMICA","ATTIVITÃ€ ECONOMICA ",   # ISTAT has a trailing space in some tables so ATTIVITA' ECONOMICA is repeated with a space afterwards too
+The four section markers act as "headers" for the rows below them. The
+main idea is to identify them, use fill() to propagate the label
+downward, then remove the marker rows themselves and the footnotes.
+
+```{r}
+sections <- c("ATTIVITÀ ECONOMICA","ATTIVITÀ ECONOMICA ",   # ISTAT has a trailing space in some tables so ATTIVITA' ECONOMICA is repeated with a space afterwards too
               "RIPARTIZIONE GEOGRAFICA",
               "CLASSE DIMENSIONALE", 
               "TIPO DI CONTROLLO ECONOMICO")
@@ -52,23 +101,27 @@ tav1_clean <- tav1_raw |>
     strat_type = if_else(
       is.na(row_label) & str_trim(F_educ_low) %in% sections,
       str_trim(F_educ_low),
-      NA_character_)) |>
+      NA_character_
+    )
+  ) |>
   # add section label downward to all rows belonging to that section
   fill(strat_type, .direction = "down") |>
   # drop the section marker rows (row_label is NA) and footnote rows
-  filter(!is.na(row_label),
-         !str_detect(row_label, "^legenda|^Fonte"),
-         !str_detect(row_label, "^None$"))  # in case of leftover "None" strings
-  
+  filter(
+    !is.na(row_label),
+    !str_detect(row_label, "^legenda|^Fonte"),
+    !str_detect(row_label, "^None$")   # in case of leftover "None" strings
+  )
  
 # shorten the section labels to something clean
 tav1_clean <- tav1_clean |>
   mutate(strat_type = recode(str_trim(strat_type),
-    "ATTIVITÃ€ ECONOMICA" = "sector",
-    "ATTIVITÃ€ ECONOMICA "  = "sector",
-    "RIPARTIZIONE GEOGRAFICA" = "geography",
-    "CLASSE DIMENSIONALE" = "firm_size",
-    "TIPO DI CONTROLLO ECONOMICO" = "control_type"))
+    "ATTIVITÀ ECONOMICA"          = "sector",
+    "ATTIVITÀ ECONOMICA "         = "sector",
+    "RIPARTIZIONE GEOGRAFICA"     = "geography",
+    "CLASSE DIMENSIONALE"         = "firm_size",
+    "TIPO DI CONTROLLO ECONOMICO" = "control_type"
+  ))
 
 # rename the levels of education without specifying they refer to education, as I will address it as the table's breakdown category
 tav1_clean <- tav1_clean |>
@@ -81,12 +134,19 @@ tav1_clean <- tav1_clean |>
     M_high = M_educ_high,
     T_low  = T_educ_low,
     T_med  = T_educ_med,
-    T_high = T_educ_high)
+    T_high = T_educ_high,
+  )
 
-tav1_clean
+view(tav1_clean)
+```
 
+## Convert values and drop separator columns
 
-## ------------------------------------------------------------------------------------------------------------------------
+Drop NAs, convert to numeric what is character and turn into NAs "..",
+which ISTAT uses to indicate suppressed data (cell too small to
+publish). The table will be pivoted and the names recoded to be clearer.
+
+```{r tav1-clean}
 tav1_clean <- tav1_clean |>
   select(-c(sep1, sep2)) |>
   mutate(across(.cols = c(F_low:T_total),
@@ -110,16 +170,26 @@ tav1_final <- tav1_clean |>
   
 
 tav1_final
+```
 
+Table 1 is finalized: the labelled sector as an indicator, the
+stratification type, the sex, the reference category (according to which
+this table is broken down and categorized - therefore the
+breakdown_cat), and the outcome variable, what the values correspond to.
 
-## ----recoding------------------------------------------------------------------------------------------------------------
+Now the breakdown variables that are used across the tables will be
+labeled. SES classifies the tables according to meta-level variables:
+education (like tav 1), contract type, occupation (ISCO), hours regime,
+seniority brackets.
+
+```{r recoding}
 # education (ISCED)
 meta_education_level <- list(raw_names = c("row_label","F_low", "F_med", "F_high", 
                                            "F_total", "sep1",
                                            "M_low", "M_med", "M_high", "M_total", "sep2",
                                            "T_low", "T_med", "T_high", "T_total"),
   breakdown_var = "education",
-  cat_labels = c(low = "â‰¤ lower secondary",
+  cat_labels = c(low = "\u2264 lower secondary",
                     med = "upper secondary",
                     high = "tertiary",
                     total = "total"))
@@ -199,9 +269,16 @@ meta_age <- list(
   breakdown_var = "age",
   cat_labels    = c(young = "14-29 years", mid = "30-49 years",
                     old   = "50+ years",   total = "total"))
+```
 
+## One generalizing function
 
-## ----general function----------------------------------------------------------------------------------------------------
+-   Input: sheet name, meta information (as in column names + breakdown
+    label), outcome label (hourly_wage / annual_wage / annual_hours)
+
+-   Output: tidy long-format tibble
+
+```{r general-function}
 parse_ses_table <- function(sheet_name, meta, outcome_label) {
   n_target <- length(meta$raw_names)
 
@@ -219,23 +296,28 @@ parse_ses_table <- function(sheet_name, meta, outcome_label) {
  
   # detect and propagate section types
   cleaned <- raw |>
-    mutate(strat_type = if_else(
-      is.na(row_label) & str_trim(.data[[meta$raw_names[2] ]]) %in% sections,
-      str_trim(.data[[ meta$raw_names[2] ]]),
-        NA_character_)) |>
+    mutate(
+      strat_type = if_else(
+        is.na(row_label) & str_trim(.data[[meta$raw_names[2] ]]) %in% sections,
+        str_trim(.data[[ meta$raw_names[2] ]]),
+        NA_character_
+      )
+    ) |>
     fill(strat_type, .direction = "down") |>
     # remove section marker rows, footnotes, and trailing blank rows
     filter(
       !is.na(row_label),
       !str_detect(row_label, fixed("legenda")),
-      !str_detect(row_label, fixed("Fonte"))) |>
+      !str_detect(row_label, fixed("Fonte"))
+    ) |>
     # recode section labels
     mutate(strat_type = recode(str_trim(strat_type),
-      "ATTIVITÃ€ ECONOMICA"          = "sector",
-      "ATTIVITÃ€ ECONOMICA "         = "sector",
+      "ATTIVITÀ ECONOMICA"          = "sector",
+      "ATTIVITÀ ECONOMICA "         = "sector",
       "RIPARTIZIONE GEOGRAFICA"     = "geography",
       "CLASSE DIMENSIONALE"         = "firm_size",
-      "TIPO DI CONTROLLO ECONOMICO" = "control_type"))
+      "TIPO DI CONTROLLO ECONOMICO" = "control_type"
+    ))
  
   # drop separator columns
   cleaned <- cleaned |> select(-c(sep1, sep2))
@@ -251,7 +333,7 @@ parse_ses_table <- function(sheet_name, meta, outcome_label) {
   # pivot to long 
   pivot_long <- cleaned |>
     pivot_longer(
-      cols = all_of(value_cols),
+      cols      = all_of(value_cols),
       names_to  = c("sex", "breakdown_cat"),
       names_sep = "_",
       values_to = "value") |>
@@ -259,23 +341,30 @@ parse_ses_table <- function(sheet_name, meta, outcome_label) {
       sex = recode(sex, "F" = "Female", "M" = "Male", "T" = "Total"),
       # map short breakdown_cat codes to readable labels
       breakdown_cat_label = recode(breakdown_cat, !!!meta$cat_labels),
-      breakdown_var = meta$breakdown_var,
-      outcome_var  = outcome_label,
-      table_id = sheet_name)
+      breakdown_var       = meta$breakdown_var,
+      outcome_var         = outcome_label,
+      table_id            = sheet_name)
  
   pivot_long
 }
+```
 
+Test it on table 2.
 
-## ------------------------------------------------------------------------------------------------------------------------
+```{r test-tav2}
 tav2_test <- parse_ses_table(
   sheet_name  = "Tav.2",
   meta = meta_contract_type,
   outcome_label = "hourly_wage"
 )
+```
 
+Since it worked, let's map all tables to their specific attributes that
+are needed in the functions. These information are taken from each
+table, that specify the type of outcome and breakdown variable they
+refer to.
 
-## ------------------------------------------------------------------------------------------------------------------------
+```{r}
 table_map <- tribble(
   ~sheet,    ~meta,             ~outcome,
   "Tav.1",   "education",         "hourly_wage",
@@ -305,9 +394,13 @@ meta_list <- list(
   tenure = meta_seniority,
   age = meta_age
 )
+```
 
+## Final SES data set
 
-## ------------------------------------------------------------------------------------------------------------------------
+Applying the function:
+
+```{r ses-data, message=FALSE}
 ses_data <- pmap(
   table_map,
   function(sheet, meta, outcome) {
@@ -321,12 +414,70 @@ ses_data <- pmap(
   bind_rows()
 
 ses_data |> count(table_id, breakdown_var, outcome_var)
+```
 
+What `ses_data` has:
 
-## ------------------------------------------------------------------------------------------------------------------------
+-   table_id; from which ISTAT source table the row came from
+
+-   strat_type; the primary dimension the table stratifies workers on. 4
+    values:
+
+    -   sector: according to the European classification economic
+        activity (NACE)
+
+    -   firm_size: number-of-employees
+
+    -   geography: Italian macro-region
+
+    -   control_type: public vs. private ownership of companies
+
+-   row_label; the specific category within strat_type.
+
+-   sex; Female, Male, Total.
+
+-   breakdown_var; the secondary dimension cross-tabulated against
+    strat_type. 5 'meta' values:
+
+    -   *tenure*: years with current employer
+
+    -   *occupation*: ISCO-08 1-digit major group
+
+    -   *education:* ISCED level
+
+    -   *contract_type*: permanent vs. temporary
+
+    -   *hours_regime*: full-time vs. part-time
+
+-   breakdown_cat; short machine-friendly code for the secondary
+    category (26 unique). Grouped by breakdown_var:
+
+    -   education: low, med, high
+
+    -   contract_type: permanent, temporary
+
+    -   hours_regime: part-time, fullt-ime
+
+    -   tenure: yr0004, yr0509, yr1014, yr1519, yr2024, yr2529, yr3034,
+        yr35plus
+
+    -   occupation (ISCO-08 major groups): armed, manager, intellectual,
+        technical, clerical, sales, agriculture, craft, operator,
+        elementary, total
+
+-   value; the numeric statistic itself. Always interpret in the unit
+    implied by outcome_var. No missing values in the file.
+
+`breakdown_cat_label` was developed as a human-readable version of
+`breakdown_cat`, and then kept as the `breakdown_cat` variable.
+
+```{r ses-final-cleaning}
 ses_data <- ses_data |>
-  mutate(breakdown_cat = breakdown_cat_label) |>  
-  select(-breakdown_cat_label)
+  mutate(breakdown_cat = breakdown_cat_label) |>
+  select(-breakdown_cat_label) |>
+  # normalize the double-encoded ≤ in the education labels
+  mutate(breakdown_cat = str_replace(breakdown_cat,
+                                     fixed("\u00e2\u2030\u00a4"), "\u2264"))
 
 # mutate the regional labeling so that it matches the RACLI organization
 ses_data <- ses_data |> mutate(
@@ -341,18 +492,27 @@ ses_data <- ses_data |> mutate(
 
 
 # write_csv(ses_data, file = "ses_data.csv")
+```
 
+## 0.1 Regional-level disaggregation
 
-## ------------------------------------------------------------------------------------------------------------------------
+RACLI data set has four main dimensions: geography (country / NUTS-1
+geographical macro areas / 20 NUTS-2 regions / \~107 provinces), sex
+(Male / Female / Total), year, and wage statistics (mean / p10 / median
+/ p90).
+
+```{r load-RACLI}
 library(readr)
 racli_raw <- read_csv("data/Sesso - prov (IT1,533_957_DF_DCSC_RACLI_8,1.0).csv",
                       quote = "")
 
 racli_raw <- racli_raw |>
   filter(TIME_PERIOD == 2022) # filter 2022
+```
 
+Cleaning the variables.
 
-## ------------------------------------------------------------------------------------------------------------------------
+```{r RACLI-cleaning}
 racli_clean <- racli_raw |>
   select(geo_code  = REF_AREA,        # ITC, ITC1, ITC11 etc.
          geo_label  = Territorio,      # specific geographical references
@@ -377,10 +537,10 @@ racli_clean <- racli_raw |>
       "9" = "Total"
     ),
     # classify each territory by its NUTS code length:
-    #   2 chars (IT)       -> country
-    #   3 chars (ITC)      -> NUTS-1 macro-area
-    #   4 chars (ITC1)     -> NUTS-2 region
-    #   5 chars (ITC11)    -> NUTS-3 province
+    # 2 chars (IT)       -> country
+    # 3 chars (ITC)      -> NUTS-1 macro-area
+    # 4 chars (ITC1)     -> NUTS-2 region
+    # 5 chars (ITC11)    -> NUTS-3 province
     geo_level = case_when(
       nchar(geo_code) == 2 ~ "country",
       nchar(geo_code) == 3 ~ "nuts1",
@@ -392,9 +552,14 @@ racli_clean <- racli_raw |>
   select(geo_code, geo_label, geo_level, nuts1_code, sex, year, indicator, value)
 
 racli_clean
+```
 
+## Creating a regional code book
 
-## ------------------------------------------------------------------------------------------------------------------------
+Each region will be matched to its macro NUTS-1 area, as well as to its
+local code, used in the RACLI data set, for reference.
+
+```{r}
 # building directly from the RACLI data so the codes are consistent
 regional_codes <- racli_clean |>
   filter(geo_level == "nuts2") |>
@@ -416,9 +581,16 @@ regional_codes <- racli_clean |>
 
 # write_csv(regional_codes, file = "regional_codes.csv")
 # write_csv(racli_clean, file = "racli_clean.csv")
+```
 
+# PHASE 1
 
-## ----eda-ses-intro-------------------------------------------------------------------------------------------------------
+## Exploratory Data Analysis
+
+The EDA covers the Structure of Earnings dataset before any missingness
+is introduced.
+
+```{r eda-ses-intro}
 introduce(ses_data)
 plot_intro(ses_data)
 plot_missing(ses_data)
@@ -435,9 +607,9 @@ ses_data |>
   ggplot(aes(x = outcome_var, y = value, fill = sex)) +
   geom_boxplot() +
   labs(x = "Outcome variable", y = "Value")
+```
 
-
-## ----eda-ses-corr--------------------------------------------------------------------------------------------------------
+```{r eda-ses-corr}
 ses_data |>
   filter(strat_type == "geography", sex == "Total",
          row_label != "Totale", breakdown_cat != "total") |>
@@ -457,8 +629,24 @@ ses_data |>
     sd = sd(value, na.rm = TRUE),
     min_val = min(value, na.rm = TRUE),
     max_val = max(value, na.rm = TRUE))
+```
 
-## visualization
+-   The boxplot of `sex x outcome_var` shows that female earn less than
+    males, for hourly and annual wages. The annual hours gap is smaller
+    but still present, pointing to both a pay rate and a hours-worked
+    component.
+
+-   The correlation heatmap (hourly / annual wage / annual hours) shows
+    hourly wages moderately correlated with annual wage, while hourly
+    wage nearly uncorrelated with annual hours (possibly indicating that
+    full-time hours are compressed regardless of pay).
+
+-   Occupation shows the highest average wages and the widest
+    Female-Male spread. Tenure and education both show clear wage
+    gradients, while temporary contract and part-time show the lowest
+    values.
+
+```{r eda-data-viz, fig.width=8, fig.height=8,  fig.showtext = TRUE, dpi = 300}
 # font 
 font_add_google("EB Garamond", "ebgaramond")
 showtext_auto()
@@ -506,8 +694,8 @@ p <- ggplot(plot_data, aes(mean_wage,
                      expand = expansion(mult = c(0, .05))) +
   
   scale_y_discrete(labels = function(x) dplyr::recode(x, # reconde longer occupations that create overlap
-                                                      "Intellectual professions" = "Intellectuals",
-                                                      "Elementary occupations"   = "Elementary occ.")) +
+    "Intellectual professions" = "Intellectuals",
+    "Elementary occupations"   = "Elementary occ.")) +
   
   labs(title = "Mean hourly wage by worker characteristic and sex",
        subtitle = "Structure of Earnings Survey - 2022",
@@ -535,8 +723,14 @@ p <- ggplot(plot_data, aes(mean_wage,
 
 p
 
+# taller export for Occupation's labels
+# ggsave("wage_plot.pdf", p, width = 8.5, height = 10.5, dpi = 300, bg = "white")
 
-# by macro area
+```
+
+Visualization per macro area:
+
+```{r eda-data-viz, fig.width=7, fig.height=4}
 nuts1_labels <- c(
   "Nord-Ovest" = "North-west",
   "Nord-Est"   = "North-east",
@@ -590,8 +784,19 @@ p2 <- ggplot(plot_macro, aes(mean_wage,
   )
 p2
 
+# ggsave("area_wage_plot.pdf", p2, width = 8, height = 4.8, dpi = 300, 
+# bg = "white")
+```
 
-## ----gender-gap-sections-------------------------------------------------------------------------------------------------
+# PHASE 2
+
+## 2.1 Measuring gender wage gap
+
+A "composition-adjusted" GPG will be calculated. For each NUTS-1 macro
+area and each breakdown category (education level, contract type, hours
+regime, occupation, tenure bracket), compute the gender gap.
+
+```{r gender-gap-sections}
 within_gaps <- ses_data |>
   filter(strat_type == "geography",
          outcome_var == "hourly_wage",
@@ -606,9 +811,13 @@ within_gaps <- ses_data |>
   mutate(gap = 1 - Female / Male)
 
 within_gaps
+```
 
+aGPG per NUTS-1 area, per breakdown variable. Weight within-category
+gaps by the female-wage share of that category within the area, then sum
+across categories.
 
-## ----adj-GPG-area-breakdown----------------------------------------------------------------------------------------------
+```{r adj-GPG-area-breakdown}
 agpg_area_breakdown <- within_gaps |>
   group_by(area, breakdown_var) |>
   mutate(weight = Female / sum(Female, na.rm = TRUE)) |>
@@ -620,9 +829,12 @@ agpg_area_breakdown <- within_gaps |>
 agpg_area_breakdown
 
 # write_csv(agpg_area_breakdown, file = "agpg_area_breakdown.csv")
+```
 
+A single aGPG number per area, taken as the mean across the five
+breakdown variables.
 
-## ----adj-GPG-area--------------------------------------------------------------------------------------------------------
+```{r adj-GPG-area}
 agpg_area <- agpg_area_breakdown |>
   group_by(area) |>
   summarise(aGPG = mean(aGPG), .groups = "drop") |>
@@ -631,8 +843,11 @@ agpg_area <- agpg_area_breakdown |>
 agpg_area
 
 # write_csv(agpg_area, file = "agpg_area.csv")
+```
 
-## visualization
+Visualizing the composition-adjusted gap (by macro areas):
+
+```{r fig.width=6, fig.height=6, fig.showtext = TRUE, dpi = 300}
 # NUTS-1 codes for the 5 macro-areas (2021 classification, used by GISCO)
 nuts1_codes <- tibble(
   nuts1   = c("Nord-Ovest", "Nord-Est", "Centro", "Sud", "Isole"),
@@ -670,9 +885,9 @@ p3 <- italy_nuts1 |>
   theme_void(base_size = 11, base_family = "ebgaramond") +
   theme(plot.title.position = "plot",
         plot.title = element_text(face = "bold", size = 15, hjust = 0,
-                                  margin = margin(b = 4)),
+                                 margin = margin(b = 4)),
         plot.subtitle = element_text(colour = "grey40", size = 12, hjust = 0,
-                                     margin = margin(b = 14)),
+                                 margin = margin(b = 14)),
         # extra room above the title
         plot.margin = margin(t = 18, r = 6, b = 6, l = 6),  
         # legend 
@@ -680,11 +895,20 @@ p3 <- italy_nuts1 |>
         legend.text = element_text(size = 9),
         legend.key.height = unit(0.9, "lines"),
         legend.key.width  = unit(0.7, "lines"))
-
+  
 p3
 
+# ggsave("agpg_map.pdf", p3, width = 8, height = 7.2, dpi = 300, bg = "white")
+```
 
-## ----regional-disadv-score-----------------------------------------------------------------------------------------------
+## 2.2 Regional disadvantages
+
+A regional disadvantage score (reg_dis) is built from the RACLI 'sex ==
+total' cells at NUTS-2 regional level.
+
+This index will be used to fabricate MNAR missingness among the data.
+
+```{r regional-disadv-score}
 reg_dis <- racli_clean |>
   filter(geo_level == "nuts2",
          sex == "Total",
@@ -726,10 +950,18 @@ reg_dis <- reg_dis |>
 reg_dis 
 
 # write_csv(reg_dis, file = "reg_dis.csv")
+```
 
+# PHASE 3
 
-## ------------------------------------------------------------------------------------------------------------------------
-library(mice)
+## 3.1 MCAR and MICE pilot
+
+Initial baseline MICE imputation under the MCAR assumption, which
+assumes that there is no relationship between missingness and either the
+wage or the region, as each cell has the same probability of being
+missing.
+
+```{r}
 set.seed(240603) 
 
 # pivoted dataset and filtered to only keep the rows where NUTS1 are specified
@@ -745,7 +977,7 @@ ses_wide <- ses_data |>
   pivot_wider(names_from = sex, values_from = value) |>
   filter(!is.na(Female), !is.na(Male), Male > 0)
 
-# create the baseline corrupted MCAR dataset
+# create the baseline corrupted MCAR dataset - 20% random missingness
 miss_rate_ses <- 0.20
 
 ses_missing <- ses_wide |> 
@@ -759,9 +991,17 @@ ses_missing <- ses_wide |>
 
 # SAVE ses_missing as this is MCAR missingness
 # write_csv(ses_missing, file = "ses_missing_mcar.csv")
+```
 
+### Imputation
 
-## ------------------------------------------------------------------------------------------------------------------------
+MICE imputation using PMM. The SES dataset was filtered to the 5 sheets
+reporting hourly wages (Tav. 1-5). Within each sheet, only the geography
+stratification rows were kept with the specified 5 NUTS-1 macro-areas
+(Nord-Ovest, Nord-Est, Centro, Sud, Isole), and "Total" dropped. Each of
+those rows is crossed with the breakdown categories from each table.
+
+```{r}
 # convert descriptors to factors so MICE can utilize them as predictors
 mice_ses_input <- ses_missing |>
 mutate(across(c(area, breakdown_var, breakdown_cat), as.factor)) |>
@@ -783,9 +1023,25 @@ mutate(
   Male = rowMeans(imp_male_matrix))
 
 # write_csv(ses_imputed_mcar, file = "ses_imputed_mcar.csv")
+```
 
+## 3.4 Engineered MNAR dataset
 
-## ----MNAR-ses------------------------------------------------------------------------------------------------------------
+Using the regional disaggregation metric that was developed for each
+region, the information will be modified in order to fabricate the
+missing not at random scenario (MNAR). This incomplete data will be
+imputed both using the standard MICE package, and using the LLMs. Only
+the rows with the specified stratification type at the geographic level
+will be kept (already specified with `ses_wide`).
+
+-   low `reg_dis` level = \~0.10 probability of mean values being
+    missing
+
+-   medium = \~0.25 probability of mean values being missing
+
+-   high = \~0.45 probability of mean values being missing
+
+```{r MNAR-ses}
 set.seed(240306) # seed for reproducibility
 
 # MNAR: missingness probability rises with disadvantage tier
@@ -812,9 +1068,15 @@ ses_exp_mnar |>
 
 # SAVE EXPERIMENTAL DATASET
 # write_csv(ses_exp_mnar, file = "ses_exp_mnar.csv")
+```
 
+# PHASE 4
 
-## ----mice-mnar-ses-------------------------------------------------------------------------------------------------------
+## 4.1 MICE imputation on MNAR engineered missingness
+
+The PMM approach is applied to the MNAR-engineered SES data set.
+
+```{r mice-mnar-ses}
 set.seed(240603)
 
 mice_ses_mnar_input <- ses_exp_mnar |>
@@ -834,9 +1096,14 @@ ses_mice_mnar <- ses_exp_mnar |>
   rename(area = nuts1)   # match column name expected by evaluate_imputation
 
 # write_csv(ses_mice_mnar, file = "ses_mice_mnar.csv")
+```
 
+## 4.3 Evaluation
 
-## ----eval-ses------------------------------------------------------------------------------------------------------------
+One single evaluation function is developed, to be used with different
+results throughout the experiment:
+
+```{r eval-ses}
 metrics_tracker <- tibble(
   method    = character(),
   metric    = character(),
@@ -947,13 +1214,49 @@ eval_ses <- function(ses_imp, label) {
 # evaluating MNAR and MCAR MICE retreival
 eval_ses(ses_mice_mnar, "MICE_MNAR")
 eval_ses(ses_imputed_mcar, "MICE_MCAR")
+```
 
+The function produces 5 outputs:
 
-## ------------------------------------------------------------------------------------------------------------------------
-library(httr)
-library(httr2)
-library(jsonlite)
+-   **Cell-level SES table**: true vs imputed wage and bias, sorted by
+    largest error as well.
 
+-   **K-S statistic**
+
+-   **Bias direction**
+
+-   **Fairness by disadvantage tier:** the mean bias and MAE broken down
+    by low / moderate / high disadvantage regions.
+
+# PHASE 5
+
+# 5.1 Baseline LLM & Uniform Function
+
+The selected LLM will be `Qwen 3-32B`. An API key was obtained for 5
+dollars (of tokens) from OpenRouter.com.
+
+*temperature* = a scaling factor on the token probabilities before
+sampling; "a higher value for temperature produces a softer probability
+distribution over classes" (Hinton et al., 2015, pg. 3)
+<https://arxiv.org/pdf/1503.02531>
+
+*top_p* = nucleus sampling - a principled alternative to top-k sampling,
+which uses the probability distribution to determine a set of tokens to
+be sampled from // it selects the highest probability tokens whose
+cumulative probability mass exceeds our pre-chosen threshold *p*
+[https://arxiv.org/htlm/1904.09751v1](https://arxiv.org/pdf/1904.09751v1){.uri}
+
+The function has 3 parts:
+
+-   base call for the model, sends the prompt and returns the model's
+    raw reply.
+
+-   strip_think + extract_number which extract the numbers from the
+    textual answer.
+
+-   impute_cell calls the model N times and takes the mean.
+
+```{r llm-function}
 llm_chat <- function(prompt,
                      model = "qwen/qwen3-32b",
                      system = NULL,
@@ -1038,9 +1341,18 @@ llm_impute_value <- function(prompt, system, sleep = 2,
   if (val < lo | val > hi) { message("out of range: ", val); return(NA_real_) }
   val
 }
+```
 
+# 5.2 Uninformed baseline on SES
 
-## ----llm-baseline-ses----------------------------------------------------------------------------------------------------
+Qwen 3-32B is asked about each missing cells by area and sex only, with
+zero data context to define the prior knowledge that model carries about
+Italian regional wages from training, to be used as a baseline. The MNAR
+dataset will be used because the uninformed LLM ignores all observed
+data, so the missingness mechanism doesn't change its guesses or
+mechanism.
+
+```{r llm-baseline-ses}
 set.seed(240603)
 
 sys_ses_base <- "You are an economic estimator. Reply with only a single number."
@@ -1062,9 +1374,11 @@ llm_baseline_ses <- ses_exp_mnar2 |>
 llm_baseline_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, value_imp)
 
 # write_csv(llm_baseline_ses, file = "llm_baseline_ses.csv")
+```
 
+Now it will be merged:
 
-## ----llm-ses-------------------------------------------------------------------------------------------------------------
+```{r llm-ses}
 ses_llm_baseline_merged <- ses_exp_mnar |>
   pivot_longer(cols = c(Female, Male), names_to = "sex", values_to = "value") |>
   left_join(
@@ -1078,9 +1392,28 @@ ses_llm_baseline_merged <- ses_exp_mnar |>
 
 # SAVE
 # write_csv(ses_llm_baseline_merged, file = "ses_llm_baseline_merged.csv")
+```
 
+# PHASE 6
 
-## ----ses-ctx-prep--------------------------------------------------------------------------------------------------------
+Free-form contextual prompt and structured table completion.
+
+## 6.1 Contextual imputation
+
+The model is given one observed row as context and asked to impute the
+missing wage for the opposite sex. What is provided:
+
+-   the counterpart-sex wage in the same area x category cell
+
+<!-- -->
+
+-   the national mean for that sex x category
+
+-   the area-level mean for that sex from observed non-missing cells
+
+-   all other observed areas' wages for the same sex x category
+
+```{r ses-ctx-prep}
 nat_avg_ses <- ses_wide |>
   pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
   group_by(breakdown_var, breakdown_cat, sex) |>
@@ -1115,9 +1448,11 @@ ses_missing_ctx <- ses_exp_mnar |>
   left_join(nat_avg_ses,     by = c("breakdown_var", "breakdown_cat", "sex")) |>
   left_join(area_avg_ses,    by = c("nuts1", "sex")) |>
   left_join(other_areas_ses, by = c("breakdown_var", "breakdown_cat", "sex"))
+```
 
+The imputation:
 
-## ----ses-ctx-impute, cache=FALSE-----------------------------------------------------------------------------------------
+```{r ses-ctx-impute, cache=FALSE}
 sys_ctx <- paste(
   "You have to recover the missing cells in a data set on Italian wages through imputation.",
   "Only use the provided quantile and macro context.",
@@ -1144,9 +1479,11 @@ llm_ctx_ses <- ses_missing_ctx |>
 
 llm_ctx_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, counterpart_val, value_imp)
 # write_csv(llm_ctx_ses, file = "llm_ctx_ses.csv")
+```
 
+Merged and evaluation:
 
-## ----ses-ctx-eval--------------------------------------------------------------------------------------------------------
+```{r ses-ctx-eval}
 ses_llm_ctx_merged <- ses_exp_mnar |>
   pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
   left_join(
@@ -1158,9 +1495,24 @@ ses_llm_ctx_merged <- ses_exp_mnar |>
   rename(area = nuts1)
 
 # write_csv(ses_llm_ctx_merged, "ses_llm_ctx_merged.csv")
+```
 
+## 6.2 Structured Table Completion
 
-## ----tbl-ctx-eval--------------------------------------------------------------------------------------------------------
+This prompt will be given only a small table with missing cells, testing
+structured table completion and tries to understand whether structured
+tabular framing (with an explicit MISSING cell) elicits better
+imputation than bullet points.
+
+*H0:* structured tabular framing obtains better imputation results than
+contextual imputation (more prompt-structured), because the format is
+more similar to actual data generation and formatting.
+
+*H1:* structured tabular framing does not obtain better imputation
+results, as it does not differ substantially enough from the contextual
+prompt to elicit differences.
+
+```{r tbl-ctx-eval}
 # the prompt
 sys_tbl <- paste(
   "You are completing a table of Italian gross hourly wages.",
@@ -1205,9 +1557,13 @@ ses_llm_tbl_merged <- ses_exp_mnar |>
   rename(area = nuts1)
 
 # write_csv(ses_llm_tbl_merged, file = "ses_llm_tbl_merged.csv")
+```
 
+## 6.3 Evaluation
 
-## ----eval-ses-llm--------------------------------------------------------------------------------------------------------
+Evaluation metrics function:
+
+```{r eval-ses-llm}
 # baseline
 eval_ses(ses_llm_baseline_merged, "LLM_uninformed")
 
@@ -1216,9 +1572,15 @@ eval_ses(ses_llm_ctx_merged, "LLM_ctx_v1")
 
 # structured table completion
 eval_ses(ses_llm_tbl_merged, "LLM_tbl_v1")
+```
 
-# ONE-SHOT IMPUTATION
-# UNINFORMED BASELINE
+# PHASE 7
+
+## 7.1 Uninformed one-shot imputation
+
+Uninformed baseline for the one-shot imputation method, any preserved accuracy or aGPG must come from the model's priors rather than the supplied data. Only a target table to fill will be provided to the LLM.
+
+```{r basline-oneshot}
 # target: MNAR table -> tag each MISSING cell with a numeric ID so any future join is ID-based
 mnar_long <- ses_exp_mnar |>
   rename(area = nuts1) |>
@@ -1299,8 +1661,26 @@ ses_llm_baseline_oneshot_merged <- ses_exp_mnar |>
 # write_csv(ses_llm_baseline_oneshot_merged, "ses_llm_baseline_oneshot_merged.csv")
 
 plot_missing(ses_llm_baseline_merged)
+```
 
-# CONTEXTUAL BASELINE - WITH REFERENCE TABLE
+
+## 7.2 One-shot broad-context imputation
+
+Phase 7 gives two layers of context at once, combining geographic
+anchoring (from the observed MNAR cells) with structural/demographic
+depth (from the reference). The imputation method is different, as the
+LLM here is asked to do a one-shot imputation.
+
+-   **Reference (context)**: `ses_data` rows with
+    `strat_type != "geography"`. It provides a broader context to the
+    LLM to predict from.
+
+-   **Target (to impute)**: `ses_exp_mnar`,geography-stratified wages
+    with engineered MNAR missingness. Missing cells are marked `MISSING`
+    and given an ID. Because the reference and target use different
+    stratification axes, there is no overlap (already created for the baseline).
+
+```{r llm-oneshot-impute, cache=FALSE}
 # reference table to give the LLM context: education / occupation / tenure / contract-type
 ref_csv <- ses_data |>
   filter(strat_type != "geography",
@@ -1386,9 +1766,14 @@ ses_llm_oneshot_merged <- ses_exp_mnar |>
 # write_csv(ses_llm_oneshot_merged, "ses_llm_oneshot_merged.csv")
 
 plot_missing(ses_llm_oneshot_merged)
+```
 
-# ANONYMIZED GEOGRAHPICAL AREAS 
-# anon-geo: reuses ref_csv + sys_oneshot + mnar_long + missing_keys.
+## 7.3 Anonymized geography imputation
+
+To try and test leakage, the geographical areas will be masked into Area 1, 2 etc., to understand how the model performs when context is given but specific geographical indications are anonymized:
+
+```{r anon-geo-imp}
+# anon-geo: identical to 7.1, reuses ref_csv + sys_oneshot + mnar_long + missing_keys.
 # only the AREA labels shown to the model are masked; missing_keys keeps the real
 # areas, and the join is by cell_id, so results map back as the previous phases
 
@@ -1457,8 +1842,12 @@ ses_llm_anon_merged <- ses_exp_mnar |>
 # write_csv(ses_llm_anon_merged, "ses_llm_anon_merged.csv")
 
 plot_missing(ses_llm_anon_merged)
+```
 
-# EVALUATION
+
+## 7.4 Evaluation
+
+```{r eval-oneshot}
 # uninformed
 eval_ses(ses_llm_baseline_oneshot_merged, "LLM_oneshot_baseline")
 
@@ -1467,3 +1856,11 @@ eval_ses(ses_llm_oneshot_merged, "LLM_oneshot_ctx")
 
 # anonymized geography
 eval_ses(ses_llm_anon_merged, "LLM_anonymized_geo")
+```
+
+
+The unstructured baseline preserves the aggregate gender gap least faithfully (MAE 0.032, ρ 0.94); contextual reference improves it (MAE 0.023, ρ 0.97). Anonymising the macro-areas recovers roughly half the contextual error gain (MAE 0.026, RMSE 0.037), but its rank fidelity reverts to baseline (ρ 0.94). This could indicate that real area identity aided ordering more than level: partial, ordering-specific geographic memorization. Error concentrates in the most disadvantaged tier throughout: high-disadvantage MAE stays roughly an order of magnitude above the low tier (0.69/0.39/0.43 vs 0.10/0.05/0.04). Imputation degrades precisely where wage data is sparsest.
+
+Comparison with MICE on MNAR performance:
+Against the LLM one-shot conditions, MICE-PMM has a worst performance. Its aGPG MAE (0.107) is three to five times the LLM range (0.023-0.032), and its rank fidelity collapses to ρ 0.16 versus the LLMs' 0.94-0.97. The disadvantage gradient diverges most: MICE's high- and moderate-tier MAE reach 1.82 and 1.99, roughly three to four times the worst LLM tier (≈0.43-0.69) and over forty times its own low tier. PMM fails precisely where the LLMs degrade only modestly, which are the disadvantaged-areas.
+
