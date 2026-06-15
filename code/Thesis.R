@@ -1,30 +1,41 @@
-## ----results=FALSE-------------------------------------------------------------------------------------------------------
 library(tidyr)
 library(readxl)
 library(dplyr)
 library(tidyverse)
 library(stringr)
 library(readr)
-library(ggplot2)
 library(DataExplorer)
 
+# visualizations
+library(ggplot2)
+library(stargazer) # for tables
+library(sf)
+library(giscoR)
+library(showtext)
+library(scales)
+library(ggforce)  # for facet_col
+library(showtext) # for Google Fonts
 
-## ------------------------------------------------------------------------------------------------------------------------
+# imputation
+library(mice)
+library(httr)
+library(httr2)
+library(jsonlite)
+
 # this will read the index sheet
 # we can see that the first two are indexes - so skip
 ses_2022 <- read_excel("data/Tavole_Struttura-delle-retribuzioni_2022.xlsx",
                        skip = 2) # skip blank rows on top
 
 
-all_sheets <- excel_sheets("data/Tavole_Struttura-delle-retribuzioni_2022.xlsx") # list of all sheets
+all_sheets <- excel_sheets("data/Tavole_Struttura-delle-retribuzioni_2022.xlsx") 
+# list of all sheets
 print(ses_2022)
 
-
-## ------------------------------------------------------------------------------------------------------------------------
 tav1_raw <- read_excel("data/Tavole_Struttura-delle-retribuzioni_2022.xlsx",
                        sheet = "Tav.1",
                        col_names = FALSE,
-                       col_types = "text")   # force everything to text and avoids type-guessing issues
+                       col_types = "text")   # force everything to text and avoid type-guessing issues
 
 
 
@@ -39,9 +50,7 @@ tav1_raw <- read_excel("data/Tavole_Struttura-delle-retribuzioni_2022.xlsx",
                        col_types = "text",
                        skip = 4)
 
-
-## ------------------------------------------------------------------------------------------------------------------------
-sections <- c("ATTIVITÃ€ ECONOMICA","ATTIVITÃ€ ECONOMICA ",   # ISTAT has a trailing space in some tables so ATTIVITA' ECONOMICA is repeated with a space afterwards too
+sections <- c("ATTIVITÀ ECONOMICA","ATTIVITÀ ECONOMICA ",   # ISTAT has a trailing space in some tables so ATTIVITA' ECONOMICA is repeated with a space afterwards too
               "RIPARTIZIONE GEOGRAFICA",
               "CLASSE DIMENSIONALE", 
               "TIPO DI CONTROLLO ECONOMICO")
@@ -52,23 +61,27 @@ tav1_clean <- tav1_raw |>
     strat_type = if_else(
       is.na(row_label) & str_trim(F_educ_low) %in% sections,
       str_trim(F_educ_low),
-      NA_character_)) |>
+      NA_character_
+    )
+  ) |>
   # add section label downward to all rows belonging to that section
   fill(strat_type, .direction = "down") |>
   # drop the section marker rows (row_label is NA) and footnote rows
-  filter(!is.na(row_label),
-         !str_detect(row_label, "^legenda|^Fonte"),
-         !str_detect(row_label, "^None$"))  # in case of leftover "None" strings
-  
+  filter(
+    !is.na(row_label),
+    !str_detect(row_label, "^legenda|^Fonte"),
+    !str_detect(row_label, "^None$")   # in case of leftover "None" strings
+  )
  
 # shorten the section labels to something clean
 tav1_clean <- tav1_clean |>
   mutate(strat_type = recode(str_trim(strat_type),
-    "ATTIVITÃ€ ECONOMICA" = "sector",
-    "ATTIVITÃ€ ECONOMICA "  = "sector",
-    "RIPARTIZIONE GEOGRAFICA" = "geography",
-    "CLASSE DIMENSIONALE" = "firm_size",
-    "TIPO DI CONTROLLO ECONOMICO" = "control_type"))
+    "ATTIVITÀ ECONOMICA"          = "sector",
+    "ATTIVITÀ ECONOMICA "         = "sector",
+    "RIPARTIZIONE GEOGRAFICA"     = "geography",
+    "CLASSE DIMENSIONALE"         = "firm_size",
+    "TIPO DI CONTROLLO ECONOMICO" = "control_type"
+  ))
 
 # rename the levels of education without specifying they refer to education, as I will address it as the table's breakdown category
 tav1_clean <- tav1_clean |>
@@ -81,12 +94,11 @@ tav1_clean <- tav1_clean |>
     M_high = M_educ_high,
     T_low  = T_educ_low,
     T_med  = T_educ_med,
-    T_high = T_educ_high)
+    T_high = T_educ_high,
+  )
 
-tav1_clean
+view(tav1_clean)
 
-
-## ------------------------------------------------------------------------------------------------------------------------
 tav1_clean <- tav1_clean |>
   select(-c(sep1, sep2)) |>
   mutate(across(.cols = c(F_low:T_total),
@@ -111,15 +123,13 @@ tav1_final <- tav1_clean |>
 
 tav1_final
 
-
-## ----recoding------------------------------------------------------------------------------------------------------------
 # education (ISCED)
 meta_education_level <- list(raw_names = c("row_label","F_low", "F_med", "F_high", 
                                            "F_total", "sep1",
                                            "M_low", "M_med", "M_high", "M_total", "sep2",
                                            "T_low", "T_med", "T_high", "T_total"),
   breakdown_var = "education",
-  cat_labels = c(low = "â‰¤ lower secondary",
+  cat_labels = c(low = "\u2264 lower secondary",
                     med = "upper secondary",
                     high = "tertiary",
                     total = "total"))
@@ -200,8 +210,6 @@ meta_age <- list(
   cat_labels    = c(young = "14-29 years", mid = "30-49 years",
                     old   = "50+ years",   total = "total"))
 
-
-## ----general function----------------------------------------------------------------------------------------------------
 parse_ses_table <- function(sheet_name, meta, outcome_label) {
   n_target <- length(meta$raw_names)
 
@@ -219,23 +227,28 @@ parse_ses_table <- function(sheet_name, meta, outcome_label) {
  
   # detect and propagate section types
   cleaned <- raw |>
-    mutate(strat_type = if_else(
-      is.na(row_label) & str_trim(.data[[meta$raw_names[2] ]]) %in% sections,
-      str_trim(.data[[ meta$raw_names[2] ]]),
-        NA_character_)) |>
+    mutate(
+      strat_type = if_else(
+        is.na(row_label) & str_trim(.data[[meta$raw_names[2] ]]) %in% sections,
+        str_trim(.data[[ meta$raw_names[2] ]]),
+        NA_character_
+      )
+    ) |>
     fill(strat_type, .direction = "down") |>
     # remove section marker rows, footnotes, and trailing blank rows
     filter(
       !is.na(row_label),
       !str_detect(row_label, fixed("legenda")),
-      !str_detect(row_label, fixed("Fonte"))) |>
+      !str_detect(row_label, fixed("Fonte"))
+    ) |>
     # recode section labels
     mutate(strat_type = recode(str_trim(strat_type),
-      "ATTIVITÃ€ ECONOMICA"          = "sector",
-      "ATTIVITÃ€ ECONOMICA "         = "sector",
+      "ATTIVITÀ ECONOMICA"          = "sector",
+      "ATTIVITÀ ECONOMICA "         = "sector",
       "RIPARTIZIONE GEOGRAFICA"     = "geography",
       "CLASSE DIMENSIONALE"         = "firm_size",
-      "TIPO DI CONTROLLO ECONOMICO" = "control_type"))
+      "TIPO DI CONTROLLO ECONOMICO" = "control_type"
+    ))
  
   # drop separator columns
   cleaned <- cleaned |> select(-c(sep1, sep2))
@@ -251,7 +264,7 @@ parse_ses_table <- function(sheet_name, meta, outcome_label) {
   # pivot to long 
   pivot_long <- cleaned |>
     pivot_longer(
-      cols = all_of(value_cols),
+      cols      = all_of(value_cols),
       names_to  = c("sex", "breakdown_cat"),
       names_sep = "_",
       values_to = "value") |>
@@ -259,23 +272,19 @@ parse_ses_table <- function(sheet_name, meta, outcome_label) {
       sex = recode(sex, "F" = "Female", "M" = "Male", "T" = "Total"),
       # map short breakdown_cat codes to readable labels
       breakdown_cat_label = recode(breakdown_cat, !!!meta$cat_labels),
-      breakdown_var = meta$breakdown_var,
-      outcome_var  = outcome_label,
-      table_id = sheet_name)
+      breakdown_var       = meta$breakdown_var,
+      outcome_var         = outcome_label,
+      table_id            = sheet_name)
  
   pivot_long
 }
 
-
-## ------------------------------------------------------------------------------------------------------------------------
 tav2_test <- parse_ses_table(
   sheet_name  = "Tav.2",
   meta = meta_contract_type,
   outcome_label = "hourly_wage"
 )
 
-
-## ------------------------------------------------------------------------------------------------------------------------
 table_map <- tribble(
   ~sheet,    ~meta,             ~outcome,
   "Tav.1",   "education",         "hourly_wage",
@@ -306,8 +315,6 @@ meta_list <- list(
   age = meta_age
 )
 
-
-## ------------------------------------------------------------------------------------------------------------------------
 ses_data <- pmap(
   table_map,
   function(sheet, meta, outcome) {
@@ -322,11 +329,12 @@ ses_data <- pmap(
 
 ses_data |> count(table_id, breakdown_var, outcome_var)
 
-
-## ------------------------------------------------------------------------------------------------------------------------
 ses_data <- ses_data |>
-  mutate(breakdown_cat = breakdown_cat_label) |>  
-  select(-breakdown_cat_label)
+  mutate(breakdown_cat = breakdown_cat_label) |>
+  select(-breakdown_cat_label) |>
+  # normalize the double-encoded ≤ in the education labels
+  mutate(breakdown_cat = str_replace(breakdown_cat,
+                                     fixed("\u00e2\u2030\u00a4"), "\u2264"))
 
 # mutate the regional labeling so that it matches the RACLI organization
 ses_data <- ses_data |> mutate(
@@ -342,8 +350,6 @@ ses_data <- ses_data |> mutate(
 
 # write_csv(ses_data, file = "ses_data.csv")
 
-
-## ------------------------------------------------------------------------------------------------------------------------
 library(readr)
 racli_raw <- read_csv("data/Sesso - prov (IT1,533_957_DF_DCSC_RACLI_8,1.0).csv",
                       quote = "")
@@ -351,8 +357,6 @@ racli_raw <- read_csv("data/Sesso - prov (IT1,533_957_DF_DCSC_RACLI_8,1.0).csv",
 racli_raw <- racli_raw |>
   filter(TIME_PERIOD == 2022) # filter 2022
 
-
-## ------------------------------------------------------------------------------------------------------------------------
 racli_clean <- racli_raw |>
   select(geo_code  = REF_AREA,        # ITC, ITC1, ITC11 etc.
          geo_label  = Territorio,      # specific geographical references
@@ -377,10 +381,10 @@ racli_clean <- racli_raw |>
       "9" = "Total"
     ),
     # classify each territory by its NUTS code length:
-    #   2 chars (IT)       -> country
-    #   3 chars (ITC)      -> NUTS-1 macro-area
-    #   4 chars (ITC1)     -> NUTS-2 region
-    #   5 chars (ITC11)    -> NUTS-3 province
+    # 2 chars (IT)       -> country
+    # 3 chars (ITC)      -> NUTS-1 macro-area
+    # 4 chars (ITC1)     -> NUTS-2 region
+    # 5 chars (ITC11)    -> NUTS-3 province
     geo_level = case_when(
       nchar(geo_code) == 2 ~ "country",
       nchar(geo_code) == 3 ~ "nuts1",
@@ -393,8 +397,6 @@ racli_clean <- racli_raw |>
 
 racli_clean
 
-
-## ------------------------------------------------------------------------------------------------------------------------
 # building directly from the RACLI data so the codes are consistent
 regional_codes <- racli_clean |>
   filter(geo_level == "nuts2") |>
@@ -417,8 +419,6 @@ regional_codes <- racli_clean |>
 # write_csv(regional_codes, file = "regional_codes.csv")
 # write_csv(racli_clean, file = "racli_clean.csv")
 
-
-## ----eda-ses-intro-------------------------------------------------------------------------------------------------------
 introduce(ses_data)
 plot_intro(ses_data)
 plot_missing(ses_data)
@@ -436,8 +436,6 @@ ses_data |>
   geom_boxplot() +
   labs(x = "Outcome variable", y = "Value")
 
-
-## ----eda-ses-corr--------------------------------------------------------------------------------------------------------
 ses_data |>
   filter(strat_type == "geography", sex == "Total",
          row_label != "Totale", breakdown_cat != "total") |>
@@ -458,11 +456,10 @@ ses_data |>
     min_val = min(value, na.rm = TRUE),
     max_val = max(value, na.rm = TRUE))
 
-## visualization
 # font 
 font_add_google("EB Garamond", "ebgaramond")
 showtext_auto()
-showtext_opts(dpi = 300)   # must match the ggsave() dpi below
+showtext_opts(dpi = 300)   # to match the ggsave() dpi 
 
 # headers 
 var_labels <- c(
@@ -506,8 +503,8 @@ p <- ggplot(plot_data, aes(mean_wage,
                      expand = expansion(mult = c(0, .05))) +
   
   scale_y_discrete(labels = function(x) dplyr::recode(x, # reconde longer occupations that create overlap
-                                                      "Intellectual professions" = "Intellectuals",
-                                                      "Elementary occupations"   = "Elementary occ.")) +
+    "Intellectual professions" = "Intellectuals",
+    "Elementary occupations"   = "Elementary occ.")) +
   
   labs(title = "Mean hourly wage by worker characteristic and sex",
        subtitle = "Structure of Earnings Survey - 2022",
@@ -536,7 +533,6 @@ p <- ggplot(plot_data, aes(mean_wage,
 p
 
 
-# by macro area
 nuts1_labels <- c(
   "Nord-Ovest" = "North-west",
   "Nord-Est"   = "North-east",
@@ -590,8 +586,6 @@ p2 <- ggplot(plot_macro, aes(mean_wage,
   )
 p2
 
-
-## ----gender-gap-sections-------------------------------------------------------------------------------------------------
 within_gaps <- ses_data |>
   filter(strat_type == "geography",
          outcome_var == "hourly_wage",
@@ -607,32 +601,23 @@ within_gaps <- ses_data |>
 
 within_gaps
 
-
-## ----adj-GPG-area-breakdown----------------------------------------------------------------------------------------------
-agpg_area_breakdown <- within_gaps |>
+wGPG_area_breakdown <- within_gaps |>
   group_by(area, breakdown_var) |>
   mutate(weight = Female / sum(Female, na.rm = TRUE)) |>
-  summarise(aGPG = sum(weight * gap, na.rm = TRUE),
+  summarise(wGPG = sum(weight * gap, na.rm = TRUE),
             n_categories = n(),
             .groups = "drop") |>
   arrange(area, breakdown_var)
 
-agpg_area_breakdown
+wGPG_area_breakdown
 
-# write_csv(agpg_area_breakdown, file = "agpg_area_breakdown.csv")
-
-
-## ----adj-GPG-area--------------------------------------------------------------------------------------------------------
-agpg_area <- agpg_area_breakdown |>
+wGPG_area <- wGPG_area_breakdown |>
   group_by(area) |>
-  summarise(aGPG = mean(aGPG), .groups = "drop") |>
-  arrange(desc(aGPG))
+  summarise(wGPG = mean(wGPG), .groups = "drop") |>
+  arrange(desc(wGPG))
 
-agpg_area
+wGPG_area
 
-# write_csv(agpg_area, file = "agpg_area.csv")
-
-## visualization
 # NUTS-1 codes for the 5 macro-areas (2021 classification, used by GISCO)
 nuts1_codes <- tibble(
   nuts1   = c("Nord-Ovest", "Nord-Est", "Centro", "Sud", "Isole"),
@@ -651,28 +636,28 @@ gap_by_area <- ses_data |>
 # NUTS-1 boundaries for Italy
 italy_nuts1 <- gisco_get_nuts(country = "IT", nuts_level = 1, year = "2021", resolution = "20")
 
-# agpg for the map
-agpg_map <- agpg_area |>
+# wGPG for the map
+wGPG_map <- wGPG_area |>
   left_join(nuts1_codes, by = c("area" = "nuts1"))
 
 p3 <- italy_nuts1 |>
-  left_join(agpg_map, by = "NUTS_ID") |>
-  ggplot(aes(fill = aGPG)) +
+  left_join(wGPG_map, by = "NUTS_ID") |>
+  ggplot(aes(fill = wGPG)) +
   geom_sf(color = "white") +
   scale_fill_gradient2(low = "#542788", mid = "#f7f7f7", high = "#b2182b",
                        midpoint = 0, limits = c(-0.12, 0.12),
                        labels = scales::percent_format(accuracy = 1),
                        name = "Adjusted gap\n(% of male pay)") +
   
-  labs(title = "Composition-adjusted gender wage gap by macro-area",
+  labs(title = "Within-category gender wage gap by macro-area",
        subtitle = "Gender pay gap accounting for differences in worker and job characteristics") +
   
   theme_void(base_size = 11, base_family = "ebgaramond") +
   theme(plot.title.position = "plot",
         plot.title = element_text(face = "bold", size = 15, hjust = 0,
-                                  margin = margin(b = 4)),
+                                 margin = margin(b = 4)),
         plot.subtitle = element_text(colour = "grey40", size = 12, hjust = 0,
-                                     margin = margin(b = 14)),
+                                 margin = margin(b = 14)),
         # extra room above the title
         plot.margin = margin(t = 18, r = 6, b = 6, l = 6),  
         # legend 
@@ -680,11 +665,10 @@ p3 <- italy_nuts1 |>
         legend.text = element_text(size = 9),
         legend.key.height = unit(0.9, "lines"),
         legend.key.width  = unit(0.7, "lines"))
-
+  
 p3
 
 
-## ----regional-disadv-score-----------------------------------------------------------------------------------------------
 reg_dis <- racli_clean |>
   filter(geo_level == "nuts2",
          sex == "Total",
@@ -696,7 +680,7 @@ reg_dis <- racli_clean |>
     # z-standardize each indicator; low wage and high dispersion = disadvantaged
     z_wage  = -as.numeric(scale(mean)),     # reverse-signed: low wage -> high score
     z_disp  =  as.numeric(scale(p90_p10)),  # "high = bad" direction
-    # composite: simple average of the two standardized indicators
+    #  average of the two standardized indicators
     reg_dis = (z_wage + z_disp) / 2,
     # labels
     reg_dis_lvl = cut(reg_dis,
@@ -706,7 +690,7 @@ reg_dis <- racli_clean |>
   arrange(desc(reg_dis))
 
 # adapted to NUTS-1 for SES
-# RACLI codes -> SES macro-area labels, average the composite reg_dis within each macro-area, then re-cut into tiers 
+# RACLI codes -> SES macro-area labels, average 'reg_dis' within each macro-area, then re-cut into tiers 
 reg_dis <- reg_dis |>
   mutate(
     nuts1 = recode(nuts1_code,
@@ -723,13 +707,6 @@ reg_dis <- reg_dis |>
                       include.lowest = TRUE)) |>
   arrange(desc(reg_dis))
 
-reg_dis 
-
-# write_csv(reg_dis, file = "reg_dis.csv")
-
-
-## ------------------------------------------------------------------------------------------------------------------------
-library(mice)
 set.seed(240603) 
 
 # pivoted dataset and filtered to only keep the rows where NUTS1 are specified
@@ -745,7 +722,7 @@ ses_wide <- ses_data |>
   pivot_wider(names_from = sex, values_from = value) |>
   filter(!is.na(Female), !is.na(Male), Male > 0)
 
-# create the baseline corrupted MCAR dataset
+# create the baseline corrupted MCAR dataset - 20% random missingness
 miss_rate_ses <- 0.20
 
 ses_missing <- ses_wide |> 
@@ -754,14 +731,9 @@ ses_missing <- ses_wide |>
     Male   = if_else(runif(n()) < miss_rate_ses, NA_real_, Male)
   )
 
-# SAVE ses_wide as ground truth - MNAR missingness will be then applied to it
-# write_csv(ses_wide, file = "ses_wide_original.csv")
+# 'ses_wide' as ground truth
+# 'ses_missing' is MCAR missingness
 
-# SAVE ses_missing as this is MCAR missingness
-# write_csv(ses_missing, file = "ses_missing_mcar.csv")
-
-
-## ------------------------------------------------------------------------------------------------------------------------
 # convert descriptors to factors so MICE can utilize them as predictors
 mice_ses_input <- ses_missing |>
 mutate(across(c(area, breakdown_var, breakdown_cat), as.factor)) |>
@@ -782,25 +754,28 @@ mutate(
   Female = rowMeans(imp_female_matrix),
   Male = rowMeans(imp_male_matrix))
 
-# write_csv(ses_imputed_mcar, file = "ses_imputed_mcar.csv")
-
-
-## ----MNAR-ses------------------------------------------------------------------------------------------------------------
 set.seed(240306) # seed for reproducibility
 
-# MNAR: missingness probability rises with disadvantage tier
+# MNAR
 tier_p <- c(low = 0.10, moderate = 0.25, high = 0.45)
+beta   <- 0.05  # value dependence: extra drop prob per EUR/hr below the 
+# within-tier median
 
 ses_exp_mnar <- ses_wide |>
   rename(nuts1 = area) |>
-  filter(!is.na(nuts1)) |>   # keep defined NUTS-1 areas
+  filter(!is.na(nuts1)) |>
   left_join(reg_dis |> select(nuts1, reg_dis_lvl), by = "nuts1") |>
-  mutate(p_miss = tier_p[as.character(reg_dis_lvl)],             # per-row drop probability
-         drop_F = runif(n()) < p_miss, 
-         drop_M = runif(n()) < p_miss,  
-         Female = if_else(drop_F, NA_real_, Female),
-         Male   = if_else(drop_M, NA_real_, Male)) |> 
-  select(-drop_F, -drop_M, -p_miss)
+  group_by(reg_dis_lvl) |>
+  mutate(
+    base   = tier_p[as.character(reg_dis_lvl)],
+    pF  = pmin(pmax(base + beta * (median(Female, na.rm = TRUE) - Female), 
+                       0.02), 0.95),
+    pM  = pmin(pmax(base + beta * (median(Male,   na.rm = TRUE) - Male),   
+                       0.02), 0.95),
+    Female = if_else(runif(n()) < pF, NA_real_, Female),
+    Male   = if_else(runif(n()) < pM, NA_real_, Male)) |>
+  ungroup() |>
+  select(-base, -pF, -pM)
 
 plot_missing(ses_exp_mnar)
 
@@ -808,13 +783,8 @@ plot_missing(ses_exp_mnar)
 ses_exp_mnar |>
   pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
   group_by(reg_dis_lvl) |>
-  summarise(missing_rate = mean(is.na(value)), n_cells = n(), .groups = "drop")
+  summarise(missing_rate = mean(is.na(value)), n_cells = n(), .groups = "drop") 
 
-# SAVE EXPERIMENTAL DATASET
-# write_csv(ses_exp_mnar, file = "ses_exp_mnar.csv")
-
-
-## ----mice-mnar-ses-------------------------------------------------------------------------------------------------------
 set.seed(240603)
 
 mice_ses_mnar_input <- ses_exp_mnar |>
@@ -833,10 +803,6 @@ ses_mice_mnar <- ses_exp_mnar |>
     Male   = rowMeans(imp_male_mnar)) |>
   rename(area = nuts1)   # match column name expected by evaluate_imputation
 
-# write_csv(ses_mice_mnar, file = "ses_mice_mnar.csv")
-
-
-## ----eval-ses------------------------------------------------------------------------------------------------------------
 metrics_tracker <- tibble(
   method    = character(),
   metric    = character(),
@@ -846,9 +812,13 @@ metrics_tracker <- tibble(
   RMSE      = double(),
   spearman  = double())
 
+# collect the per-call findings
+fairness_tracker <- tibble()
+tier_tracker     <- tibble()
+
 eval_ses <- function(ses_imp, label) {
 
-  # 1. aGPG-level accuracy (25 area x breakdown cells) 
+  # 1. wGPG-level accuracy (25 area x breakdown cells) 
   imp <- ses_imp |>
     group_by(area, breakdown_var) |>
     mutate(gap    = 1 - Female / Male,
@@ -856,8 +826,8 @@ eval_ses <- function(ses_imp, label) {
     summarise(value_imp = sum(weight * gap, na.rm = TRUE), .groups = "drop") |>
     unite("unit", area, breakdown_var, sep = " | ")
 
-  truth <- agpg_area_breakdown |>
-    select(area, breakdown_var, value_true = aGPG) |>
+  truth <- wGPG_area_breakdown |>
+    select(area, breakdown_var, value_true = wGPG) |>
     unite("unit", area, breakdown_var, sep = " | ")
 
   scores <- truth |>
@@ -865,7 +835,7 @@ eval_ses <- function(ses_imp, label) {
     mutate(bias = value_imp - value_true, abs_error = abs(bias)) |>
     summarise(
       method    = label,
-      metric    = "agpg",
+      metric    = "wGPG",
       n         = sum(!is.na(bias)),
       mean_bias = mean(bias, na.rm = TRUE),
       MAE       = mean(abs_error, na.rm = TRUE),
@@ -884,7 +854,7 @@ eval_ses <- function(ses_imp, label) {
       by = c("area", "breakdown_var", "breakdown_cat", "sex")) |>
     mutate(bias = value_imp - value_true, abs_error = abs(bias))
 
-  cat("\n=== Cell-level ===\n")
+  cat("\n Cell-level \n")
   print(se |> arrange(desc(abs_error)) |>
     select(area, breakdown_var, breakdown_cat, sex, value_true, value_imp, bias))
 
@@ -894,7 +864,7 @@ eval_ses <- function(ses_imp, label) {
               mean(se$bias > 0, na.rm = TRUE) * 100))
 
   # 3. Fairness by breakdown variable
-  cat("\n=== Fairness by breakdown variable ===\n")
+  cat("\n Fairness by breakdown variable \n")
   fairness <- se |>
     group_by(breakdown_var) |>
     summarise(bias = mean(bias, na.rm = TRUE),
@@ -902,11 +872,14 @@ eval_ses <- function(ses_imp, label) {
               n    = n(), .groups = "drop") |>
     arrange(breakdown_var)
   print(fairness)
+  
+  fairness_tracker <<- bind_rows(fairness_tracker, fairness |> 
+                                   mutate(method = label))
   cat(sprintf("MAE ratio (worst / best): %.3f\n", max(fairness$MAE) / min(fairness$MAE)))
 
   # 4. Fairness by disadvantage tier (MNAR datasets only)
   if ("reg_dis_lvl" %in% names(se)) {
-    cat("\n=== Fairness by disadvantage tier ===\n")
+    cat("\n Fairness by disadvantage tier \n")
     tier_fair <- se |>
       group_by(reg_dis_lvl) |>
       summarise(bias = mean(bias, na.rm = TRUE),
@@ -914,28 +887,31 @@ eval_ses <- function(ses_imp, label) {
                 n    = n(), .groups = "drop") |>
       arrange(reg_dis_lvl)
     print(tier_fair)
+    
+    tier_tracker <<- bind_rows(tier_tracker, tier_fair |> 
+                                 mutate(method = label))
     cat(sprintf("MAE ratio (high / low tier): %.3f\n",
                 max(tier_fair$MAE) / min(tier_fair$MAE)))
   }
 
-  # 5. aGPG MAE at two aggregation levels 
-  agpg_cells <- ses_imp |>
+  # 5. wGPG MAE at two aggregation levels 
+  wGPG_cells <- ses_imp |>
     group_by(area, breakdown_var) |>
     mutate(gap    = 1 - Female / Male,
            weight = Female / sum(Female, na.rm = TRUE)) |>
-    summarise(aGPG_imp = sum(weight * gap, na.rm = TRUE), .groups = "drop") |>
-    left_join(agpg_area_breakdown |> select(area, breakdown_var, aGPG_true = aGPG),
+    summarise(wGPG_imp = sum(weight * gap, na.rm = TRUE), .groups = "drop") |>
+    left_join(wGPG_area_breakdown |> select(area, breakdown_var, wGPG_true = wGPG),
               by = c("area", "breakdown_var")) |>
-    mutate(agpg_error = abs(aGPG_imp - aGPG_true))
+    mutate(wGPG_error = abs(wGPG_imp - wGPG_true))
 
-  agpg_area_res <- agpg_cells |>
+  wGPG_area_res <- wGPG_cells |>
     group_by(area) |>
-    summarise(aGPG_imp = mean(aGPG_imp), .groups = "drop") |>
-    left_join(agpg_area |> select(area, aGPG_true = aGPG), by = "area") |>
-    mutate(agpg_error = abs(aGPG_imp - aGPG_true))
+    summarise(wGPG_imp = mean(wGPG_imp), .groups = "drop") |>
+    left_join(wGPG_area |> select(area, wGPG_true = wGPG), by = "area") |>
+    mutate(wGPG_error = abs(wGPG_imp - wGPG_true))
 
-  cat(sprintf("\naGPG MAE (25 cells): %.4f\n", mean(agpg_cells$agpg_error, na.rm = TRUE)))
-  cat(sprintf("aGPG MAE (5 NUTS-1): %.4f\n",  mean(agpg_area_res$agpg_error, na.rm = TRUE)))
+  cat(sprintf("\nwGPG MAE (25 cells): %.4f\n", mean(wGPG_cells$wGPG_error, na.rm = TRUE)))
+  cat(sprintf("wGPG MAE (5 NUTS-1): %.4f\n",  mean(wGPG_area_res$wGPG_error, na.rm = TRUE)))
 
   if (exists("mcar_mae_ses")) {
     cat(sprintf("MNAR/MCAR MAE ratio: %.2fx\n", scores$MAE / mcar_mae_ses))
@@ -947,12 +923,6 @@ eval_ses <- function(ses_imp, label) {
 # evaluating MNAR and MCAR MICE retreival
 eval_ses(ses_mice_mnar, "MICE_MNAR")
 eval_ses(ses_imputed_mcar, "MICE_MCAR")
-
-
-## ------------------------------------------------------------------------------------------------------------------------
-library(httr)
-library(httr2)
-library(jsonlite)
 
 llm_chat <- function(prompt,
                      model = "qwen/qwen3-32b",
@@ -979,7 +949,7 @@ llm_chat <- function(prompt,
         top_p       = top_p,
         max_tokens  = max_tokens), auto_unbox = TRUE),
       encode = "raw",
-      timeout(300))
+      timeout(600))
 
     sc <- status_code(resp)
 
@@ -1000,8 +970,8 @@ llm_chat <- function(prompt,
 }
 
 # shared LLM extraction config + helpers (used by EVERY LLM condition)
-wage_lower        <- 6       # plausible EUR/hr bounds for RACLI
-wage_higher        <- 45
+wage_lower        <- 6       # plausible EUR/hr bounds 
+wage_higher        <- 50
 
 strip_think <- function(x) {
   if (length(x) == 0 || is.na(x)) return(NA_character_)
@@ -1024,7 +994,7 @@ extract_number <- function(raw) {
   val
 }
 
-# one call + parse + validate path 
+# one call + parse + validate path
 llm_impute_value <- function(prompt, system, sleep = 2,
                              lo = wage_lower, hi = wage_higher,
                              max_tokens = 8192) {
@@ -1039,431 +1009,405 @@ llm_impute_value <- function(prompt, system, sleep = 2,
   val
 }
 
+# d: a redrawn MNAR dataset shaped like ses_exp_mnar
+# returns a tibble shaped like ses_wide (area, breakdown_var, breakdown_cat,
+# Female, Male) with missing cells filled in by the LLM
+oneshot_run <- function(d, condition = c("uninformed", "anon", "blind"),
+                           chat = llm_chat) {
+  condition <- match.arg(condition)
 
-## ----llm-baseline-ses----------------------------------------------------------------------------------------------------
+  long <- d |>
+    rename(area = nuts1) |>
+    select(area, breakdown_var, breakdown_cat, Female, Male,
+           any_of("reg_dis_lvl")) |>
+    pivot_longer(c(Female, Male), names_to = "sex", values_to = "val") |>
+    mutate(cell_id = row_number(),
+           display = if_else(is.na(val), paste0("MISSING_", cell_id),
+                             as.character(round(val, 2))))
+
+  # missing_keys keeps the real area names + full breakdown labels for merge-back
+  missing_keys <- long |>
+    filter(is.na(val)) |>
+    select(cell_id, area, breakdown_var, breakdown_cat, sex)
+
+  if (condition == "anon") {
+    area_levels <- sort(unique(long$area))
+    area_map    <- setNames(paste0("Area_", seq_along(area_levels)), area_levels)
+    long <- long |> mutate(area = area_map[area])
+  }
+
+  # blind: hide the breakdown covariates from the model (area + sex + value only)
+  if (condition == "blind") {
+    long <- long |>
+      mutate(row = paste(cell_id, area, sex, display, sep = ","))
+    cols_hdr <- "cell_id,area,sex,value"
+  } else {
+    long <- long |>
+      mutate(row = paste(cell_id, area, breakdown_var, breakdown_cat,
+                         sex, display, sep = ","))
+    cols_hdr <- "cell_id,area,breakdown_var,breakdown_cat,sex,value"
+  }
+  target_csv <- paste(long$row, collapse = "\n")
+
+  sys_prompt <- paste(
+    "You are completing missing wage cells in an ISTAT Structure of Earnings survey table.",
+    "All values are mean gross hourly wages in EUR/hour, Italy 2022.",
+    "You are given one target table stratified by NUTS-1 macro-area, with some cells missing.",
+    "Base your outputs strictly on what is present in the given data, learning from the observed cells in the table.",
+    "Each missing cell in the target table is marked MISSING_<id> where <id> is a number.",
+    "Return ONLY a two-column CSV with header: cell_id,value",
+    "One row per missing cell, where cell_id is the number from MISSING_<id> and value is your imputed wage.",
+    "Values must be between 6 and 50. No markdown, no explanation.")
+
+  prompt <- paste0("TARGET TABLE (geography-stratified wages: impute every 
+                   MISSING_<id> cell)\n",
+    paste0(cols_hdr, "\n"), target_csv, "\n\n",
+    "Return a CSV with header: cell_id,value: one row per MISSING_<id> cell only.")
+
+  raw <- chat(prompt, system = sys_prompt, max_tokens = 32768)
+
+  # parse: find the cell_id, value header
+  clean_resp <- strip_think(raw)
+  clean_resp <- gsub("```[a-z]*\n?|```", "", clean_resp) # strip markdown
+  resp_lines <- strsplit(trimws(clean_resp), "\n")[[1]]
+  resp_lines <- resp_lines[nchar(trimws(resp_lines)) > 0]
+
+  if (length(resp_lines) == 0 || all(is.na(resp_lines)))
+    stop("LLM returned empty response")
+
+  hdr_idx <- which(grepl("^cell_id,", resp_lines, ignore.case = TRUE))[1]
+  if (is.na(hdr_idx)) hdr_idx <- 1
+  csv_text <- paste(resp_lines[hdr_idx:length(resp_lines)], collapse = "\n")
+
+  # I() forces read_csv to treat csv_text as literal text, never as a file path
+  llm_df <- read_csv(I(csv_text), show_col_types = FALSE) |>
+    mutate(value = suppressWarnings(as.numeric(value)),
+           value = if_else(value < wage_lower | value > wage_higher, NA_real_, value)) |>
+    left_join(missing_keys, by = "cell_id") # join by id -> back to real area names
+
+  # merged: fill the original missing cells with the LLM's values
+  d |>
+    rename(area = nuts1) |>
+    select(area, breakdown_var, breakdown_cat, Female, Male,
+           any_of("reg_dis_lvl")) |>
+    pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
+    left_join(llm_df |> select(area, breakdown_var, breakdown_cat, sex,
+                               value_imp = value),
+              by = c("area", "breakdown_var", "breakdown_cat", "sex")) |>
+    mutate(value = if_else(is.na(value), value_imp, value)) |>
+    select(-value_imp) |>
+    pivot_wider(names_from = sex, values_from = value)
+}
+
 set.seed(240603)
+llm_baseline_oneshot_merged <- oneshot_run(ses_exp_mnar, "uninformed")
 
-sys_ses_base <- "You are an economic estimator. Reply with only a single number."
+#write_csv(llm_baseline_oneshot_merged, "llm_baseline_oneshot_merged.csv")
 
-ses_exp_mnar2 <- ses_exp_mnar |>
-  pivot_longer(cols = c(Female, Male), names_to = "sex", values_to = "value") |>
-  filter(is.na(value)) |>
-  select(nuts1, breakdown_var, breakdown_cat, sex)
-
-llm_baseline_ses <- ses_exp_mnar2 |>
-  mutate(
-    prompt = paste0(
-      "What was the mean gross hourly wage for ", sex,
-      " workers in ", nuts1, ", Italy, in 2022,",
-      " in the ", breakdown_var, " category '", breakdown_cat, "'?",
-      " Reply with a single number in EUR per hour, no explanation."),
-    value_imp = map_dbl(prompt, \(p) llm_impute_value(p, system = sys_ses_base, hi = 50)))
-
-llm_baseline_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, value_imp)
-
-# write_csv(llm_baseline_ses, file = "llm_baseline_ses.csv")
-
-
-## ----llm-ses-------------------------------------------------------------------------------------------------------------
-ses_llm_baseline_merged <- ses_exp_mnar |>
-  pivot_longer(cols = c(Female, Male), names_to = "sex", values_to = "value") |>
-  left_join(
-    llm_baseline_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, value_imp),
-    by = c("nuts1", "breakdown_var", "breakdown_cat", "sex")
-  ) |>
-  mutate(value = if_else(is.na(value), value_imp, value)) |>
-  select(-value_imp) |>
-  pivot_wider(names_from = sex, values_from = value) |>
-  rename(area = nuts1)
-
-# SAVE
-# write_csv(ses_llm_baseline_merged, file = "ses_llm_baseline_merged.csv")
-
-
-## ----ses-ctx-prep--------------------------------------------------------------------------------------------------------
-nat_avg_ses <- ses_wide |>
-  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
-  group_by(breakdown_var, breakdown_cat, sex) |>
-  summarise(nat_mean = round(mean(value, na.rm = TRUE), 2), .groups = "drop")
-
-area_avg_ses <- ses_exp_mnar |>
-  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
-  filter(!is.na(value)) |>
-  group_by(nuts1, sex) |>
-  summarise(area_mean = round(mean(value), 2), .groups = "drop")
-
-other_areas_ses <- ses_exp_mnar |>
-  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
-  filter(!is.na(value)) |>
-  group_by(breakdown_var, breakdown_cat, sex) |>
-  summarise(
-    other_areas = paste0(nuts1, ": ", round(value, 2), " EUR/hr", collapse = "; "),
-    .groups = "drop")
-
-ses_obs_long <- ses_exp_mnar |>
-  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
-  filter(!is.na(value))
-
-ses_missing_ctx <- ses_exp_mnar |>
-  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
-  filter(is.na(value)) |>
-  select(nuts1, breakdown_var, breakdown_cat, sex) |>
-  mutate(counterpart_sex = if_else(sex == "Female", "Male", "Female")) |>
-  left_join(
-    ses_obs_long |> rename(counterpart_sex = sex, counterpart_val = value),
-    by = c("nuts1", "breakdown_var", "breakdown_cat", "counterpart_sex")) |>
-  left_join(nat_avg_ses,     by = c("breakdown_var", "breakdown_cat", "sex")) |>
-  left_join(area_avg_ses,    by = c("nuts1", "sex")) |>
-  left_join(other_areas_ses, by = c("breakdown_var", "breakdown_cat", "sex"))
-
-
-## ----ses-ctx-impute, cache=FALSE-----------------------------------------------------------------------------------------
-sys_ctx <- paste(
-  "You have to recover the missing cells in a data set on Italian wages through imputation.",
-  "Only use the provided quantile and macro context.",
-  "Do not reproduce memorized ISTAT statistics or exact 2022 official wage figures,",
-  "strictly basing your outputs only on what is present in the given data.",
-  "Be concise in your reasoning. Return one number in EUR/hour, nothing else.")
-
-llm_ctx_ses <- ses_missing_ctx |>
-  mutate(
-    ctr_line = ifelse(!is.na(counterpart_val),
-      paste0("- Observed ", counterpart_sex, " wage (same area and category): ", counterpart_val, " EUR/hr"),
-      paste0("- ", counterpart_sex, " wage (same area and category): not observed")),
-    prompt = paste0(
-      "Macro-area: ", nuts1, " | Sex: ", sex, " ",
-      "Category: ", breakdown_var, " - ", breakdown_cat, " ",
-      ctr_line, " ",
-      "National avg (", sex, ", this category): ", nat_mean, " EUR/hr",
-      "Macro-area mean (", sex, ", all categories): ", area_mean, " EUR/hr",
-      "Other areas (", sex, ", same category): ", other_areas, " ",
-      "Impute: mean gross hourly wage in EUR/hr."),
-    value_imp = map_dbl(prompt, \(p) llm_impute_value(p, system = sys_ctx, hi = 50))
-  ) |>
-  select(-ctr_line)
-
-llm_ctx_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, counterpart_val, value_imp)
-# write_csv(llm_ctx_ses, file = "llm_ctx_ses.csv")
-
-
-## ----ses-ctx-eval--------------------------------------------------------------------------------------------------------
-ses_llm_ctx_merged <- ses_exp_mnar |>
-  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
-  left_join(
-    llm_ctx_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, value_imp),
-    by = c("nuts1", "breakdown_var", "breakdown_cat", "sex")) |>
-  mutate(value = if_else(is.na(value), value_imp, value)) |>
-  select(-value_imp) |>
-  pivot_wider(names_from = sex, values_from = value) |>
-  rename(area = nuts1)
-
-# write_csv(ses_llm_ctx_merged, "ses_llm_ctx_merged.csv")
-
-
-## ----tbl-ctx-eval--------------------------------------------------------------------------------------------------------
-# the prompt
-sys_tbl <- paste(
-  "You are completing a table of Italian gross hourly wages.",
-  "Use only the values visible in the table as context.",
-  "Do not reproduce memorized ISTAT statistics.",
-  "Return only valid JSON with the missing value, nothing else.")
-
-llm_tbl_ses <- ses_missing_ctx |>
-  mutate(
-    ctr_val = ifelse(!is.na(counterpart_val), paste0(counterpart_val, " EUR/hr"), "MISSING"),
-    
-      # table-like structure
-    prompt = paste0(
-      "Area: ", nuts1, " | Sex to impute: ", sex,
-      " | Category: ", breakdown_var, " - ", breakdown_cat, "
-
-",
-      "| variable | value |
-|---|---|
-",
-      "| ", counterpart_sex, " wage (same area/category) | ", ctr_val, " |",
-      "| national mean (", sex, ", this category) | ", nat_mean, " EUR/hr |",
-      "| area mean (", sex, ", all categories) | ", area_mean, " EUR/hr |",
-      "| other areas (", sex, ", same category) | ", other_areas, " |",
-      "| ", sex, " wage | MISSING |",
-      'Return {"value": <number>}'),
-    value_imp = map_dbl(prompt, \(p) llm_impute_value(p, system = sys_tbl, hi = 50))
-  ) |>
-  select(-ctr_val)
-
-llm_tbl_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, counterpart_val, value_imp)
-
-# write_csv(llm_tbl_ses, file = "llm_tbl_ses.csv")
-
-ses_llm_tbl_merged <- ses_exp_mnar |>
-  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
-  left_join(llm_tbl_ses |> select(nuts1, breakdown_var, breakdown_cat, sex, value_imp),
-            by = c("nuts1", "breakdown_var", "breakdown_cat", "sex")) |>
-  mutate(value = if_else(is.na(value), value_imp, value)) |>
-  select(-value_imp) |>
-  pivot_wider(names_from = sex, values_from = value) |>
-  rename(area = nuts1)
-
-# write_csv(ses_llm_tbl_merged, file = "ses_llm_tbl_merged.csv")
-
-
-## ----eval-ses-llm--------------------------------------------------------------------------------------------------------
-# baseline
-eval_ses(ses_llm_baseline_merged, "LLM_uninformed")
-
-# contextual
-eval_ses(ses_llm_ctx_merged, "LLM_ctx_v1")
-
-# structured table completion
-eval_ses(ses_llm_tbl_merged, "LLM_tbl_v1")
-
-# ONE-SHOT IMPUTATION
-# UNINFORMED BASELINE
-# target: MNAR table -> tag each MISSING cell with a numeric ID so any future join is ID-based
-mnar_long <- ses_exp_mnar |>
-  rename(area = nuts1) |>
-  select(area, breakdown_var, breakdown_cat, Female, Male) |>
-  pivot_longer(c(Female, Male), names_to = "sex", values_to = "val") |>
-  mutate(cell_id = row_number(),
-         display = if_else(is.na(val), paste0("MISSING_", cell_id), 
-                           as.character(round(val, 2))),
-         row = paste(cell_id, area, breakdown_var, breakdown_cat, 
-                     sex, display, sep = ","))
-
-mnar_csv  <- paste(mnar_long$row, collapse = "\n")
-missing_keys <- mnar_long |> 
-  filter(is.na(val)) |> 
-  select(cell_id, area, breakdown_var, breakdown_cat, sex)
-
-# prompt 
-sys_baseline <- paste(
-  "You are completing missing wage cells in an ISTAT Structure of Earnings survey table.",
-  "All values are mean gross hourly wages in EUR/hour, Italy 2022.",
-  "You are given one target table stratified by NUTS-1 macro-area, with some cells missing.",
-  "Base your outputs strictly on what is present in the given data, learning from the observed cells in the table.",
-  "Each missing cell in the target table is marked MISSING_<id> where <id> is a number.",
-  "Return ONLY a two-column CSV with header: cell_id,value",
-  "One row per missing cell, where cell_id is the number from MISSING_<id> and value is your imputed wage.",
-  "Values must be between 6 and 50. No markdown, no explanation.")
-
-prompt_baseline <- paste0(
-  "TARGET TABLE (geography-stratified wages: impute every MISSING_<id> cell)\n",
-  "cell_id,area,breakdown_var,breakdown_cat,sex,value\n", mnar_csv, "\n\n",
-  "Return a CSV with header: cell_id,value: one row per MISSING_<id> cell only.")
-
-# imputation
 set.seed(240603)
-raw_baseline <- llm_chat(prompt_baseline, system = sys_baseline, max_tokens = 32768)
+llm_anon_merged <- oneshot_run(ses_exp_mnar, "anon")
 
-# parse: find the cell_id,value header and read from there
-clean_resp <- strip_think(raw_baseline)
-clean_resp <- gsub("```[a-z]*\n?|```", "", clean_resp) # strip markdown fences
-lines <- strsplit(trimws(clean_resp), "\n")[[1]]
-lines <- lines[nchar(trimws(lines)) > 0]  # drop blank lines
-
-# error catch
-if (length(lines) == 0 || all(is.na(lines)))
-  stop("LLM returned empty response")
-
-hdr_idx  <- which(grepl("^cell_id,", lines, ignore.case = TRUE))[1]
-if (is.na(hdr_idx)) hdr_idx <- 1
-csv_text <- paste(lines[hdr_idx:length(lines)], collapse = "\n")
-
-# I() forces read_csv to treat csv_text as literal text, never as a file path
-llm_oneshot_baseline <- read_csv(I(csv_text), show_col_types = FALSE) |>
-  mutate(value = suppressWarnings(as.numeric(value)),
-         value = if_else(value < wage_lower | value > wage_higher, NA_real_, 
-                         value)) |>
-  left_join(missing_keys, by = "cell_id") # join by id
-
-# checking the work
-returned <- llm_oneshot_baseline |> filter(!is.na(cell_id), !is.na(value))
-cat(sprintf("masked: %d | returned: %d | usable: %d | still NA: %d\n",
-            nrow(missing_keys), nrow(llm_oneshot_baseline),
-            nrow(returned), nrow(missing_keys) - nrow(returned)))
-
-print(llm_oneshot_baseline)
-
-# merged
-ses_llm_baseline_oneshot_merged <- ses_exp_mnar |>
-  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
-  left_join(llm_oneshot_baseline |> rename(nuts1 = area, value_imp = value) |>
-              select(nuts1, breakdown_var, breakdown_cat, sex, value_imp),
-            by = c("nuts1", "breakdown_var", "breakdown_cat", "sex")) |>
-  mutate(value = if_else(is.na(value), value_imp, value)) |>
-  select(-value_imp) |>
-  pivot_wider(names_from = sex, values_from = value) |>
-  rename(area = nuts1)
-
-# write_csv(llm_oneshot_baseline, file = "llm_oneshot_baseline.csv")
-# write_csv(ses_llm_baseline_oneshot_merged, "ses_llm_baseline_oneshot_merged.csv")
-
-plot_missing(ses_llm_baseline_merged)
-
-# CONTEXTUAL BASELINE - WITH REFERENCE TABLE
-# reference table to give the LLM context: education / occupation / tenure / contract-type
-ref_csv <- ses_data |>
-  filter(strat_type != "geography",
-         outcome_var == "hourly_wage",
-         breakdown_var %in% c("education", "occupation", "tenure", 
-                              "contract_type", "hours_regime"),
-         breakdown_cat != "total",
-         sex %in% c("Female", "Male"),
-         !is.na(value)) |>
-  select(strat_type, strat_value = row_label, breakdown_var, 
-         breakdown_cat, sex, value) |>
-  mutate(value = round(value, 2),
-         row   = paste(strat_type, strat_value, breakdown_var, 
-                       breakdown_cat, sex, value, 
-                       sep = ",")) |>
-  pull(row) |>
-  paste(collapse = "\n")
-
-
-# prompt
-sys_ctx_oneshot <- paste(
-  "You are completing missing wage cells in an ISTAT Structure of Earnings survey table.",
-  "All values are mean gross hourly wages in EUR/hour, Italy 2022.",
-  "You are given two tables: a reference table and a target table stratified by NUTS-1 macro-area.",
-  "Learn ONLY from the observed reference table, strictly basing your outputs on what is present in the given data.",
-  "Each missing cell in the target table is marked MISSING_<id> where <id> is a number.",
-  "Return ONLY a two-column CSV with header: cell_id,value",
-  "One row per missing cell, where cell_id is the number from MISSING_<id> and value is your imputed wage.",
-  "Values must be between 6 and 50. No markdown, no explanation.")
-
-prompt_ctx_oneshot <- paste0(
-  "REFERENCE TABLE (Italian wage patterns by sector, firm size, and control type)\n",
-  "strat_type,strat_value,breakdown_var,breakdown_cat,sex,value\n", ref_csv, "\n\n",
-  "TARGET TABLE (geography-stratified wages: impute every MISSING_<id> cell)\n",
-  "cell_id,area,breakdown_var,breakdown_cat,sex,value\n", mnar_csv, "\n\n",
-  "Return a CSV with header: cell_id,value: one row per MISSING_<id> cell only.")
-
-# imputation
-set.seed(240603)
-raw_oneshot <- llm_chat(prompt_oneshot, system = sys_oneshot, max_tokens = 32768)
-
-# parse: find the cell_id,value header and read from there
-clean_resp <- strip_think(raw_oneshot)
-clean_resp <- gsub("```[a-z]*\n?|```", "", clean_resp) # strip markdown fences
-lines <- strsplit(trimws(clean_resp), "\n")[[1]]
-lines <- lines[nchar(trimws(lines)) > 0]  # drop blank lines
-
-# error catch
-if (length(lines) == 0 || all(is.na(lines)))
-  stop("LLM returned empty response")
-
-hdr_idx  <- which(grepl("^cell_id,", lines, ignore.case = TRUE))[1]
-if (is.na(hdr_idx)) hdr_idx <- 1
-csv_text <- paste(lines[hdr_idx:length(lines)], collapse = "\n")
-
-# I() forces read_csv to treat csv_text as literal text, never as a file path
-llm_oneshot_df <- read_csv(I(csv_text), show_col_types = FALSE) |>
-  mutate(value = suppressWarnings(as.numeric(value)),
-         value = if_else(value < wage_lower | value > wage_higher, NA_real_, 
-                         value)) |>
-  left_join(missing_keys, by = "cell_id") # join by id
-
-# checking the work
-returned <- llm_oneshot_df |> filter(!is.na(cell_id), !is.na(value))
-cat(sprintf("masked: %d | returned: %d | usable: %d | still NA: %d\n",
-            nrow(missing_keys), nrow(llm_oneshot_df),
-            nrow(returned), nrow(missing_keys) - nrow(returned)))
-
-print(llm_oneshot_df)
-
-# merged
-ses_llm_oneshot_merged <- ses_exp_mnar |>
-  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
-  left_join(llm_oneshot_df |> rename(nuts1 = area, value_imp = value) |>
-              select(nuts1, breakdown_var, breakdown_cat, sex, value_imp),
-            by = c("nuts1", "breakdown_var", "breakdown_cat", "sex")) |>
-  mutate(value = if_else(is.na(value), value_imp, value)) |>
-  select(-value_imp) |>
-  pivot_wider(names_from = sex, values_from = value) |>
-  rename(area = nuts1)
-
-# write_csv(llm_oneshot_df, file = "llm_oneshot_df.csv")
-# write_csv(ses_llm_oneshot_merged, "ses_llm_oneshot_merged.csv")
-
-plot_missing(ses_llm_oneshot_merged)
-
-# ANONYMIZED GEOGRAHPICAL AREAS 
-# anon-geo: reuses ref_csv + sys_oneshot + mnar_long + missing_keys.
-# only the AREA labels shown to the model are masked; missing_keys keeps the real
-# areas, and the join is by cell_id, so results map back as the previous phases
-
-area_levels <- sort(unique(mnar_long$area))
-area_anon   <- setNames(paste0("Area_", seq_along(area_levels)), area_levels)
-
-mnar_long_anon <- mnar_long |>
-  mutate(area = area_anon[area],
-         row  = paste(cell_id, area, breakdown_var, breakdown_cat,
-                      sex, display, sep = ","))
-mnar_csv_anon <- paste(mnar_long_anon$row, collapse = "\n")
-
-# sys the same as the contextual one
-prompt_oneshot_anon <- paste0(
-  "REFERENCE TABLE (Italian wage patterns by sector, firm size, and control type)\n",
-  "strat_type,strat_value,breakdown_var,breakdown_cat,sex,value\n", ref_csv, "\n\n",
-  "TARGET TABLE (geography-stratified wages: impute every MISSING_<id> cell)\n",
-  "cell_id,area,breakdown_var,breakdown_cat,sex,value\n", mnar_csv_anon, "\n\n",
-  "Return a CSV with header: cell_id,value: one row per MISSING_<id> cell only.")
-
-# imputation (system prompt unchanged from 7.1)
-set.seed(240603)
-raw_anon <- llm_chat(prompt_oneshot_anon, system = sys_ctx_oneshot, max_tokens = 32768)
-
-# parse: find the cell_id,value header and read from there
-clean_resp <- strip_think(raw_anon)
-clean_resp <- gsub("```[a-z]*\n?|```", "", clean_resp) # strip markdown fences
-lines <- strsplit(trimws(clean_resp), "\n")[[1]]
-lines <- lines[nchar(trimws(lines)) > 0]  # drop blank lines
-
-# error catch
-if (length(lines) == 0 || all(is.na(lines)))
-  stop("LLM returned empty response")
-
-hdr_idx  <- which(grepl("^cell_id,", lines, ignore.case = TRUE))[1]
-if (is.na(hdr_idx)) hdr_idx <- 1
-csv_text <- paste(lines[hdr_idx:length(lines)], collapse = "\n")
-
-# I() forces read_csv to treat csv_text as literal text, never as a file path
-llm_anon_df <- read_csv(I(csv_text), show_col_types = FALSE) |>
-  mutate(value = suppressWarnings(as.numeric(value)),
-         value = if_else(value < wage_lower | value > wage_higher, NA_real_, 
-                         value)) |>
-  left_join(missing_keys, by = "cell_id") # join by id (missing_keys = real areas)
-
-# checking the work
-returned <- llm_anon_df |> filter(!is.na(cell_id), !is.na(value))
-cat(sprintf("masked: %d | returned: %d | usable: %d | still NA: %d\n",
-            nrow(missing_keys), nrow(llm_anon_df),
-            nrow(returned), nrow(missing_keys) - nrow(returned)))
-
-print(llm_anon_df)
-
-# merged
-ses_llm_anon_merged <- ses_exp_mnar |>
-  pivot_longer(c(Female, Male), names_to = "sex", values_to = "value") |>
-  left_join(llm_anon_df |> rename(nuts1 = area, value_imp = value) |>
-              select(nuts1, breakdown_var, breakdown_cat, sex, value_imp),
-            by = c("nuts1", "breakdown_var", "breakdown_cat", "sex")) |>
-  mutate(value = if_else(is.na(value), value_imp, value)) |>
-  select(-value_imp) |>
-  pivot_wider(names_from = sex, values_from = value) |>
-  rename(area = nuts1)
-
-# write_csv(llm_anon_df, file = "llm_anon_df.csv")
 # write_csv(ses_llm_anon_merged, "ses_llm_anon_merged.csv")
 
-plot_missing(ses_llm_anon_merged)
+# uninformed 
+eval_ses(llm_baseline_oneshot_merged, "LLM_oneshot_baseline")
 
-# EVALUATION
-# uninformed
-eval_ses(ses_llm_baseline_oneshot_merged, "LLM_oneshot_baseline")
+# anonymized geography 
+eval_ses(llm_anon_merged, "LLM_anonymized_geo")
 
-# contextual
-eval_ses(ses_llm_oneshot_merged, "LLM_oneshot_ctx")
+metrics_tracker |>
+  filter(method %in% c("LLM_oneshot_baseline", "LLM_anonymized_geo",
+                        "MICE_MNAR", "MICE_MCAR"),
+         metric == "wGPG")
 
-# anonymized geography
-eval_ses(ses_llm_anon_merged, "LLM_anonymized_geo")
+metrics_tracker |>
+  filter(method %in% c("LLM_oneshot_baseline", "LLM_anonymized_geo",
+                        "MICE_MNAR", "MICE_MCAR")) |>
+  knitr::kable(digits = 3)
+
+# tables
+ord <- c("MICE_MCAR", "MICE_MNAR", "LLM_oneshot_baseline", "LLM_anonymized_geo")
+labels <- c(MICE_MCAR = "MICE (MCAR)",
+          MICE_MNAR = "MICE (MNAR)",
+          LLM_oneshot_baseline = "LLM uninformed",
+          LLM_anonymized_geo = "LLM anonymised geography")
+
+# wGPG recovery 
+tab_accuracy <- metrics_tracker |>
+  filter(method %in% ord, metric == "wGPG") |>
+  distinct() |>
+  mutate(method = factor(method, ord)) |>
+  arrange(method) |>
+  mutate(method = labels[as.character(method)])
+
+stargazer(as.data.frame(tab_accuracy), type = "latex", summary = FALSE,
+          rownames = FALSE, digits = 3, label = "tab:accuracy",
+          title = "wGPG recovery accuracy by method (MNAR SES)")
+
+# MAE by breakdown variable
+breakdown_labels <- c(contract_type = "Contract type",
+                    education  = "Education",
+                    hours_regime  = "Hours regime",
+                    occupation  = "Occupation",
+                    tenure  = "Tenure")
+
+tab_breakdown <- fairness_tracker |>
+  filter(method %in% ord) |>
+  distinct() |>
+  mutate(method = labels[method],
+         breakdown_var = breakdown_labels[breakdown_var]) |>
+  select(method, breakdown_var, MAE) |>
+  pivot_wider(names_from = method, values_from = MAE) |>
+  select(`Breakdown variable` = breakdown_var, any_of(unname(labels)))
+
+stargazer(as.data.frame(tab_breakdown), type = "latex", summary = FALSE,
+          rownames = FALSE, digits = 3, label = "tab:breakdown",
+          title = "Imputation MAE by breakdown variable",
+          float.env = "table", font.size = "small")
+
+# MAE by disadvantage tier
+tab_tier <- tier_tracker |>
+  filter(method %in% ord) |>
+  distinct() |>
+  mutate(method = labels[method]) |>
+  select(method, reg_dis_lvl, MAE) |>
+  pivot_wider(names_from = method, values_from = MAE) |>
+  arrange(reg_dis_lvl) |>
+  select(reg_dis_lvl, any_of(unname(labels)))
+
+stargazer(as.data.frame(tab_tier), type = "latex", summary = FALSE,
+          rownames = FALSE, digits = 3, label = "tab:tier",
+          title = "Imputation MAE by regional disadvantage tier")
+
+# redraw MNAR for a given seed 
+redraw_mnar <- function(seed, data = ses_wide) {
+  set.seed(seed); tier_p <- c(low=.10, moderate=.25, high=.45); beta <- .05
+  data |> rename(nuts1 = area) |> filter(!is.na(nuts1)) |>
+    left_join(reg_dis |> select(nuts1, reg_dis_lvl), by="nuts1") |>
+    group_by(reg_dis_lvl) |>
+    mutate(b = tier_p[as.character(reg_dis_lvl)],
+           pF = pmin(pmax(b + beta*(median(Female,na.rm=T)-Female),.02),.95),
+           pM = pmin(pmax(b + beta*(median(Male,na.rm=T)-Male),.02),.95),
+           Female = if_else(runif(n())<pF, NA_real_, Female),
+           Male   = if_else(runif(n())<pM, NA_real_, Male)) |>
+    ungroup() |> select(-b,-pF,-pM)
+}
+
+# wGPG MAE + Spearman vs ground truth from ses_wide
+wgpg <- function(d) d |> group_by(area, breakdown_var) |>
+  mutate(gap = 1 - Female/Male, wt = Female/sum(Female, na.rm = TRUE)) |>
+  summarise(g = sum(wt * gap, na.rm = TRUE), .groups = "drop")
+
+score <- function(imp) {
+  j <- inner_join(wgpg(imp), wgpg(ses_wide), by = c("area","breakdown_var"),
+                  suffix = c("_i","_t"))
+  tibble(MAE = mean(abs(j$g_i - j$g_t)),
+         rho = cor(j$g_t, j$g_i, method = "spearman"))
+}
+
+# MICE: 50 redraws
+rep_mice <- map_dfr(1:50, \(s) {
+  d   <- redraw_mnar(s)
+  fit <- mice(d |> mutate(across(c(nuts1, breakdown_var, 
+                                   breakdown_cat), as.factor)) |>
+                select(nuts1, breakdown_var, breakdown_cat, Female, Male),
+              m = 5, method = "pmm", printFlag = FALSE)
+  imp <- d |> mutate(Female = rowMeans(sapply(1:5, \(i) complete(fit, i)$Female)),
+                     Male = rowMeans(sapply(1:5, \(i) complete(fit, i)$Male))) |>
+    rename(area = nuts1)
+  score(imp) |> mutate(seed = s)
+})
+
+# summary
+rep_mice |>
+  summarise(method   = "MICE",
+            n_ok     = sum(!is.na(MAE)),
+            MAE_mean = mean(MAE, na.rm = TRUE),
+            MAE_sd   = sd(MAE,   na.rm = TRUE),
+            rho_mean = mean(rho, na.rm = TRUE),
+            rho_sd   = sd(rho,   na.rm = TRUE))
+
+# updated LLM_chat for iterations
+llm_chat_rep <- function(prompt,
+                         model = "qwen/qwen3-32b",
+                         system = NULL,
+                         temperature = 0.6,
+                         top_p = 0.9,
+                         max_tokens = 8192,
+                         retries = 6) {
+
+  msgs <- list()
+  if (!is.null(system)) msgs <- c(msgs, list(list(role = "system", 
+                                                  content = system)))
+  msgs <- c(msgs, list(list(role = "user", content = prompt)))
+
+  for (attempt in seq_len(retries)) {
+    resp <- tryCatch(
+      POST(
+        url = "https://openrouter.ai/api/v1/chat/completions",
+        add_headers(
+          Authorization = paste("Bearer", Sys.getenv("OPENROUTER_API_KEY")),
+          `Content-Type` = "application/json"),
+        body = toJSON(list(
+          model = model, messages = msgs,
+          temperature = temperature, top_p = top_p,
+          max_tokens = max_tokens), auto_unbox = TRUE),
+        encode = "raw",
+        timeout(600)),
+      error = function(e) e)  # capture timeout
+
+    # network-level failure -> retry
+    if (inherits(resp, "error")) {
+      if (attempt < retries) {
+        message("network error (", conditionMessage(resp), ") on attempt ",
+                attempt, " -- retrying in ", 20 * attempt, "s ...")
+        Sys.sleep(20 * attempt); next
+      }
+      stop("network error after ", retries, " retries: ", conditionMessage(resp))
+    }
+
+    sc <- status_code(resp)
+    if (sc == 200)
+      return(content(resp, as = "parsed")$choices[[1]]$message$content)
+
+    if (sc %in% c(429L, 503L, 504L) && attempt < retries) {
+      message("API ", sc, " on attempt ", attempt, " -- retrying in ", 
+              20 * attempt, "s ...")
+      Sys.sleep(20 * attempt); next
+    }
+
+    stop("API error ", sc, ": ", content(resp, as = "text", encoding = "UTF-8"))
+  }
+  stop("All ", retries, " retries exhausted.")
+}
+
+# LLM one-shot: 8 redraws on both conditions - 16 total
+rep_llm <- map_dfr(1:8, \(s) {
+  d <- redraw_mnar(s)
+  bind_rows(
+    score(oneshot_run(d, "uninformed", chat = llm_chat_rep)) |>
+      mutate(method = "LLM_uninformed"),
+    score(oneshot_run(d, "anon", chat = llm_chat_rep)) |>
+      mutate(method = "LLM_anon")) |>
+    mutate(seed = s)
+})
+
+# all runs 
+rep_summary <- bind_rows(rep_mice |> mutate(method = "MICE"), rep_llm) |>
+  group_by(method) |>
+  summarise(n_ok     = sum(!is.na(MAE)),
+            MAE_mean = mean(MAE, na.rm = TRUE),
+            MAE_sd   = sd(MAE,   na.rm = TRUE),
+            rho_mean = mean(rho, na.rm = TRUE),
+            rho_sd   = sd(rho,   na.rm = TRUE),
+            .groups  = "drop")
+
+set.seed(240603)
+
+# shifts both wage levels and the gender gap -> resulting figures do not match any published ISTAT table
+ses_test <- ses_wide |> mutate(Female = Female * 1.12, Male = Male * 1.18)
+
+# raise the parser clamp for this run, then restore so no change to original 
+wage_higher_orig <- wage_higher
+wage_higher <<- 75  # covers ~€62 perturbed max with headroom
+
+ses_test_mnar <- redraw_mnar(seed = 240603, data = ses_test)
+imp_test <- oneshot_run(ses_test_mnar, "uninformed", chat = llm_chat_rep)
+
+wage_higher <<- wage_higher_orig # restore so previous runs are unaffected on re-run
+
+score_test <- function(imp, truth) {
+  j <- inner_join(wgpg(imp), wgpg(truth), by = c("area","breakdown_var"),
+                  suffix = c("_i","_t")); mean(abs(j$g_i - j$g_t))
+}
+
+# retrieval if error-vs-ORIGINAL < error-vs-PERTURBED; estimation if the reverse
+unseen_tbl <- tibble(vs_test = score_test(imp_test, ses_test),
+                     vs_original  = score_test(imp_test, ses_wide))
+
+# iteration robustness (mean +/- SD across redraws)
+stargazer(as.data.frame(rep_summary), type = "latex", summary = FALSE,
+          rownames = FALSE, digits = 3, label = "tab:iteration",
+          title = "wGPG MAE and Spearman across redraws and iterations")
+
+# retrieval vs. estimation on altered data
+stargazer(as.data.frame(unseen_tbl), type = "latex", summary = FALSE,
+          rownames = FALSE, digits = 3, label = "tab:unseen",
+          title = "Imputation error vs. altered (unseen) table and original 2022 figures")
+
+set.seed(240603)
+
+llm_blind_merged <- oneshot_run(ses_exp_mnar, "blind")
+
+set.seed(240603)
+
+mice_blind_input <- ses_exp_mnar |>
+  mutate(nuts1 = as.factor(nuts1)) |>
+  select(nuts1, Female, Male)
+
+pred <- make.predictorMatrix(mice_blind_input)
+pred[c("Female", "Male"), ] <- 0 # drop breakdown covariates + cross-sex
+pred["Female", "nuts1"] <- 1
+pred["Male",   "nuts1"] <- 1
+
+mice_blind_fit <- mice(mice_blind_input, m = 5, method = "pmm",
+                       predictorMatrix = pred, printFlag = FALSE)
+
+imp_f <- sapply(1:5, \(i) complete(mice_blind_fit, i)$Female)
+imp_m <- sapply(1:5, \(i) complete(mice_blind_fit, i)$Male)
+
+ses_mice_blind <- ses_exp_mnar |>
+  mutate(Female = rowMeans(imp_f), Male = rowMeans(imp_m)) |>
+  rename(area = nuts1)
+
+# for comparison
+masked_cells <- ses_exp_mnar |>
+  rename(area = nuts1) |>
+  pivot_longer(c(Female, Male), names_to = "sex", values_to = "val") |>
+  filter(is.na(val)) |>
+  select(area, breakdown_var, breakdown_cat, sex)
+
+truth_long <- ses_wide |>
+  pivot_longer(c(Female, Male), names_to = "sex", values_to = "truth")
+
+to_long <- function(imp, label)
+  imp |>
+    pivot_longer(c(Female, Male), names_to = "sex", values_to = "imp") |>
+    transmute(area, breakdown_var, breakdown_cat, sex, imp, method = label)
+
+scored <- bind_rows(
+  to_long(llm_baseline_oneshot_merged, "LLM_full"),
+  to_long(llm_blind_merged,  "LLM_blind"),
+  to_long(ses_mice_mnar, "MICE_full"),
+  to_long(ses_mice_blind, "MICE_blind")) |>
+  inner_join(masked_cells, by = c("area", "breakdown_var", "breakdown_cat", "sex")) |>
+  inner_join(truth_long,   by = c("area", "breakdown_var", "breakdown_cat", "sex")) |>
+  group_by(area, breakdown_var, breakdown_cat, sex) |>
+  filter(all(!is.na(imp))) |>          # keep only cells all four returned
+  ungroup()
+
+cell_mae <- function(imp)
+  imp |>
+    pivot_longer(c(Female, Male), names_to = "sex", values_to = "imp") |>
+    inner_join(masked_cells, by = c("area", "breakdown_var", "breakdown_cat", "sex")) |>
+    inner_join(truth_long,   by = c("area", "breakdown_var", "breakdown_cat", "sex")) |>
+    summarise(n = sum(!is.na(imp)), MAE = mean(abs(imp - truth), na.rm = TRUE))
+
+# table
+blind_tab <- scored |>
+  group_by(method) |>
+  summarise(N = n(), MAE = mean(abs(imp - truth)), .groups = "drop") |>
+  mutate(method = factor(method,
+           levels = c("LLM_full", "LLM_blind", "MICE_full", "MICE_blind"),
+           labels = c("LLM (with covariates)", "LLM (blind)",
+                      "MICE (with covariates)", "MICE (blind)"))) |>
+  arrange(method) |>
+  rename(Method = method)
+
+stargazer(as.data.frame(blind_tab),
+          type     = "latex",
+          summary  = FALSE,
+          rownames = FALSE,
+          digits   = 2,
+          title    = "Covariate deletion: cell-level MAE (EUR/hour) on the common set of masked cells",
+          label    = "tab:ablation")
