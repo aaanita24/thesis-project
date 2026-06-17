@@ -10,13 +10,12 @@ editor_options:
 
 # PHASE 0
 
-This initial phase 0 deals with the data cleaning and preparation of the
-real-data backbone of the thesis from two ISTAT sources: SES income data
-and RACLI regional data from 2022. The output is three tidy datasets:
-*'ses_data', 'racli_clean'*, and *'regional_codes',* that together
-describe the structure of Italian wages along the demographic, sectoral,
-and geographic macro and micro areas, which will be used as the
-experiment's backbone.
+Phase 0 deals with the data cleaning and preparation of the real data of
+the thesis from two ISTAT sources: SES income data and RACLI regional
+data from 2022. The output is three tidy datasets: *'ses_data',
+'racli_clean'*, and *'regional_codes',* that together describe the
+structure of Italian wages along the demographic, sectoral, and
+geographic macro and micro areas.
 
 ```{r warning=FALSE, message=FALSE}
 library(tidyr)
@@ -360,10 +359,9 @@ tav2_test <- parse_ses_table(
 )
 ```
 
-Since it worked, let's map all tables to their specific attributes that
-are needed in the functions. These information are taken from each
-table, that specify the type of outcome and breakdown variable they
-refer to.
+All tables are mapped to their specific attributes that are needed in
+the functions. These information are taken from each table, that specify
+the type of outcome and breakdown variable they refer to.
 
 ```{r}
 table_map <- tribble(
@@ -632,15 +630,14 @@ ses_data |>
     max_val = max(value, na.rm = TRUE))
 ```
 
--   The boxplot of `sex x outcome_var` shows that female earn less than
+-   The box plot of `sex x outcome_var` shows that female earn less than
     males, for hourly and annual wages. The annual hours gap is smaller
     but still present, pointing to both a pay rate and a hours-worked
     component.
 
--   The correlation heatmap (hourly / annual wage / annual hours) shows
+-   The correlation heat map (hourly / annual wage / annual hours) shows
     hourly wages moderately correlated with annual wage, while hourly
-    wage nearly uncorrelated with annual hours (possibly indicating that
-    full-time hours are compressed regardless of pay).
+    wage nearly uncorrelated with annual hours.
 
 -   Occupation shows the highest average wages and the widest
     Female-Male spread. Tenure and education both show clear wage
@@ -728,7 +725,7 @@ p
 
 Visualization per macro area:
 
-```{r eda-data-viz, fig.width=7, fig.height=4}
+```{r eda-viz, fig.width=7, fig.height=4}
 nuts1_labels <- c(
   "Nord-Ovest" = "North-west",
   "Nord-Est"   = "North-east",
@@ -780,6 +777,7 @@ p2 <- ggplot(plot_macro, aes(mean_wage,
     axis.title.x = element_text(margin = margin(t = 10)),
     plot.margin  = margin(14, 18, 10, 14)
   )
+
 p2
 ```
 
@@ -888,7 +886,6 @@ p3 <- italy_nuts1 |>
         legend.key.width  = unit(0.7, "lines"))
   
 p3
-
 ```
 
 ## 2.2 Regional disadvantages
@@ -944,8 +941,7 @@ reg_dis <- reg_dis |>
 
 Initial baseline MICE imputation under the MCAR assumption, which
 assumes that there is no relationship between missingness and either the
-wage or the region, as each cell has the same probability of being
-missing.
+wage or the region, each cell has the same probability of being missing.
 
 ```{r}
 set.seed(240603) 
@@ -1068,7 +1064,7 @@ ses_exp_mnar |>
 
 ## 4.1 MICE imputation on MNAR engineered missingness
 
-The PMM approach is applied to the MNAR-engineered SES data set.
+PMM is applied to the MNAR-engineered SES data set.
 
 ```{r mice-mnar-ses}
 set.seed(240603)
@@ -1227,26 +1223,15 @@ The function produces:
 
 -   **Bias direction**
 
--   **Fairness by disadvantage tier:** the mean bias and MAE broken down
-    by low / moderate / high disadvantage regions.
+-   The **mean bias and MAE broken down** by low / moderate / high
+    disadvantage regions.
 
 # PHASE 5
 
 ## 5.1 LLM API call
 
-The selected LLM will be `Qwen 3-32B`. An API key was obtained for 5
-dollars (of tokens) from OpenRouter.com.
-
-*temperature* = a scaling factor on the token probabilities before
-sampling; "a higher value for temperature produces a softer probability
-distribution over classes" (Hinton et al., 2015, pg. 3)
-<https://arxiv.org/pdf/1503.02531>
-
-*top_p* = nucleus sampling - a principled alternative to top-k sampling,
-which uses the probability distribution to determine a set of tokens to
-be sampled from // it selects the highest probability tokens whose
-cumulative probability mass exceeds our pre-chosen threshold *p*
-[https://arxiv.org/htlm/1904.09751v1](https://arxiv.org/pdf/1904.09751v1){.uri}
+The selected LLM will be `Qwen 3-32B`. An API key was obtained for 5\$
+(of tokens) from OpenRouter.com.
 
 The function:
 
@@ -1350,10 +1335,9 @@ llm_impute_value <- function(prompt, system, sleep = 2,
 To ensure comparison, both LLM conditions below (uninformed and
 anonymized-geography) are run through a single function,
 `oneshot_run()`. It is given only a target table `d` and no external
-reference table, no extra curated anchors and no national "Total"
-aggregates computed from `ses_wide`. The only difference between the two
-conditions is whether the NUTS-1 area names shown to the model are real
-or replaced with `Area_1-Area_5`.
+reference table, no national "Total" aggregates computed from
+`ses_wide`. The only difference between the two conditions is whether
+the NUTS-1 area names are shown to the model.
 
 ```{r oneshot-run}
 # d: a redrawn MNAR dataset shaped like ses_exp_mnar
@@ -1452,8 +1436,8 @@ oneshot_run <- function(d, condition = c("uninformed", "anon", "blind"),
 ## 6.1 Uninformed one-shot imputation
 
 Uninformed baseline for the one-shot imputation method: any preserved
-accuracy or wGPG must come from the model's priors rather than the
-supplied data.
+accuracy or wGPG comes from the model's priors rather than the supplied
+data.
 
 ```{r oneshot-uninformed}
 set.seed(240603)
@@ -1475,8 +1459,6 @@ for evaluation even though the model never saw their real names.
 ```{r oneshot-anon}
 set.seed(240603)
 llm_anon_merged <- oneshot_run(ses_exp_mnar, "anon")
-
-# write_csv(ses_llm_anon_merged, "ses_llm_anon_merged.csv")
 ```
 
 ## 6.3 Evaluation
@@ -1558,30 +1540,18 @@ stargazer(as.data.frame(tab_tier), type = "latex", summary = FALSE,
           title = "Imputation MAE by regional disadvantage tier")
 ```
 
-Of the two LLM conditions, the **anonymized-geography** run is the more
-informative one: masking the NUTS-1 names is what separates *wage
-structure the model has learned* from *ISTAT geography the model has
-memorized*. If the **uninformed** condition alone reaches a high
-Spearman correlation on the regional ranking, that is not by itself
-evidence the model "recovered" the missing structure -- it may simply
-have recognized "Nord-Ovest" / "Sud" etc. and recalled Italy's
-North-South wage gradient from training data. The anonymized condition
-removes that shortcut, which is why -6.1 vs. -6.2 (not the absolute
-level of either) is the result that supports a claim about imputation
-ability rather than memorization.
-
 # PHASE 7
 
 Steps to check whether LLM's performance draws on training data, and to
-therefore give credibility to the findings.
+give credibility to the findings.
 
 ## 7.1 Iteration
 
 The MNAR mechanism is re-drawn across many seeds and re-runs MICE (50
-redraws) and the LLM (more costly, 8 redraws) on each one, reporting the
-mean and SD of the wGPG MAE and Spearman correlation vs. `ses_wide` for
-every method. Iteration here is employed to investigate the methods'
-stability in reproduction and imputation, and their deviation.
+redraws) and the LLM (more costly, 8 redraws), reporting the mean and SD
+of the wGPG MAE and Spearman correlation vs. `ses_wide` for every
+method. Employed to investigate the methods' robustness, and their
+deviation.
 
 ```{r mice-replication}
 # redraw MNAR for a given seed 
@@ -1717,16 +1687,13 @@ rep_summary <- bind_rows(rep_mice |> mutate(method = "MICE"), rep_llm) |>
 Because the data contains published 2022 ISTAT figures the LLM may have
 seen during training, so "estimation from the observed cells" and
 "retrieval of memorized values" are entangled. To separate them, every
-value in `ses_wide` is perturbed by a fixed multiplicative shift
-(`Female * 1.12`, `Male * 1.18`) before re-running the MNAR mechanism
-and the uninformed LLM imputation.
+value in `ses_wide` is altered by multiplying (`Female * 1.12`,
+`Male * 1.18`) before re-running the MNAR mechanism.
 
-If the LLM's imputed values land closer to what the masked table
-actually implies than to the original published truth (what the model
-may have memorized) –\> genuine **estimation** from the given data. If
-the reverse holds, so imputations land closer to the original 2022
-figures than to the perturbed table actually shown to the model, that
-points to **retrieval/memorization** rather than estimation.
+If the LLM's imputed values are closer to what the masked table actually
+implies than to the original truth - memorized –\> genuine
+**estimation** from the given data. Otherwise,
+**retrieval/memorization** rather than estimation.
 
 ```{r test-on-unseen}
 set.seed(240603)
@@ -1754,9 +1721,7 @@ unseen_tbl <- tibble(vs_test = score_test(imp_test, ses_test),
 ```
 
 `score()` measures how well the imputed gender pay gaps match the true
-ones. Here, the perturbed data \> original data -\> estimation rather
-than retrieval: it indicates that the model is computing the gaps from
-the observed cells it was given.
+ones.
 
 ```{r tables-iteration-unseen-test}
 # iteration robustness (mean +/- SD across redraws)
@@ -1773,16 +1738,12 @@ stargazer(as.data.frame(unseen_tbl), type = "latex", summary = FALSE,
 ## 7.3 Covariate deletion
 
 Strip covariate information to see if error rises. The breakdown columns
-from the MICE run are also stripped and degradation of each is compared,
-as it is assumed that both methods have here access to the same data
-(lacking the breakdown categories). Additional imputation to increase
-credibility.
+from the MICE run are also stripped and MAE of each is compared.
 
 ```{r blind-API}
 set.seed(240603)
 
 llm_blind_merged <- oneshot_run(ses_exp_mnar, "blind")
-# write_csv(llm_blind_merged, "llm_blind_merged.csv")
 ```
 
 Blind MICE to ensure comparison:
@@ -1796,8 +1757,8 @@ mice_blind_input <- ses_exp_mnar |>
 
 pred <- make.predictorMatrix(mice_blind_input)
 pred[c("Female", "Male"), ] <- 0 # drop breakdown covariates + cross-sex
-pred["Female", "nuts1"] <- 1
-pred["Male",   "nuts1"] <- 1
+pred["Female", "nuts1"] <- 1 # Female predicted from area
+pred["Male",   "nuts1"] <- 1 # Male predicted from area
 
 mice_blind_fit <- mice(mice_blind_input, m = 5, method = "pmm",
                        predictorMatrix = pred, printFlag = FALSE)
@@ -1810,9 +1771,9 @@ ses_mice_blind <- ses_exp_mnar |>
   rename(area = nuts1)
 ```
 
-MAE comparison (does the imputation stripped of covariate's MAE stay
-similar to the one with covariates for the LLM? -\> the model is then
-drawing from memory rather than evaluating):
+MAE comparison (does the stripped imputation's MAE stay similar to the
+complete one for the LLM? -\> the model is then drawing from memory
+rather than evaluating):
 
 ```{r}
 # for comparison
@@ -1868,7 +1829,63 @@ stargazer(as.data.frame(blind_tab),
           label    = "tab:ablation")
 ```
 
-With covariates the LLM imputes almost exactly (MAE 0.86 EUR/hour) and
-far better than MICE (7.96), but once they are stripped its accuracy
-collapses to 5.40 --\> performance depends on the data it is shown
-rather than on memorized values.
+## Visualizing the results
+
+Faceted area map reproducing wGPG reconstruction for each imputation method, compared to the original. 
+```{r results-viz fig.width=6, fig.height=6, fig.showtext = TRUE, dpi = 300}
+# recreation of wGPG across methods vs original
+# per-area wGPG
+area_wgpg <- function(df) {
+  df |>
+    group_by(area, breakdown_var) |>
+    mutate(gap    = 1 - Female / Male,
+           weight = Female / sum(Female, na.rm = TRUE)) |>
+    summarise(wGPG = sum(weight * gap, na.rm = TRUE), .groups = "drop") |>
+    group_by(area) |>
+    summarise(wGPG = mean(wGPG), .groups = "drop")
+}
+
+method_levels <- c("Original", "MICE", "LLM one-shot", "LLM anonymised")
+
+wGPG_methods <- bind_rows(
+  wGPG_area                              |> mutate(method = "Original"),
+  area_wgpg(ses_mice_mnar)               |> mutate(method = "MICE"),
+  area_wgpg(llm_baseline_oneshot_merged) |> mutate(method = "LLM one-shot"),
+  area_wgpg(llm_anon_merged)             |> mutate(method = "LLM anonymised")) |>
+  mutate(method = factor(method, levels = method_levels)) |>
+  left_join(nuts1_codes, by = c("area" = "nuts1"))
+
+# join the 4-method long table onto one geometry (5 areas -> 20 rows, sf retained)
+map_levels <- italy_nuts1 |>
+  select(NUTS_ID) |>
+  left_join(wGPG_methods, by = "NUTS_ID", relationship = "one-to-many")
+
+p4 <- ggplot(map_levels, aes(fill = wGPG)) +
+  geom_sf(colour = "white", linewidth = 0.2) +
+  facet_wrap(~ method, nrow = 2) +
+  scale_fill_gradient2(
+    low = "#542788", mid = "#f7f7f7", high = "#b2182b",
+    midpoint = 0, limits = c(-0.12, 0.12),
+    oob = scales::squish,                      
+    labels = scales::percent_format(accuracy = 1),
+    name = "wGPG\n(% of male pay)") +
+  labs(title    = "Within-category gender wage gap: original vs imputed",
+       subtitle = "NUTS-1 macro-areas of SES 2022; shared colour scale across 
+       panels") +
+  theme_void(base_size = 11, base_family = "ebgaramond") +
+  theme(plot.title.position = "plot",
+        plot.title    = element_text(face = "bold", size = 15, 
+                                     margin = margin(b = 4)),
+        plot.subtitle = element_text(colour = "grey40", size = 11, 
+                                     margin = margin(b = 12)),
+        strip.text    = element_text(face = "bold", size = 11, 
+                                     margin =  margin(b = 3)),
+        plot.margin   = margin(t = 14, r = 6, b = 6, l = 6),
+        legend.title  = element_text(size = 10),
+        legend.text   = element_text(size = 9),
+        legend.key.height = unit(0.9, "lines"),
+        legend.key.width  = unit(0.7, "lines"))
+
+p4
+```
+
