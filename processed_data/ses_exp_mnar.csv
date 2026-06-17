@@ -1,0 +1,126 @@
+nuts1,breakdown_var,breakdown_cat,Female,Male,reg_dis_lvl
+Nord-Ovest,education,≤ lower secondary,NA,13.2,moderate
+Nord-Ovest,education,upper secondary,14.1,16.5,moderate
+Nord-Ovest,education,tertiary,20.1,25.3,moderate
+Nord-Est,education,≤ lower secondary,NA,13.3,low
+Nord-Est,education,upper secondary,13.9,15.7,low
+Nord-Est,education,tertiary,19.2,23.2,low
+Centro,education,≤ lower secondary,NA,NA,high
+Centro,education,upper secondary,14,NA,high
+Centro,education,tertiary,20.5,24.8,high
+Sud,education,≤ lower secondary,NA,NA,high
+Sud,education,upper secondary,NA,NA,high
+Sud,education,tertiary,21.2,23.1,high
+Isole,education,≤ lower secondary,11.1,12.4,low
+Isole,education,upper secondary,14.2,14.3,low
+Isole,education,tertiary,21.6,23.3,low
+Nord-Ovest,contract_type,permanent,16.2,18.3,moderate
+Nord-Ovest,contract_type,temporary,13.2,12.6,moderate
+Nord-Est,contract_type,permanent,15.7,17.2,low
+Nord-Est,contract_type,temporary,NA,12.6,low
+Centro,contract_type,permanent,16.7,NA,high
+Centro,contract_type,temporary,13.4,NA,high
+Sud,contract_type,permanent,NA,NA,high
+Sud,contract_type,temporary,NA,12.6,high
+Isole,contract_type,permanent,17.2,16.3,low
+Isole,contract_type,temporary,14.6,12.7,low
+Nord-Ovest,hours_regime,part-time,12.4,12.1,moderate
+Nord-Ovest,hours_regime,full-time,17,17.9,moderate
+Nord-Est,hours_regime,part-time,12.9,12.4,low
+Nord-Est,hours_regime,full-time,16.2,NA,low
+Centro,hours_regime,part-time,NA,11.4,high
+Centro,hours_regime,full-time,17.7,18.2,high
+Sud,hours_regime,part-time,11.1,NA,high
+Sud,hours_regime,full-time,18.5,16,high
+Isole,hours_regime,part-time,NA,11.3,low
+Isole,hours_regime,full-time,18.9,16.4,low
+Nord-Ovest,occupation,Armed Forces,18.5,24.2,moderate
+Nord-Ovest,occupation,Managers,NA,52.4,moderate
+Nord-Ovest,occupation,Intellectual professions,22.8,25,moderate
+Nord-Ovest,occupation,Technical professions,16.4,NA,moderate
+Nord-Ovest,occupation,Clerks,NA,15.4,moderate
+Nord-Ovest,occupation,Sales & services,11,NA,moderate
+Nord-Ovest,occupation,Agriculture,10.1,11.6,moderate
+Nord-Ovest,occupation,Craft & trades,10.7,13.5,moderate
+Nord-Ovest,occupation,Machine operators,NA,NA,moderate
+Nord-Ovest,occupation,Elementary occupations,NA,11.1,moderate
+Nord-Est,occupation,Armed Forces,20,24.3,low
+Nord-Est,occupation,Managers,31.2,51.6,low
+Nord-Est,occupation,Intellectual professions,23.2,25.2,low
+Nord-Est,occupation,Technical professions,16,18.8,low
+Nord-Est,occupation,Clerks,13.4,15.8,low
+Nord-Est,occupation,Sales & services,11.4,NA,low
+Nord-Est,occupation,Agriculture,15,14.1,low
+Nord-Est,occupation,Craft & trades,10.9,13.2,low
+Nord-Est,occupation,Machine operators,NA,13.4,low
+Nord-Est,occupation,Elementary occupations,10.5,NA,low
+Centro,occupation,Armed Forces,15.8,23,high
+Centro,occupation,Managers,37.6,50.3,high
+Centro,occupation,Intellectual professions,23.2,25.6,high
+Centro,occupation,Technical professions,16.3,19.1,high
+Centro,occupation,Clerks,14.1,NA,high
+Centro,occupation,Sales & services,NA,NA,high
+Centro,occupation,Agriculture,NA,10.5,high
+Centro,occupation,Craft & trades,10.6,NA,high
+Centro,occupation,Machine operators,NA,NA,high
+Centro,occupation,Elementary occupations,NA,NA,high
+Sud,occupation,Armed Forces,20.3,24.4,high
+Sud,occupation,Managers,30.2,38.2,high
+Sud,occupation,Intellectual professions,24.1,26.5,high
+Sud,occupation,Technical professions,15.2,17.7,high
+Sud,occupation,Clerks,12.5,NA,high
+Sud,occupation,Sales & services,NA,12.6,high
+Sud,occupation,Agriculture,8.8,13.9,high
+Sud,occupation,Craft & trades,NA,11.7,high
+Sud,occupation,Machine operators,10.8,NA,high
+Sud,occupation,Elementary occupations,NA,10.5,high
+Isole,occupation,Armed Forces,21.6,24.6,low
+Isole,occupation,Managers,30.4,33.9,low
+Isole,occupation,Intellectual professions,24,26.4,low
+Isole,occupation,Technical professions,15.2,17.1,low
+Isole,occupation,Clerks,NA,14,low
+Isole,occupation,Sales & services,10.5,12.6,low
+Isole,occupation,Agriculture,11.4,11.9,low
+Isole,occupation,Craft & trades,NA,NA,low
+Isole,occupation,Machine operators,11.5,13.3,low
+Isole,occupation,Elementary occupations,9.7,10.9,low
+Nord-Ovest,tenure,0-4 years,13.5,14.8,moderate
+Nord-Ovest,tenure,5-9 years,15.7,17.6,moderate
+Nord-Ovest,tenure,10-14 years,17,19.2,moderate
+Nord-Ovest,tenure,15-19 years,17.6,19.7,moderate
+Nord-Ovest,tenure,20-24 years,17.9,21.6,moderate
+Nord-Ovest,tenure,25-29 years,18.1,21,moderate
+Nord-Ovest,tenure,30-34 years,19.2,22.6,moderate
+Nord-Ovest,tenure,35+ years,19.9,22.7,moderate
+Nord-Est,tenure,0-4 years,12.6,NA,low
+Nord-Est,tenure,5-9 years,NA,16.5,low
+Nord-Est,tenure,10-14 years,16.5,NA,low
+Nord-Est,tenure,15-19 years,NA,19.3,low
+Nord-Est,tenure,20-24 years,17.2,19,low
+Nord-Est,tenure,25-29 years,18.2,19.3,low
+Nord-Est,tenure,30-34 years,19.1,22.4,low
+Nord-Est,tenure,35+ years,20.4,21.6,low
+Centro,tenure,0-4 years,13.4,NA,high
+Centro,tenure,5-9 years,NA,NA,high
+Centro,tenure,10-14 years,17.5,NA,high
+Centro,tenure,15-19 years,18.6,20.6,high
+Centro,tenure,20-24 years,19.1,21.3,high
+Centro,tenure,25-29 years,18.9,21.8,high
+Centro,tenure,30-34 years,22,NA,high
+Centro,tenure,35+ years,NA,22.4,high
+Sud,tenure,0-4 years,NA,12.1,high
+Sud,tenure,5-9 years,NA,14,high
+Sud,tenure,10-14 years,NA,NA,high
+Sud,tenure,15-19 years,NA,18.5,high
+Sud,tenure,20-24 years,20.1,NA,high
+Sud,tenure,25-29 years,21.7,NA,high
+Sud,tenure,30-34 years,23.4,21.4,high
+Sud,tenure,35+ years,22.8,21.5,high
+Isole,tenure,0-4 years,13.4,NA,low
+Isole,tenure,5-9 years,16.5,14,low
+Isole,tenure,10-14 years,NA,18.3,low
+Isole,tenure,15-19 years,18,17.8,low
+Isole,tenure,20-24 years,19.7,18.8,low
+Isole,tenure,25-29 years,20.7,20.7,low
+Isole,tenure,30-34 years,21.4,20.7,low
+Isole,tenure,35+ years,20.7,22.2,low
