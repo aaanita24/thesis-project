@@ -1,16 +1,21 @@
 # thesis-project
-This is the private version of my thesis project, which I will then make available and public once I complete it. 
-The thesis aims at testing the robustness and reliability of LLM's data reconstruction/retreival abilities. 
-Two methods of imputation methods, classical multiple imputation with the MICE package and large language models (LLMs), can recover regional gender wage gap statistics in Italy given different missingness mechanisms.
+This project is an experiment developed by Anita Di Gennaro as a Master Thesis for the Computational Social Science course at the University Carlos III, Madrid.
+It aims at testing the robustness and reliability of LLM's data reconstruction/retrieval abilities
 
-Here are the steps of the experimental design: 
-- **STEP 1**: establishing the real-data baseline and ground truth. First of all, the gender wage inequalities are measured from the real data: the composition-adjusted gap is computed from SES per macro-area and breakdown variable (more granular).
-A preliminary MCAR test of MICE-PMM on SES will be executed to establish the pipeline noise, before introducing any missingness. In parallel, an uninformed LLM baseline is established on both datasets by direct prompting on a small sample of named cells. 
-Together these serve as a basis for the comparison: MICE under MCAR sets the lower bound of error attributable to the procedure itself, the uninformed LLM  will indicate what can be recovered without data.
+Research question: _Under controlled missingness in official Italian wage data, how do LLM-based imputations preserve gender wage inequality estimates as compared to conventional imputation methods, especially in disadvantaged areas?_ 
 
-- **STEP 2**: engineering the missingness. MNAR is mirrored through a regional disadvantage index _'reg_dis'_, constructed from the regional total-wage cells, combining a reverse-signed standardised mean wage with a standardised p90/p10 dispersion ratio and adapted to the NUTS-1 macro areas present in the Structure of Earnings Survey. Areas are placed into low, moderate, and high disadvantage levels, then cells in the Female/Male hourly wages are dropped with probabilities of roughly 10%, 25%, and 45% respectively.
+The experimental design is based on a comparison of MICE - Predictive Mean Matching - under the missingness not at random assumption (fabricated through the code on the real ISTAT data) and on Qwen3-32B prompting (one-shot completion), asking the model to impute strictly basing itself on the given data and not drawing from the training/external information.
+The main LLM's runs are two: one complete imputation, where the information received by the model is the same as what MICE receives, and one imputation where the geographical areas (NUTS-1 macro-areas) are anonymized. A global evaluation function provides measures of evaluation for each imputation method.
 
-- **STEP 3**: the imputation processes. MICE with predictive mean matching is applied.
-The same thing will be performed through LLMs. _Qwen-3 32B_, a thinking model, will be used, but it might be supported by a more advanced model.Row-by-row contextual and table completion will be tested, as well as a one-shot estimation according to the broad context given to the LLM. 
+The code ends with phase 7, where methods to control for leakage and to ensure that the model is actually inferring rather than simply reproducing from memory.
+Three attempts made:
 
-- **STEP 4**: evaluation. Bias, mean absolute error, root mean squared error, and Spearman rank correlation between true and imputed regional rankings are computed through a universal evaluation function, both for the data imputed through MICE and the imputation attempts with LLMs.
+- iteration of both methods to understand their variation and robustness - MICE repeated 50 times on a random seed and LLM's imputation 8 times on both versions, so the one-shot baseline with all the information and the anonymized version
+- LLM's imputation on unseen data (wage for Male and Female multiplied by 1.18 and 1.12 respectively) to test performance on altered data
+- covariate deletion on both methods, to remove the broader context and verify whether the model is still able to perform well, or if the MAE (mean absolute error) grows
+
+For **reproducibility** it is necessary to have:
+- R studio installed
+- a API key from [OpenRouter.ai](https://openrouter.ai/) to run the prompts. Tokens are necessary, but the model in question is cheap and $2 can be enough to execute the calls.
+
+Because of the black box mechanisms that are specific to both methods, especially for the Large Language Model Qwen3-32B, perfect and exact reproduction cannot be guaranteed.
