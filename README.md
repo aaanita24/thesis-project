@@ -1,4 +1,5 @@
 # thesis-project
+**Filling the Gaps: An Experimental Comparison of LLM and MICE Imputation on Regional Wage Data in Italy**
 This project is an experiment developed by Anita Di Gennaro as a Master Thesis for the Computational Social Science course at the University Carlos III, Madrid.
 It aims at testing the robustness and reliability of LLM's data reconstruction/retrieval abilities
 
